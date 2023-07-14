@@ -13,8 +13,9 @@ module.exports = {
     },
     'postcss-pxtorem': {
       rootValue: 192, // 设计稿宽度的 1/ 10
-      propList: ['*'] // 所有 px 转 rem
-      // selectorBlackList: ['.el-'] // 过滤掉.el-开头的class，不进行rem转换
+      propList: ['*'], // 所有 px 转 rem
+      selectorBlackList: ['.el-'],
+      exclude: /node_modules\/(?!(element-plus)\/).*/,
     }
   }
 }

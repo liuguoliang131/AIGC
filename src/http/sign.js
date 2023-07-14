@@ -8,8 +8,8 @@ export const _getSign = function(config) {
   return new Promise((resolve, reject) => {
     const sys = utils.getToken() || ''
     const timestamp = Date.parse(new Date()).toString().substr(0, 10)
-    const token = utils.getStorageSync('token') || ''
-    // let token = "ffacef74451e3d72fba1f4633e25a612"
+    // const token = utils.getStorageSync('token') || ''
+    let token = "ffacef74451e3d72fba1f4633e25a612"
     const version = config.version || '1.0.0'
     const appKey = utils.getStorageSync('appKey')
 

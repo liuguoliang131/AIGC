@@ -136,6 +136,14 @@
       <div class="body-content">
         <div class="chat_box">
           <div class="loading">正在加载...</div>
+          <el-row class="mb-4">
+            <el-button>Default</el-button>
+            <el-button type="primary">Primary</el-button>
+            <el-button type="success">Success</el-button>
+            <el-button type="info">Info</el-button>
+            <el-button type="warning">Warning</el-button>
+            <el-button type="danger">Danger</el-button>
+          </el-row>
           <div class="scroll_page">
             <div class="list_content">
               <template v-for="(item, idx) in msgList" :key="idx">
@@ -176,14 +184,23 @@
         </div>
         <div class="ask">
           <div class="ask_input">
-            <textarea
+            <!-- <textarea
               ref="askInput"
               maxlength="1000"
               placeholder="请输入您需要提问的信息..."
-            ></textarea>
+            ></textarea> -->
+            <el-input
+              class="textarea"
+              v-model="asking"
+              resize="none"
+              :autosize="{ minRows: 1, maxRows: 6 }"
+              type="textarea"
+              placeholder="请输入您需要提问的信息..."
+            />
             <div class="length_count">0/1000</div>
           </div>
-          <div class="send_btn">发送</div>
+          <!-- <div class="send_btn">发送</div> -->
+          <div class="send_btn_disabled">发送</div>
         </div>
       </div>
     </div>
@@ -191,11 +208,14 @@
 </template>
 
 <script setup>
-import { reactive } from "vue";
+import { reactive, ref } from "vue";
 import http from "../../http/index";
-// http.post("aaaaa", {
-//   a: 1,
-// });
+import { ElMessage } from "element-plus";
+
+http.post("aaaaa", {
+  a: 1,
+});
+const asking = ref("");
 const msgList = reactive([
   {
     type: 1,
@@ -276,6 +296,10 @@ http.get("/chat/answerList", {
   pageSize: 10,
   mock: 156,
 });
+ElMessage({
+  message: "aaaaaa",
+  duration: 0,
+});
 </script>
 
 <style scoped lang="less">
@@ -324,8 +348,12 @@ http.get("/chat/answerList", {
       border-radius: 5px;
       background: #126cfe;
       margin: 28px auto 0 auto;
+      cursor: pointer;
       span {
         margin-left: 11px;
+      }
+      &:active {
+        opacity: 0.8;
       }
     }
 
@@ -464,11 +492,12 @@ http.get("/chat/answerList", {
       line-height: normal;
     }
     .body-content {
+      position: relative;
       width: 100%;
       height: calc(100% - 68px);
       .chat_box {
         position: relative;
-        height: calc(100% - 90px);
+        height: 100%;
         overflow-y: scroll;
         &::-webkit-scrollbar {
           display: none;
@@ -569,6 +598,8 @@ http.get("/chat/answerList", {
                         width: 30px;
                         height: 30px;
                         margin-right: 15px;
+                        cursor: pointer;
+
                         &:active {
                           border-radius: 5px;
                           background-color: rgba(18, 108, 254, 0.5);
@@ -582,6 +613,8 @@ http.get("/chat/answerList", {
                         width: 30px;
                         height: 30px;
                         margin-right: 15px;
+                        cursor: pointer;
+
                         &:active {
                           border-radius: 5px;
                           background-color: rgba(18, 108, 254, 0.5);
@@ -600,28 +633,21 @@ http.get("/chat/answerList", {
       }
 
       .ask {
+        position: absolute;
+        bottom: 0;
+        left: 0;
         display: flex;
         align-items: center;
         justify-content: center;
+        box-sizing: border-box;
+        width: 100%;
         min-height: 90px;
-        margin: 0 30px;
+        padding: 0 30px;
         .ask_input {
           position: relative;
           flex: 1;
-          height: 52px;
-          textarea {
-            box-sizing: border-box;
-            width: 100%;
-            height: 52px;
-            padding: 11.5px 16px;
-            border-radius: 6px;
-            border: 1px solid #dae0f5;
-            background: #fff;
-            outline: none;
-            color: #333;
-            font-size: 19px;
-            line-height: 27px;
-            resize: none; /*禁止拉伸*/
+          min-height: 52px;
+          .textarea {
             &::placeholder {
               color: #ccc;
               font-family: PingFang SC;
@@ -629,6 +655,24 @@ http.get("/chat/answerList", {
               font-style: normal;
               font-weight: 400;
               line-height: normal;
+            }
+
+            /deep/.el-textarea__inner {
+              padding: 11.5px 16px;
+              box-sizing: border-box;
+              width: 100%;
+              // height: 52px;
+              border-radius: 6px;
+              border: 1px solid #dae0f5;
+              background: #fff;
+              outline: none;
+              color: #333;
+              font-size: 19px;
+              line-height: 27px;
+              resize: none; /*禁止拉伸*/
+            }
+            /deep/.el-textarea__inner::-webkit-scrollbar {
+              display: none;
             }
           }
           .length_count {
@@ -661,6 +705,27 @@ http.get("/chat/answerList", {
           font-style: normal;
           font-weight: 500;
           line-height: normal;
+          &:active {
+            opacity: 0.8;
+          }
+        }
+        .send_btn_disabled {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 96px;
+          height: 52px;
+          margin-left: 14px;
+          border-radius: 6px;
+          background: #126cfe;
+          color: #fff;
+          text-align: center;
+          font-family: PingFang SC;
+          font-size: 19px;
+          font-style: normal;
+          font-weight: 500;
+          line-height: normal;
+          opacity: 0.5;
         }
       }
     }
