@@ -1,7 +1,4 @@
 <template>
-  <nav>
-    <div>{{ title }}</div>
-  </nav>
   <router-view />
 </template>
 <script>
@@ -14,25 +11,18 @@ export default {
 };
 </script>
 <style>
+* {
+  padding: 0;
+  margin: 0;
+}
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  font-size: 1rem;
-}
-
-nav {
-  padding: 30px;
-}
-
-nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-nav a.router-link-exact-active {
-  color: #42b983;
+  width: 100%;
+  height: 100vh;
+  font-family: PingFang SC;
+  font-size: 19px;
+  font-weight: 500;
+  line-height: 44px;
+  text-align: left;
+  color: #333333;
 }
 </style>

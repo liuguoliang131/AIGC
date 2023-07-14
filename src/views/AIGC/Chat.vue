@@ -1,5 +1,11 @@
 <template>
-  <div>Chat</div>
+  <div class="container">
+    <div class="container-side">1</div>
+    <div class="container-body">
+      <div class="body-top">2</div>
+      <div class="body-content">3</div>
+    </div>
+  </div>
 </template>
 
 <script setup>
@@ -10,4 +16,18 @@ http.post("aaaaa", {
 </script>
 
 <style scoped lang="less">
+.container {
+  display: flex;
+
+  .container-side {
+    width: 310px;
+    height: 100px;
+  }
+  .container-body {
+    .body-top {
+    }
+    .body-content {
+    }
+  }
+}
 </style>
