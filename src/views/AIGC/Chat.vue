@@ -138,10 +138,38 @@
           <div class="loading">正在加载...</div>
           <div class="scroll_page">
             <div class="list_content">
-              <div class="msg_item" v-for="(item, idx) in msgList" :key="idx">
-                <div v-if="item.type == 1" class="question">question</div>
-                <div v-else-if="item.type == 2" class="answer">answer</div>
-              </div>
+              <template v-for="(item, idx) in msgList" :key="idx">
+                <div v-if="item.type == 1" class="msg_item question">
+                  <div class="toright">
+                    <div class="bubble">1</div>
+                    <img class="avatar" src="../../assets/logo.png" alt="" />
+                  </div>
+                </div>
+                <div v-else-if="item.type == 2" class="msg_item answer">
+                  <div class="toleft">
+                    <img class="avatar" src="../../assets//logo.png" alt="" />
+                    <div class="bubble">
+                      1
+                      <div class="taptap">
+                        <div class="copy">
+                          <img
+                            src="https://quanres.hanhoukeji.com/hanhou-ai-pc/copy-icon.svg"
+                            alt=""
+                          />
+                          复制
+                        </div>
+                        <div class="del">
+                          <img
+                            src="https://quanres.hanhoukeji.com/hanhou-ai-pc/delete-icon.svg"
+                            alt=""
+                          />
+                          删除
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </template>
             </div>
             <div class="page_bottom"></div>
           </div>
@@ -169,6 +197,72 @@ import http from "../../http/index";
 //   a: 1,
 // });
 const msgList = reactive([
+  {
+    type: 1,
+  },
+  {
+    type: 2,
+  },
+  {
+    type: 1,
+  },
+  {
+    type: 2,
+  },
+  {
+    type: 1,
+  },
+  {
+    type: 2,
+  },
+  {
+    type: 1,
+  },
+  {
+    type: 2,
+  },
+  {
+    type: 1,
+  },
+  {
+    type: 2,
+  },
+  {
+    type: 1,
+  },
+  {
+    type: 2,
+  },
+  {
+    type: 1,
+  },
+  {
+    type: 2,
+  },
+  {
+    type: 1,
+  },
+  {
+    type: 2,
+  },
+  {
+    type: 1,
+  },
+  {
+    type: 2,
+  },
+  {
+    type: 1,
+  },
+  {
+    type: 2,
+  },
+  {
+    type: 1,
+  },
+  {
+    type: 2,
+  },
   {
     type: 1,
   },
@@ -375,6 +469,10 @@ http.get("/chat/answerList", {
       .chat_box {
         position: relative;
         height: calc(100% - 90px);
+        overflow-y: scroll;
+        &::-webkit-scrollbar {
+          display: none;
+        }
         .loading {
           position: absolute;
           top: 20px;
@@ -396,6 +494,103 @@ http.get("/chat/answerList", {
           .list_content {
             padding: 0 30px;
             .msg_item {
+              margin: 40px;
+            }
+            .question {
+              display: flex;
+              justify-content: flex-end;
+              .toright {
+                display: flex;
+                justify-content: flex-end;
+                .bubble {
+                  max-width: 1278px;
+                  padding: 12px 16px;
+                  border-radius: 8px;
+                  background: #fff;
+                  color: #333;
+                  font-family: PingFang SC;
+                  font-size: 19px;
+                  font-style: normal;
+                  font-weight: 500;
+                  line-height: 44px;
+                }
+                .avatar {
+                  width: 68px;
+                  height: 68px;
+                  border-radius: 50%;
+                  margin-left: 10px;
+                }
+              }
+            }
+            .answer {
+              display: flex;
+              justify-content: flex-start;
+              .toleft {
+                display: flex;
+                justify-content: flex-start;
+                .avatar {
+                  width: 68px;
+                  height: 68px;
+                  border-radius: 50%;
+                  margin-right: 10px;
+                }
+                .bubble {
+                  position: relative;
+                  max-width: 1278px;
+                  min-width: 195px;
+                  padding: 12px 16px 52px 16px;
+                  border-radius: 8px;
+                  background: #dae0f5;
+                  color: #333;
+                  font-family: PingFang SC;
+                  font-size: 19px;
+                  font-style: normal;
+                  font-weight: 500;
+                  line-height: 44px;
+
+                  .taptap {
+                    position: absolute;
+                    left: 22px;
+                    bottom: 0;
+                    display: flex;
+                    align-items: center;
+                    height: 52px;
+                    color: #666;
+                    font-family: PingFang SC;
+                    font-size: 19px;
+                    font-style: normal;
+                    font-weight: 500;
+                    line-height: normal;
+                    .copy {
+                      display: flex;
+                      align-items: center;
+                      margin-right: 15px;
+                      img {
+                        width: 30px;
+                        height: 30px;
+                        margin-right: 15px;
+                        &:active {
+                          border-radius: 5px;
+                          background-color: rgba(18, 108, 254, 0.5);
+                        }
+                      }
+                    }
+                    .del {
+                      display: flex;
+                      align-items: center;
+                      img {
+                        width: 30px;
+                        height: 30px;
+                        margin-right: 15px;
+                        &:active {
+                          border-radius: 5px;
+                          background-color: rgba(18, 108, 254, 0.5);
+                        }
+                      }
+                    }
+                  }
+                }
+              }
             }
           }
           .page_bottom {
