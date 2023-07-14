@@ -12,6 +12,7 @@
   "dependencies": {
     "axios": "^0.27.2",
     "core-js": "^3.8.3",
+    "element-plus": "^2.3.8",
     "less": "^4.1.3",
     "less-loader": "^11.1.3",
     "postcss-pxtorem": "^6.0.0",
@@ -47,9 +48,7 @@
     "not dead",
     "not ie 11"
   ],
-  "gitHooks": {
-    
-  },
+  "gitHooks": {},
   "lint-staged": {
     "*.{js,jsx,vue}": "vue-cli-service lint"
   }
