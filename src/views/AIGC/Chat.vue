@@ -1,32 +1,467 @@
 <template>
   <div class="container">
-    <div class="container-side">1</div>
+    <div class="container-side">
+      <div class="title">
+        <img
+          class="logo"
+          src="https://quanres.hanhoukeji.com/hanhou-ai-pc/hanhou-monkey-icon.png"
+          alt=""
+        />
+        Hanhou·AIGC
+      </div>
+      <div class="newchat">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="14"
+          height="14"
+          viewBox="0 0 14 14"
+          fill="none"
+        >
+          <rect y="6" width="14" height="2" fill="white" />
+          <rect
+            x="6"
+            y="14"
+            width="14"
+            height="2"
+            transform="rotate(-90 6 14)"
+            fill="white"
+          />
+        </svg>
+        <span>新建聊天</span>
+      </div>
+
+      <div class="log_list">
+        <div class="scroll_view">
+          <div class="scroll_page">
+            <div v-for="(item, index) in 20" :key="index" class="log_item">
+              <img
+                class="bubble_icon"
+                src="https://quanres.hanhoukeji.com/hanhou-ai-pc/bubble-icon.svg"
+                alt=""
+              />
+              <span class="log_name nowrap">{{
+                index + 1 + "阿萨的板卡精神病康复啊师傅不急啊空间不费劲卡"
+              }}</span>
+              <img
+                class="delete_icon"
+                src="https://quanres.hanhoukeji.com/hanhou-ai-pc/delete-icon.svg"
+                alt=""
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="side-fo">
+        <div class="menu-item mt20">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="19"
+            height="21"
+            viewBox="0 0 19 21"
+            fill="none"
+          >
+            <path
+              d="M1.4674 20.5124C1.05215 20.5124 0.717529 20.1777 0.717529 19.7625C0.717529 18.1337 2.64059 16.9565 6.02309 16.4848V16.259C3.72912 14.5013 3.72912 11.2437 3.72912 9.26021C3.72912 5.98657 5.65622 4.03125 8.88148 4.03125H9.05484C12.2801 4.03125 14.2072 5.98657 14.2072 9.26021C14.2072 9.50211 14.2032 9.744 14.1991 9.99396C14.187 10.4092 13.8484 10.7358 13.4291 10.7237C13.0139 10.7116 12.6873 10.3689 12.6994 9.95364C12.7075 9.71981 12.7075 9.49001 12.7075 9.26021C12.7075 6.78482 11.4778 5.531 9.05484 5.531H8.88148C6.4585 5.531 5.22887 6.78482 5.22887 9.26021C5.22887 11.655 5.37804 14.0941 7.17612 15.239C7.39383 15.3761 7.52284 15.614 7.52284 15.872V17.15C7.52284 17.533 7.23256 17.8555 6.8536 17.8959C3.842 18.2144 2.21728 19.0973 2.21728 19.7625C2.21728 20.1737 1.87862 20.5124 1.4674 20.5124Z"
+              fill="#333333"
+            />
+            <path
+              d="M16.5416 20.5124C16.1264 20.5124 15.7918 20.1778 15.7918 19.7625C15.7918 19.0933 14.167 18.2144 11.1555 17.8959C10.7725 17.8556 10.4822 17.5331 10.4822 17.1501V15.868C10.4822 15.4528 10.8168 15.1182 11.2321 15.1182C11.6473 15.1182 11.9819 15.4528 11.9819 15.868V16.4849C15.3644 16.9525 17.2875 18.1338 17.2875 19.7625C17.2915 20.1738 16.9569 20.5124 16.5416 20.5124Z"
+              fill="#333333"
+            />
+            <path
+              d="M11.3488 13.7836C10.3168 13.7836 9.54672 13.6788 9.52657 13.6748C9.15566 13.5619 8.93392 13.187 9.01456 12.804C9.09116 12.425 9.44594 12.175 9.83297 12.2113C11.7036 12.4169 14.558 12.2395 15.0579 11.1994C15.2353 10.8285 15.6828 10.6672 16.0577 10.8486C16.4327 11.026 16.5899 11.4776 16.4085 11.8485C15.6263 13.4772 13.1106 13.7836 11.3488 13.7836Z"
+              fill="#333333"
+            />
+            <path
+              d="M18.001 12.9976C17.5858 12.9976 17.2511 12.663 17.2511 12.2477V9.62722L16.2473 9.26841C15.9489 9.16359 15.7474 8.87735 15.7474 8.56288C15.7474 4.80142 12.7196 1.73742 8.99849 1.73742C5.27734 1.73742 2.24962 4.80142 2.24962 8.56288C2.24962 8.80478 2.13271 9.03054 1.93516 9.17165L1.49975 9.48208V12.2477C1.49975 12.663 1.16513 12.9976 0.749874 12.9976C0.334621 12.9976 0 12.663 0 12.2477V9.09908C0 8.85719 0.116916 8.63142 0.314463 8.49031L0.757937 8.17182C0.963548 3.7653 4.57988 0.241699 8.99849 0.241699C13.3687 0.241699 16.9568 3.6887 17.231 8.03071L18.251 8.39355C18.5493 8.49838 18.7509 8.78462 18.7509 9.09908V12.2477C18.7509 12.663 18.4163 12.9976 18.001 12.9976Z"
+              fill="#333333"
+            />
+          </svg>
+          <span>联系客服</span>
+          <svg
+            class="gt"
+            xmlns="http://www.w3.org/2000/svg"
+            width="10"
+            height="18"
+            viewBox="0 0 10 18"
+            fill="none"
+          >
+            <path
+              d="M1.50049 1.5L9.00049 9L2.00049 16.5"
+              stroke="#333333"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </div>
+        <div class="menu-item mt30">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+          >
+            <path
+              d="M15.857 3.28498C15.857 2.85898 15.55 2.51398 15.172 2.51398H6.21201C4.73601 2.51398 3.51501 3.76398 3.51501 5.34298V17.685C3.51501 19.265 4.73501 20.514 6.21201 20.514H15.172C15.55 20.514 15.857 20.169 15.857 19.743C15.857 19.317 15.55 18.971 15.172 18.971H6.21201C5.46601 18.971 4.88601 18.378 4.88601 17.685V5.34298C4.88601 4.64998 5.46601 4.05698 6.21201 4.05698H15.172C15.55 4.05698 15.857 3.71098 15.857 3.28498ZM20.335 11.106L20.26 11.02L16.146 6.90598C16.0089 6.76632 15.8237 6.68407 15.6281 6.6759C15.4326 6.66773 15.2412 6.73425 15.0929 6.86197C14.9445 6.9897 14.8503 7.16906 14.8294 7.36368C14.8084 7.5583 14.8623 7.7536 14.98 7.90998L15.055 7.99698L17.851 10.794H10.149C9.91601 10.794 9.72401 11.079 9.69101 11.451L9.68601 11.565C9.68601 11.953 9.85701 12.273 10.08 12.328L10.149 12.337H17.852L15.055 15.134C14.9242 15.2647 14.8447 15.4381 14.8309 15.6226C14.8171 15.807 14.8701 15.9903 14.98 16.139L15.055 16.225C15.1857 16.3555 15.3589 16.4349 15.5431 16.4487C15.7273 16.4624 15.9104 16.4097 16.059 16.3L16.146 16.225L20.26 12.111C20.3908 11.9802 20.4704 11.8068 20.4841 11.6224C20.4979 11.438 20.445 11.2547 20.335 11.106Z"
+              fill="black"
+            />
+          </svg>
+          <span>退出登录</span>
+          <svg
+            class="gt"
+            xmlns="http://www.w3.org/2000/svg"
+            width="10"
+            height="18"
+            viewBox="0 0 10 18"
+            fill="none"
+          >
+            <path
+              d="M1.50049 1.5L9.00049 9L2.00049 16.5"
+              stroke="#333333"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </div>
+      </div>
+    </div>
     <div class="container-body">
-      <div class="body-top">2</div>
-      <div class="body-content">3</div>
+      <div class="body-top">
+        <span>您的免费问答次数：50次</span>
+      </div>
+      <div class="body-content">
+        <div class="chat_box">
+          <div class="loading">正在加载...</div>
+          <div class="scroll_page">
+            <div class="list_content">
+              <div class="msg_item" v-for="(item, idx) in msgList" :key="idx">
+                <div v-if="item.type == 1" class="question">question</div>
+                <div v-else-if="item.type == 2" class="answer">answer</div>
+              </div>
+            </div>
+            <div class="page_bottom"></div>
+          </div>
+        </div>
+        <div class="ask">
+          <div class="ask_input">
+            <textarea
+              ref="askInput"
+              maxlength="1000"
+              placeholder="请输入您需要提问的信息..."
+            ></textarea>
+            <div class="length_count">0/1000</div>
+          </div>
+          <div class="send_btn">发送</div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
+import { reactive } from "vue";
 import http from "../../http/index";
-http.post("aaaaa", {
-  a: 1,
-});
+// http.post("aaaaa", {
+//   a: 1,
+// });
+const msgList = reactive([
+  {
+    type: 1,
+  },
+  {
+    type: 2,
+  },
+]);
 </script>
 
 <style scoped lang="less">
 .container {
   display: flex;
+  height: 100%;
 
   .container-side {
     width: 310px;
-    height: 100px;
+    height: 100%;
+    border-right: 1px solid #dae0f5;
+    background-color: #f2f3f7;
+    text-align: center;
+    .title {
+      display: flex;
+      align-items: center;
+      width: 270px;
+      height: 67px;
+      border-bottom: #dae0f5 1px solid;
+      margin: auto;
+      color: #000;
+      text-align: center;
+      font-family: PingFang SC;
+      font-size: 28px;
+      font-style: normal;
+      font-weight: 600;
+      line-height: 68px;
+      .logo {
+        width: 40px;
+        height: 30px;
+        margin-right: 14px;
+      }
+    }
+    .newchat {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 266px;
+      height: 46px;
+      color: #fff;
+      font-family: PingFang SC;
+      font-size: 19px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: normal;
+      border-radius: 5px;
+      background: #126cfe;
+      margin: 28px auto 0 auto;
+      span {
+        margin-left: 11px;
+      }
+    }
+
+    // 历史列表
+    .log_list {
+      height: calc(100% - 331px);
+      margin: auto;
+      padding: 22px 0;
+      .scroll_view {
+        height: 100%;
+        overflow-y: scroll;
+        &::-webkit-scrollbar {
+          display: none;
+        }
+        .scroll_page {
+          width: 266px;
+          margin: 0 auto;
+          .log_item {
+            position: relative;
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 266px;
+            height: 46px;
+            padding: 0 13px;
+            border: 1px solid #dae0f5;
+            border-radius: 5px;
+            margin: 22px 0;
+            font-family: PingFang SC;
+            font-size: 19px;
+            font-weight: 400;
+            line-height: 46px;
+            cursor: pointer;
+
+            .bubble_icon {
+              width: 20px;
+              height: 20px;
+            }
+            .log_name {
+              flex: 1;
+              min-width: 0;
+              padding-right: 30px;
+              text-indent: 10px;
+              color: #333;
+              font-family: PingFang SC;
+              font-size: 19px;
+              font-style: normal;
+              font-weight: 400;
+              line-height: normal;
+            }
+            .delete_icon {
+              visibility: hidden;
+              position: absolute;
+              top: 50%;
+              right: 13px;
+              transform: translate(0, -50%);
+              width: 20px;
+              height: 20px;
+              border-radius: 5px;
+              &:hover {
+                background-color: rgba(0, 0, 0, 0.06);
+              }
+              &:active {
+                background-color: rgba(0, 0, 0, 0.1);
+              }
+            }
+          }
+          .log_item:nth-child(1) {
+            margin-top: 0;
+          }
+          .log_item:nth-last-child(1) {
+            margin-bottom: 0;
+          }
+          .log_item_active {
+            background-color: #dae0f5;
+            .delete_icon {
+              visibility: visible;
+            }
+          }
+        }
+      }
+    }
+
+    .side-fo {
+      width: 270px;
+      height: 144px;
+      border-top: 1px solid #dae0f5;
+      margin: auto;
+      .menu-item {
+        position: relative;
+        margin: auto;
+        display: flex;
+        align-items: center;
+        span {
+          margin-left: 16.25px;
+          margin-right: 137.5px;
+          color: #333;
+          font-family: PingFang SC;
+          font-size: 19px;
+          font-style: normal;
+          font-weight: 400;
+          line-height: normal;
+        }
+        .gt {
+          position: absolute;
+          right: 10px;
+          top: 50%;
+          transform: translate(0, -50%);
+        }
+      }
+      .mt20 {
+        margin-top: 20px;
+      }
+      .mt30 {
+        margin-top: 30px;
+      }
+    }
   }
   .container-body {
+    flex: 1;
+    height: 100%;
+    background: #f1f2f6;
     .body-top {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 68px;
+      background-color: #e5e9f5;
+      color: #666;
+      font-family: PingFang SC;
+      font-size: 20px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: normal;
     }
     .body-content {
+      width: 100%;
+      height: calc(100% - 68px);
+      .chat_box {
+        position: relative;
+        height: calc(100% - 90px);
+        .loading {
+          position: absolute;
+          top: 20px;
+          left: 0;
+          width: 100%;
+          height: 22px;
+          display: block;
+          text-align: center;
+          color: #999;
+          text-align: center;
+          font-family: PingFang SC;
+          font-size: 16px;
+          font-style: normal;
+          font-weight: 400;
+          line-height: 22px;
+        }
+        .scroll_page {
+          position: relative;
+          .list_content {
+            padding: 0 30px;
+            .msg_item {
+            }
+          }
+          .page_bottom {
+            height: 400px;
+          }
+        }
+      }
+
+      .ask {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 90px;
+        margin: 0 30px;
+        .ask_input {
+          position: relative;
+          flex: 1;
+          height: 52px;
+          textarea {
+            box-sizing: border-box;
+            width: 100%;
+            height: 52px;
+            padding: 11.5px 16px;
+            border-radius: 6px;
+            border: 1px solid #dae0f5;
+            background: #fff;
+            outline: none;
+            color: #333;
+            font-size: 19px;
+            line-height: 27px;
+            resize: none; /*禁止拉伸*/
+            &::placeholder {
+              color: #ccc;
+              font-family: PingFang SC;
+              font-size: 19px;
+              font-style: normal;
+              font-weight: 400;
+              line-height: normal;
+            }
+          }
+          .length_count {
+            position: absolute;
+            top: 50%;
+            right: 13px;
+            transform: translate(0, -50%);
+            color: #ccc;
+            text-align: right;
+            font-family: PingFang SC;
+            font-size: 19px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: 19px;
+          }
+        }
+        .send_btn {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 96px;
+          height: 52px;
+          margin-left: 14px;
+          border-radius: 6px;
+          background: #126cfe;
+          color: #fff;
+          text-align: center;
+          font-family: PingFang SC;
+          font-size: 19px;
+          font-style: normal;
+          font-weight: 500;
+          line-height: normal;
+        }
+      }
     }
   }
 }

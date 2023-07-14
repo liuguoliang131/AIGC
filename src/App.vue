@@ -25,4 +25,29 @@ export default {
   text-align: left;
   color: #333333;
 }
+/*  强制一行显示 超出显示省略号 */
+.nowrap {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* 多行文本 超出显示省略号 */
+/* 2行 */
+.lineClamp2 {
+  display: -webkit-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+/* 3行 */
+.lineClamp3 {
+  display: -webkit-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
 </style>
