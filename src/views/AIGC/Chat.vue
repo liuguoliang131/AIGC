@@ -10,8 +10,11 @@
 
 <script setup>
 import http from "../../http/index";
-http.post("aaaaa", {
-  a: 1,
+http.get("/chat/answerList", {
+  tagId: 1,
+  lastId: 1,
+  pageSize: 10,
+  mock: 156,
 });
 </script>
 
