@@ -176,6 +176,12 @@ const msgList = reactive([
     type: 2,
   },
 ]);
+http.get("/chat/answerList", {
+  tagId: 1,
+  lastId: 1,
+  pageSize: 10,
+  mock: 156,
+});
 </script>
 
 <style scoped lang="less">

@@ -26,6 +26,9 @@ instance.interceptors.request.use(async (config) => {
     ...config.headers,
     ...sign
   }
+  if (process.env.VUE_APP_ENV === 'dev' && config.mock) {
+    config.baseURL = `/mock/${config.mock}`
+  }
   if (config.method === 'get') {
     config.params = {
       ...config.params,

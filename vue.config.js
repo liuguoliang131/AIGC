@@ -10,6 +10,13 @@ module.exports = defineConfig({
         pathReWrite: {
           '^/api': ''
         }
+      },
+      '/mock': {
+        target: 'http://yapi.hanhoukeji.com',
+        changeOrigin: true,
+        pathReWrite: {
+          '^/mock': '/mock'
+        }
       }
     }
   }
