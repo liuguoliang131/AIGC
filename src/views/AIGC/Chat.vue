@@ -9,7 +9,7 @@
         />
         Hanhou·AIGC
       </div>
-      <div class="newchat">
+      <div class="newchat" @click="handNewChat">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="14"
@@ -30,17 +30,28 @@
         <span>新建聊天</span>
       </div>
 
-      <div class="log_list">
+      <div class="log_list" v-loading="tagListLoading">
         <div class="scroll_view">
-          <div class="scroll_page">
-            <div v-for="(item, index) in 20" :key="index" class="log_item">
+          <div v-if="tagList.isNull" class="scroll_page"></div>
+          <div v-else v-infinite-scroll="getHistory" class="scroll_page">
+            <div
+              v-for="(item, index) in tagList.list"
+              :key="index"
+              :class="[
+                'log_item',
+                item.id === activeTag ? 'log_item_active' : '',
+              ]"
+              @click="handActiveTag(item, index)"
+            >
               <img
                 class="bubble_icon"
                 src="https://quanres.hanhoukeji.com/hanhou-ai-pc/bubble-icon.svg"
                 alt=""
               />
-              <span class="log_name nowrap">{{ index + 1 + "阿萨的板" }}</span>
+              <span class="log_name nowrap">{{ item.title }}</span>
               <img
+                v-if="item.id === activeTag"
+                @click.self="handDeleteTag(item, index)"
                 class="delete_icon"
                 src="https://quanres.hanhoukeji.com/hanhou-ai-pc/delete-icon.svg"
                 alt=""
@@ -51,7 +62,7 @@
       </div>
 
       <div class="side-fo">
-        <div class="menu-item mt20">
+        <div class="menu-item mt20" @click="serviceVisible = true">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="19"
@@ -129,11 +140,15 @@
     </div>
     <div class="container-body">
       <div class="body-top">
-        <span>您的免费问答次数：50次</span>
+        <span>您的免费问答次数：{{ tagList.residueQAQuantity }}次</span>
       </div>
       <div class="body-content">
-        <div class="chat_box">
-          <div class="loading">正在加载...</div>
+        <div
+          class="chat_box"
+          ref="chatScrollView"
+          @scroll="chatScrollViewListen"
+        >
+          <div v-show="chatLoading" class="loading">正在加载...</div>
           <div class="scroll_page">
             <div class="list_content">
               <template v-for="(item, idx) in msgList" :key="idx">
@@ -149,7 +164,7 @@
                     <div class="bubble">
                       1
                       <div class="taptap">
-                        <div class="copy">
+                        <div class="copy" @click="handleCopy('淦' + idx)">
                           <img
                             src="https://quanres.hanhoukeji.com/hanhou-ai-pc/copy-icon.svg"
                             alt=""
@@ -221,8 +236,8 @@
       <div class="dia_title">温馨提示</div>
       <div class="dia_content">是否要删除此对话信息？</div>
       <div class="dia_footer_2">
-        <div class="cancel">取消</div>
-        <div class="confirm">删除</div>
+        <div class="cancel" @click="removeVisible = false">取消</div>
+        <div class="confirm" @click="handConfirmDeleteTag">删除</div>
       </div>
     </el-dialog>
     <!-- 退出提醒 -->
@@ -236,7 +251,7 @@
       <div class="dia_title">退出提醒</div>
       <div class="dia_content">是否要退出登录</div>
       <div class="dia_footer_2">
-        <div class="cancel">取消</div>
+        <div class="cancel" @click="exitVisible = false">取消</div>
         <div class="confirm">确定</div>
       </div>
     </el-dialog>
@@ -258,15 +273,22 @@
         </div>
       </div>
     </el-dialog>
+    <div
+      ref="copy_text"
+      class="clipboard_text"
+      data-clipboard-action="copy"
+      data-clipboard-text="copytext..."
+    ></div>
   </div>
 </template>
 
 <script setup>
-import { reactive, ref, onMounted } from "vue";
+import { reactive, ref, onMounted, watch } from "vue";
 import http from "../../http/index";
 import { ElMessage } from "element-plus";
 import { EventSourcePolyfill } from "event-source-polyfill";
 import api from "./api";
+import Clipboard from "clipboard";
 
 http.post("aaaaa", {
   a: 1,
@@ -336,11 +358,141 @@ const handExit = () => {
   exitVisible.value = true;
 };
 
-// 删除对话窗口弹窗
-const removeVisible = ref(false);
-
 // 客服二维码弹窗
 const serviceVisible = ref(false);
+
+// -----------------左侧聊天历史列表----------------------
+// 左侧聊天历史列表
+const tagList = reactive({
+  list: [],
+  residueQAQuantity: 0, // 剩余提问次数
+  loading: false, // 左侧历史列表的loading
+  finish: false, // 加载完成
+  isNull: false, // 左侧聊天历史列表是否为空
+});
+
+// 获取聊天历史列表 和 剩余提问次数
+const getHistory = () => {
+  if (tagList.loading) return;
+  if (tagList.finish) return;
+  tagList.loading = true;
+  const pageSize = 20;
+  http
+    .get(api.chat_tagList, {
+      params: {
+        lastId: tagList.list.length
+          ? tagList.list[tagList.list.length - 1].id
+          : 0,
+        pageSize,
+      },
+    })
+    .then((res) => {
+      console.log("gethistory", res);
+      if (res.code == 200) {
+        if (res.data && res.data.list && res.data.list.length === 0) {
+          tagList.isNull = true;
+        }
+        // res.data.list.forEach((item) => (item.status = "none"));
+        const list = res.data.list.reverse();
+        tagList.list = [...tagList.list, ...list];
+        if (res.data.residueQAQuantity === -1) {
+          // this.free = true;
+        }
+        tagList.residueQAQuantity = res.data.residueQAQuantity;
+        // 条数不足 没有下一页了
+        if (res.data.list.length < pageSize) {
+          tagList.finish = true;
+        }
+      } else {
+        tagList.finish = true;
+        ElMessage({
+          message: res.message,
+          type: "error",
+        });
+      }
+      tagList.loading = false;
+    });
+};
+// -------------------------------------
+
+// -----------------聊天窗口--------------------
+
+// 聊天窗口scroll元素
+const chatScrollView = ref();
+
+// 聊天列表是否加载中
+const chatLoading = ref(false);
+
+// 滚动条距离顶部距离scrollTop
+const chatScrollTop = ref(0);
+
+// 聊天列表
+const chatList = reactive({
+  list: [],
+  lastId: 0,
+  loading: false,
+  finish: false, //是否加载完成 不再获取列表
+});
+
+// 获取聊天列表
+const getAnswerList = () => {
+  if (chatList.finish) return false;
+  if (chatList.loading) return false;
+  chatList.loading = true;
+  const pageSize = 10;
+  http
+    .get(api.chat_answerList, {
+      lastId: 0,
+      pageSize,
+    })
+    .then((res) => {
+      if (res.code == 200) {
+        chatList.list = [...res.data.list.reverse(), ...chatList.list];
+        chatList.lastId = res.data.lastId;
+
+        // 是否是最后一页
+        if (res.data.list.length < pageSize) {
+          chatList.finish = true;
+        }
+      } else {
+        chatList.finish = true;
+        ElMessage({
+          message: res.message,
+          type: "error",
+        });
+      }
+      chatList.loading = false;
+    });
+  console.log("加载列表");
+};
+
+// 清空聊天窗口数据
+const clearChatList = () => {
+  chatList.list = [];
+  chatList.lastId = 0;
+  chatList.loading = false;
+  chatList.finish = false;
+};
+
+// 聊天窗口滚动监听
+const chatScrollViewListen = (e) => {
+  chatScrollTop.value = e.target.scrollTop;
+};
+
+// 监听scrollTop, 为0时调用加载列表方法getAnswerList
+watch(
+  chatScrollTop,
+  (newVal, oldVal) => {
+    if (newVal === 0) {
+      getAnswerList();
+    }
+  },
+  {
+    immediate: true,
+  }
+);
+
+// ------------------------------------
 
 // 获取答案
 const _getResult = async (message, tagId) => {
@@ -459,9 +611,94 @@ const _getResult = async (message, tagId) => {
   };
 };
 
+// 复制
+const copy_text = ref();
+const handleCopy = (text) => {
+  copy_text.value.setAttribute("data-clipboard-text", text);
+  copy_text.value.click();
+};
+
+// 设置复制板
+const initCopyClipboard = () => {
+  const clipboard = new Clipboard(".clipboard_text");
+  clipboard.on("success", function (e) {
+    ElMessage({
+      message: "复制成功",
+      type: "success",
+    });
+    // 清空选中
+    e.clearSelection();
+  });
+  clipboard.on("error", function (e) {
+    ElMessage({
+      message: "复制失败",
+      type: "error",
+    });
+    // 清空选中
+    e.clearSelection();
+  });
+};
+
+// -----------------------------------------
+// 新增聊天
+const handNewChat = () => {
+  if (residueQAQuantity.value == 0) {
+    return ElMessage({
+      message: "您的免费问答次数不足",
+      type: "info",
+    });
+  }
+
+  // 清空聊天区
+};
+
+// ------------------------------------------
+
+// -----------------左侧聊天历史的选中和删除----------------------
+// 被选中的聊天历史id
+const activeTag = ref(null);
+
+// 选中
+const handActiveTag = (item, index) => {
+  activeTag.value = item.id;
+  // 清空聊天窗口数据
+  clearChatList();
+};
+
+// 删除对话窗口弹窗
+const removeVisible = ref(false);
+
+// 删除弹窗打开
+const handDeleteTag = (item, index) => {
+  removeVisible.value = true;
+};
+
+// 确认删除
+const handConfirmDeleteTag = () => {
+  // activeTag.value
+  activeTag.value = null;
+  removeVisible.value = false;
+  ElMessage({
+    message: "删除成功",
+    type: "success",
+  });
+};
+
+// -----------------------------------------
+
 // 加载完成事件
 onMounted(() => {
   console.log("mount");
+  // getAnswerList();
+  console.log("chatScrollView", chatScrollView);
+  // const timer = setInterval(() => {
+  //   console.log(chatScrollView.value.scrollTop);
+  //   chatScrollView.value.scrollTop += 1;
+  //   if (chatScrollView.value.scrollTop >= 500) {
+  //     return clearInterval(timer);
+  //   }
+  // }, 10);
+  initCopyClipboard();
 });
 </script>
 
@@ -570,7 +807,6 @@ onMounted(() => {
               text-align: left;
             }
             .delete_icon {
-              visibility: hidden;
               position: absolute;
               top: 50%;
               right: 13px;
@@ -594,9 +830,6 @@ onMounted(() => {
           }
           .log_item_active {
             background-color: #dae0f5;
-            .delete_icon {
-              visibility: visible;
-            }
           }
         }
       }
@@ -951,6 +1184,8 @@ onMounted(() => {
       font-style: normal;
       font-weight: 500;
       line-height: normal;
+      cursor: pointer;
+
       &:active {
         opacity: 0.8;
       }
@@ -976,6 +1211,7 @@ onMounted(() => {
       font-style: normal;
       font-weight: 500;
       line-height: normal;
+      cursor: pointer;
       &:active {
         opacity: 0.8;
       }
@@ -998,6 +1234,8 @@ onMounted(() => {
       font-style: normal;
       font-weight: 600;
       line-height: normal;
+      cursor: pointer;
+
       &:active {
         opacity: 0.8;
       }
@@ -1029,6 +1267,14 @@ onMounted(() => {
         height: 270px;
       }
     }
+  }
+
+  .clipboard_text {
+    position: fixed;
+    top: -500px;
+    left: 0;
+    width: 200px;
+    height: 200px;
   }
 }
 </style>

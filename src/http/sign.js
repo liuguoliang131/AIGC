@@ -9,7 +9,7 @@ export const _getSign = function(config) {
     const sys = 'AIGC'
     const timestamp = Date.parse(new Date()).toString().substr(0, 10)
     // const token = utils.getStorageSync('token') || ''
-    let token = "ffacef74451e3d72fba1f4633e25a612"
+    let token = "ffaa197f6075429697136e754e056ab8"
     const version = config.version || '1.0.0'
     const appKey = '4fffe8bdebd230e0f5a082a582d8d443'
 
