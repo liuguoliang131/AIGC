@@ -4,11 +4,11 @@ module.exports = defineConfig({
   lintOnSave: false,
   devServer: {
     proxy: {
-      '/api': {
-        target: 'http://124.70.107.130:8033',
+      '/': {
+        target: 'http://hhosaigcapi.yctmt.com',
         changeOrigin: true,
         pathReWrite: {
-          '^/api': ''
+          '^/': '/'
         }
       },
       '/mock': {
