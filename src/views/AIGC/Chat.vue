@@ -242,7 +242,7 @@
     </el-dialog>
     <!-- 客服二维码 -->
     <el-dialog
-      v-model="exitVisible"
+      v-model="serviceVisible"
       width="610px"
       :show-close="true"
       :close-on-click-modal="false"
@@ -262,10 +262,11 @@
 </template>
 
 <script setup>
-import { reactive, ref } from "vue";
+import { reactive, ref, onMounted } from "vue";
 import http from "../../http/index";
 import { ElMessage } from "element-plus";
 import { EventSourcePolyfill } from "event-source-polyfill";
+import api from "./api";
 
 http.post("aaaaa", {
   a: 1,
@@ -294,7 +295,7 @@ const msgList = reactive([
   },
 ]);
 
-//
+// 敏感词提醒弹窗
 const dialogVisible = ref(false);
 
 // http.get("/chat/answerList", {
@@ -334,14 +335,20 @@ const exitVisible = ref(false);
 const handExit = () => {
   exitVisible.value = true;
 };
+
+// 删除对话窗口弹窗
+const removeVisible = ref(false);
+
+// 客服二维码弹窗
+const serviceVisible = ref(false);
+
 // 获取答案
 const _getResult = async (message, tagId) => {
   // 配置网络
-  const $config = new Config();
-  let resultSign = await _getSign($config);
-  this.isSession = true;
+  let resultSign = await _getSign({});
+
   const source = new EventSourcePolyfill(
-    `${$config.host}${this.$yjcApi.chat_qa}?question=${message}&tagId=${tagId}`,
+    `${process.env.VUE_APP_BASE_URL}${api.chat_qa}?question=${message}&tagId=${tagId}`,
     {
       headers: {
         ...resultSign,
@@ -364,9 +371,9 @@ const _getResult = async (message, tagId) => {
 
     // 非常抱歉，您的问答次数已用尽
     if (err.data.code == 30104) {
-      uni.showToast({
-        icon: "none",
-        title: err.data.message,
+      ElMessage({
+        message: err.data.message,
+        type: "info",
       });
       return;
     }
@@ -380,9 +387,9 @@ const _getResult = async (message, tagId) => {
     }
 
     console.log(err, "其他错误信息");
-    uni.showToast({
-      icon: "none",
-      title: err.data.message,
+    ElMessage({
+      message: err.data.message,
+      type: "info",
     });
   });
 
@@ -430,7 +437,7 @@ const _getResult = async (message, tagId) => {
 
   source.onmessage = (e) => {
     if (e.data == "[DONE]") {
-      this._close(source);
+      source.close(source);
     } else if (e.type == "message") {
       let n = e.data.replace(/\\\\/g, "\\");
       n = n.replace(/\\n/g, "<br/>");
@@ -451,6 +458,11 @@ const _getResult = async (message, tagId) => {
     this._close(source);
   };
 };
+
+// 加载完成事件
+onMounted(() => {
+  console.log("mount");
+});
 </script>
 
 <style scoped lang="less">
