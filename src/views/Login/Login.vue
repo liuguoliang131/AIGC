@@ -1,17 +1,24 @@
 <template>
-  <div class="login">
-    <div class="container">
-      <img src="../../assets/login/login_logo.png" class="logo">
-      <div class="name">憨猴·人工智能研究中心</div>
-      <input v-model="phone" type="tel" placeholder="输入手机号码" class="input-phone">
-
-      <div class="verify">
-        <input v-model="code" type="text" placeholder="输入验证码" class="input">
-        <button @click="sendVerificationCode" class="verifcode-send">发送验证码</button>
+  <div class="container">
+    <div class="background"></div>
+    <div class="logo-view">
+      <div class="logo"></div>
+      <div class="logo-name">Hanhou·AIGC</div>
+    </div>
+    <div></div>
+    <div class="login-box">
+      <div class="login-title">一起探索AIGC的无限可能</div>
+      <div class="input-box">
+        <div class="input-group">
+          <input type="tel" id="phone" v-model="phone" placeholder="请输入手机号" class="input-phone">
+        </div>
+        <div class="input-group">
+          <input type="text" id="code" v-model="code" placeholder="请输入验证码" class="input-verCode">
+          <button class="code-btn" @click="sendCode" :disabled="isSending">{{ buttonText }}</button>
+        </div>
       </div>
-
-      <button @click="logIn" class="login-submit">登录</button>
-
+      <!-- <button class="login-btn" :disabled="!isValid" @click="login">登录</button> -->
+      <button class="login-btn" @click="login">登录</button>
       <div class="agreement">
         <!-- <input v-model="agree" type="checkbox" class="checkbox"> -->
         <!-- <label for="agree">我同意相关协议</label> -->
@@ -21,172 +28,311 @@
         <a class="policy" href="https://element-plus.org/en-US/component/message.html#basic-usage">《安全协议》</a>
       </div>
     </div>
+    <div class="footer">
+      <div class="footer-record">京ICP备19041919号-2京公网安备11010502039881号</div>
+      <div class="footer-record">网络经营许可证京网文[2020]4683-870号</div>
+    </div>
   </div>
 </template>
 
 <script>
-import { ref } from 'vue'
 import { ElMessage } from 'element-plus'
+import http from "../../http/index";
 
 export default {
-  setup() {
-    const phone = ref('')
-    const code = ref('')
-    const agree = ref(false)
-
-    // 发送验证码
-    const sendVerificationCode = () => {
-      if (phone.value.length == 0) {
-        ElMessage('请输入手机号')
-      } else if (phone.value.length != 11) {
-        ElMessage('手机号格式错误')
+  data() {
+    return {
+      phone: '',
+      code: '',
+      isSending: false,
+      isCounting: false,
+      countDown: 60,
+      timer: null
+    };
+  },
+  computed: {
+    isValid() {
+      // return this.phone && this.code;
+    },
+    buttonText() {
+      if (this.isCounting) {
+        return `${this.countDown}秒`
+      } else {
+        return '获取验证码'
       }
-
-
     }
-    // 登录
-    const logIn = () => {
+
+  },
+  methods: {
+    sendCode() {
+      // if (phone.value.length == 0) {
+      //   return ElMessage('请输入手机号')
+
+      // } else if (phone.value.length != 11) {
+      //   return ElMessage('手机号格式错误')
+      // }
+
+      // 发送验证码的逻辑
+      this.isSending = true;
+      this.buttonText = '发送中...';
+      this.isCounting = true
+      http.post('user/sendVerifyCode', {
+        tel: this.phone,
+      });
+
+      this.timer = setInterval(() => {
+        if (this.countDown > 1) {
+          this.countDown--
+        } else {
+          this.isCounting = false
+          this.countDown = 60
+          clearInterval(this.timer)
+          this.timer = null
+        }
+      }, 1000)
+    },
+    login() {
+      // 登录的逻辑
       if (phone.value.length == 0) {
         ElMessage('请输入手机号')
+        retrun
       } else if (phone.value.length != 11) {
         ElMessage('手机号格式错误')
+        retrun
       } else if (code.value.length == 0) {
         ElMessage('请输入验证码')
+        retrun
       } else if (code.value.length != 4) {
         ElMessage('‘验证码错误，请重新提交')
+        retrun
       }
-      // if (!agree.value) {
-      //   alert('您需要同意相关协议')
-      //   return
-      // }
-    }
 
-    return {
-      phone,
-      code,
-      agree,
-      sendVerificationCode,
-      logIn
+      console.log('手机号：' + this.phone);
+      console.log('验证码：' + this.code);
+      alert('登录成功！');
     }
   }
-}
+};
 </script>
 
 <style scoped>
-.login {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
+.container {
+  height: 100%;
   background-image: url('../../assets/login/login_bg.png');
+  background-size: cover;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
 }
 
-.container {
+.background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('../../assets/login/login_bg.png');
+  background-size: cover;
+  opacity: 0.5;
+  z-index: -1;
+}
+
+.logo-view {
   display: flex;
-  flex-direction: column;
   align-items: center;
+  position: absolute;
+  top: 13px;
+  left: 22px;
+
+
 }
 
 .logo {
-  width: 104px;
-  height: 78px;
+  width: 40px;
+  height: 30.025px;
+  background-image: url('../../assets/login/login_logo.png');
+  background-size: contain;
+  background-repeat: no-repeat;
 }
 
-.name {
-  margin-top: 41px;
-  color: #FFF;
+.logo-name {
+  color: #333;
+  /* text-align: center; */
+  font-family: PingFang SC;
+  font-size: 28px;
+  font-style: normal;
+  font-weight: 600;
+}
+
+
+.login-box {
+  background-color: #ffffff;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  float: right;
+  margin-right: 200px;
+  padding: 90px 70px;
+
+}
+
+.login-title {
+  color: #333;
   text-align: center;
   font-family: PingFang SC;
-  font-size: 60px;
+  font-size: 34px;
   font-style: normal;
   font-weight: 500;
   line-height: normal;
 }
 
-.input {
-  margin-top: 37px;
-  width: 345px;
-  height: 52px;
-  border: 1px solid #FFF;
-  color: #FFF;
-  font-size: 19px;
-  border-radius: 5px;
-  background-color: transparent;
-  padding-left: 30px;
-  outline: none;
+.input-box {
+  /* margin-bottom: 20px; */
 }
 
-.input-phone {
-  margin-top: 37px;
-  width: 500px;
-  height: 52px;
-  border: 1px solid #FFF;
-  color: #FFF;
-  font-size: 19px;
-  border-radius: 5px;
-  background-color: transparent;
-  padding-left: 30px;
-  outline: none;
+.input-group {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  /* margin-bottom: 10px; */
 }
+
+
+/* input[type='tel'],
+input[type='text'] {
+  flex: 1;
+  width: 420px;
+  height: 52px;
+  padding: 10px;
+  border: 1px solid #cccccc;
+  border-radius: 10px;
+  font-size: 14px;
+  background-color: #F6F6FA;
+
+} */
 
 input::-webkit-input-placeholder,
 input:-ms-input-placeholder,
 input::placeholder {
-  color: #FFF;
-  font-size: 19px;
-
-}
-
-.verifcode-send {
-  width: 144px;
-  height: 52px;
-  margin-left: 13px;
-  border-radius: 10px;
-  color: #126CFE;
-  border: 2px solid rgba(18, 108, 254, 0.58);
-  background: rgba(255, 255, 255, 0.50);
+  color: #9B9AB9;
   font-family: PingFang SC;
   font-size: 19px;
   font-style: normal;
-  font-weight: 500;
+  font-weight: 400;
+  line-height: normal;
+
+}
+
+.input-phone {
+  margin-top: 30px;
+  width: 390px;
+  height: 52px;
+  border: 1px solid #FFF;
+  color: #9B9AB9;
+  font-size: 19px;
+  border-radius: 10px;
+  background-color: #F6F6FA;
+  padding-left: 30px;
   outline: none;
 }
 
-.login-submit {
-  width: 500px;
+.input-verCode {
+  margin-top: 24px;
+  width: 390px;
   height: 52px;
-  border-radius: 10px;
-  margin-top: 52px;
-  background-color: #126CFE;
-  border: 2px solid rgba(18, 108, 254, 0.58);
-  color: #FFF;
+  border: 1px solid #FFF;
+  color: #9B9AB9;
   font-size: 19px;
+  border-radius: 10px;
+  background-color: #F6F6FA;
+  padding-left: 30px;
+  outline: none;
+}
+
+.code-btn {
+  width: 120px;
+  height: 40px;
+  border: none;
+  position: absolute;
+  right: 27px;
+  top: 33px;
+  background-color: transparent;
+  color: #126CFE;
+  text-align: center;
   font-family: PingFang SC;
+  font-size: 18px;
   font-style: normal;
   font-weight: 500;
+  line-height: normal;
+  cursor: pointer;
+}
+
+.code-btn:disabled {
+  background-color: transparent;
+  color: #999;
+  text-align: right;
+  font-family: PingFang SC;
+  font-size: 18px;
+  font-style: normal;
+  /* font-weight: 500; */
+  line-height: normal;
+}
+
+.login-btn {
+  margin-top: 40px;
+  width: 420px;
+  height: 52px;
+  border: none;
+  border-radius: 10px;
+  background: #126CFE;
+  color: #ffffff;
+  font-size: 19px;
+  cursor: pointer;
+  font-weight: 500;
+  line-height: normal;
+  font-family: PingFang SC;
+
+}
+
+.login-btn:disabled {
+  background-color: #cccccc;
 }
 
 .agreement {
   display: flex;
   align-items: center;
-  color: #FFF;
+  color: #999;
   font-family: PingFang SC;
-  font-size: 18px;
+  font-size: 14px;
   font-style: normal;
   font-weight: 400;
-  margin-top: 20rpx;
+  margin-top: 16rpx;
 }
 
 .policy {
-  color: #FFF;
+  color: #999;
+  font-family: PingFang SC;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+
+}
+
+.footer {
+  color: #666;
+  text-align: center;
   font-family: PingFang SC;
   font-size: 18px;
   font-style: normal;
   font-weight: 400;
+  line-height: normal;
+  position: absolute;
+  bottom: 76px;
+  width: 100%;
+}
 
+.footer-record {
+  margin-top: 16px;
 }
 </style>
