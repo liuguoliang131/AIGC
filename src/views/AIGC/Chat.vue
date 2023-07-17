@@ -39,9 +39,7 @@
                 src="https://quanres.hanhoukeji.com/hanhou-ai-pc/bubble-icon.svg"
                 alt=""
               />
-              <span class="log_name nowrap">{{
-                index + 1 + "阿萨的板卡精神病康复啊师傅不急啊空间不费劲卡"
-              }}</span>
+              <span class="log_name nowrap">{{ index + 1 + "阿萨的板" }}</span>
               <img
                 class="delete_icon"
                 src="https://quanres.hanhoukeji.com/hanhou-ai-pc/delete-icon.svg"
@@ -96,7 +94,7 @@
             />
           </svg>
         </div>
-        <div class="menu-item mt30">
+        <div class="menu-item mt30" @click="handExit">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"
@@ -136,14 +134,6 @@
       <div class="body-content">
         <div class="chat_box">
           <div class="loading">正在加载...</div>
-          <el-row class="mb-4">
-            <el-button>Default</el-button>
-            <el-button type="primary">Primary</el-button>
-            <el-button type="success">Success</el-button>
-            <el-button type="info">Info</el-button>
-            <el-button type="warning">Warning</el-button>
-            <el-button type="danger">Danger</el-button>
-          </el-row>
           <div class="scroll_page">
             <div class="list_content">
               <template v-for="(item, idx) in msgList" :key="idx">
@@ -184,11 +174,6 @@
         </div>
         <div class="ask">
           <div class="ask_input">
-            <!-- <textarea
-              ref="askInput"
-              maxlength="1000"
-              placeholder="请输入您需要提问的信息..."
-            ></textarea> -->
             <el-input
               class="textarea"
               v-model="asking"
@@ -196,14 +181,83 @@
               :autosize="{ minRows: 1, maxRows: 6 }"
               type="textarea"
               placeholder="请输入您需要提问的信息..."
+              @input="handInput"
             />
-            <div class="length_count">0/1000</div>
+            <div class="length_count">
+              <span
+                :style="{ color: asking.length > 1000 ? 'red' : 'inherit' }"
+                >{{ asking.length }}</span
+              >/1000
+            </div>
           </div>
-          <!-- <div class="send_btn">发送</div> -->
-          <div class="send_btn_disabled">发送</div>
+
+          <div v-if="sendLoading" class="send_btn_disabled">发送</div>
+          <div v-else @click="handSend" class="send_btn">发送</div>
         </div>
       </div>
     </div>
+    <!-- 敏感词提醒 -->
+    <el-dialog
+      v-model="dialogVisible"
+      width="610px"
+      :show-close="false"
+      :close-on-click-modal="false"
+      @close="dialogClose"
+    >
+      <div class="dia_title">敏感词提醒</div>
+      <div class="dia_content">答案涉及到敏感词，已被过滤</div>
+      <div class="dia_footer_1">
+        <div class="confirm">确认</div>
+      </div>
+    </el-dialog>
+    <!-- 删除对话信息提醒 -->
+    <el-dialog
+      v-model="removeVisible"
+      width="610px"
+      :show-close="false"
+      :close-on-click-modal="false"
+      @close="dialogClose"
+    >
+      <div class="dia_title">温馨提示</div>
+      <div class="dia_content">是否要删除此对话信息？</div>
+      <div class="dia_footer_2">
+        <div class="cancel">取消</div>
+        <div class="confirm">删除</div>
+      </div>
+    </el-dialog>
+    <!-- 退出提醒 -->
+    <el-dialog
+      v-model="exitVisible"
+      width="610px"
+      :show-close="false"
+      :close-on-click-modal="false"
+      @close="dialogClose"
+    >
+      <div class="dia_title">退出提醒</div>
+      <div class="dia_content">是否要退出登录</div>
+      <div class="dia_footer_2">
+        <div class="cancel">取消</div>
+        <div class="confirm">确定</div>
+      </div>
+    </el-dialog>
+    <!-- 客服二维码 -->
+    <el-dialog
+      v-model="exitVisible"
+      width="610px"
+      :show-close="true"
+      :close-on-click-modal="false"
+      @close="dialogClose"
+    >
+      <div class="service">
+        <div class="service_title">扫描二维码添加专属客服</div>
+        <div class="service_code">
+          <img
+            src="https://quanres.hanhoukeji.com/hanhou-ai-pc/CustomerServiceCode.png"
+            alt=""
+          />
+        </div>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -211,11 +265,17 @@
 import { reactive, ref } from "vue";
 import http from "../../http/index";
 import { ElMessage } from "element-plus";
+import { EventSourcePolyfill } from "event-source-polyfill";
 
 http.post("aaaaa", {
   a: 1,
 });
+
+// 输入框的文本
 const asking = ref("");
+
+// 发送按钮的loading
+const sendLoading = ref(false);
 const msgList = reactive([
   {
     type: 1,
@@ -232,74 +292,165 @@ const msgList = reactive([
   {
     type: 1,
   },
-  {
-    type: 2,
-  },
-  {
-    type: 1,
-  },
-  {
-    type: 2,
-  },
-  {
-    type: 1,
-  },
-  {
-    type: 2,
-  },
-  {
-    type: 1,
-  },
-  {
-    type: 2,
-  },
-  {
-    type: 1,
-  },
-  {
-    type: 2,
-  },
-  {
-    type: 1,
-  },
-  {
-    type: 2,
-  },
-  {
-    type: 1,
-  },
-  {
-    type: 2,
-  },
-  {
-    type: 1,
-  },
-  {
-    type: 2,
-  },
-  {
-    type: 1,
-  },
-  {
-    type: 2,
-  },
-  {
-    type: 1,
-  },
-  {
-    type: 2,
-  },
 ]);
-http.get("/chat/answerList", {
-  tagId: 1,
-  lastId: 1,
-  pageSize: 10,
-  mock: 156,
-});
-ElMessage({
-  message: "aaaaaa",
-  duration: 0,
-});
+
+//
+const dialogVisible = ref(false);
+
+// http.get("/chat/answerList", {
+//   tagId: 1,
+//   lastId: 1,
+//   pageSize: 10,
+//   mock: 156,
+// });
+// ElMessage({
+//   message: "aaaaaa",
+//   duration: 0,
+// });
+
+// 问题框输入事件
+const handInput = (e) => {
+  console.log(e);
+  if (e.length > 1000) {
+  } else {
+  }
+};
+
+// 发送问题
+const handSend = () => {
+  dialogVisible.value = true;
+  ElMessage({
+    message: "发送成功",
+    type: "success",
+  });
+};
+
+// 弹层关闭事件
+const dialogClose = () => {};
+
+// 退出登录弹窗
+const exitVisible = ref(false);
+
+const handExit = () => {
+  exitVisible.value = true;
+};
+// 获取答案
+const _getResult = async (message, tagId) => {
+  // 配置网络
+  const $config = new Config();
+  let resultSign = await _getSign($config);
+  this.isSession = true;
+  const source = new EventSourcePolyfill(
+    `${$config.host}${this.$yjcApi.chat_qa}?question=${message}&tagId=${tagId}`,
+    {
+      headers: {
+        ...resultSign,
+      },
+    }
+  );
+
+  // 其他错误信息
+  source.addEventListener("apiErrors", (err) => {
+    err.data = JSON.parse(err.data);
+    this.message.splice(this.message.length - 1, 1);
+    this.message.splice(this.message.length - 1, 1);
+
+    // 敏感词
+    if (err.data.code == 1025) {
+      this.sensitiveText = err.data.message;
+      this.$refs.isSensitive.open();
+      return;
+    }
+
+    // 非常抱歉，您的问答次数已用尽
+    if (err.data.code == 30104) {
+      uni.showToast({
+        icon: "none",
+        title: err.data.message,
+      });
+      return;
+    }
+
+    // 充值会员
+    if (err.data.code == 30108) {
+      this.sensitiveText =
+        "您的免费问答次数已用尽，开通会员享1000次/月问答权益!";
+      this.$refs.countRunOut.open();
+      return;
+    }
+
+    console.log(err, "其他错误信息");
+    uni.showToast({
+      icon: "none",
+      title: err.data.message,
+    });
+  });
+
+  //监听返回的信息添加到响应的会话信息
+  source.addEventListener(
+    "qInfo",
+    (event) => {
+      console.log(event, "监听返回的信息添加到响应的会话信息");
+      // 减少提问次数
+      if (this.free === false) {
+        this.residueQAQuantity -= 1;
+      }
+      if (this.isVip === false && this.freeTotal > 0) {
+        this.freeTotal--;
+        uni.setStorageSync("residueFreeQAQuantity", this.freeTotal);
+        this.freeTotal = uni.getStorageSync("residueFreeQAQuantity");
+
+        console.log("ssss", this.freeTotal);
+      }
+
+      let qd = JSON.parse(event.data);
+      this.message[this.message.length - 1].id = qd.aId;
+      this.message[this.message.length - 1].tagId = qd.tagId;
+      this.message[this.message.length - 2].id = qd.qId;
+      this.message[this.message.length - 2].tagId = qd.tagId;
+      this.lastId = this.message[0].id;
+
+      // 如果tagId==0说明是第一次会话，把新的会话第一条添加到side
+      if (tagId == 0) {
+        let h = {
+          id: qd.tagId,
+          title: this.message[this.message.length - 2].description,
+          status: "active",
+        };
+        this.history.unshift(h);
+        this.historyActive = JSON.parse(JSON.stringify(h));
+      }
+    },
+    false
+  );
+
+  source.onopen = (e) => {
+    console.log(e, "open");
+  };
+
+  source.onmessage = (e) => {
+    if (e.data == "[DONE]") {
+      this._close(source);
+    } else if (e.type == "message") {
+      let n = e.data.replace(/\\\\/g, "\\");
+      n = n.replace(/\\n/g, "<br/>");
+      n = n.replace(/\\/g, "");
+
+      let s = n.substring(1, n.length - 1);
+
+      this.message[this.message.length - 1].description += s;
+
+      this.scrollTop += 100;
+
+      this._setScrollTop(200);
+    }
+  };
+
+  source.onerror = (e) => {
+    console.log(e, "onerror");
+    this._close(source);
+  };
+};
 </script>
 
 <style scoped lang="less">
@@ -404,6 +555,7 @@ ElMessage({
               font-style: normal;
               font-weight: 400;
               line-height: normal;
+              text-align: left;
             }
             .delete_icon {
               visibility: hidden;
@@ -448,6 +600,8 @@ ElMessage({
         margin: auto;
         display: flex;
         align-items: center;
+        cursor: pointer;
+
         span {
           margin-left: 16.25px;
           margin-right: 137.5px;
@@ -457,6 +611,9 @@ ElMessage({
           font-style: normal;
           font-weight: 400;
           line-height: normal;
+          &:active {
+            color: #126cfe;
+          }
         }
         .gt {
           position: absolute;
@@ -637,12 +794,12 @@ ElMessage({
         bottom: 0;
         left: 0;
         display: flex;
-        align-items: center;
+        align-items: flex-end;
         justify-content: center;
         box-sizing: border-box;
         width: 100%;
-        min-height: 90px;
-        padding: 0 30px;
+        padding: 0 30px 38px 30px;
+        background: #f1f2f6;
         .ask_input {
           position: relative;
           flex: 1;
@@ -677,9 +834,8 @@ ElMessage({
           }
           .length_count {
             position: absolute;
-            top: 50%;
+            bottom: 16.5px;
             right: 13px;
-            transform: translate(0, -50%);
             color: #ccc;
             text-align: right;
             font-family: PingFang SC;
@@ -727,6 +883,138 @@ ElMessage({
           line-height: normal;
           opacity: 0.5;
         }
+      }
+    }
+  }
+  /deep/.el-dialog {
+    border-radius: 16px;
+  }
+  /deep/.el-dialog__header {
+    height: 0;
+    .el-dialog__close {
+      width: 20.5px;
+      height: 20.5px;
+    }
+  }
+  /deep/.el-dialog__body {
+    padding: 60px 73px;
+  }
+  .dia_title {
+    color: #000;
+    text-align: center;
+    font-family: PingFang SC;
+    font-size: 30px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 42px;
+  }
+  .dia_content {
+    margin-top: 40px;
+    color: #000;
+    text-align: center;
+    font-family: PingFang SC;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+  }
+
+  .dia_footer_1 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 58px;
+    .confirm {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 464px;
+      height: 52px;
+      border-radius: 6px;
+      background: #126cfe;
+      color: #fff;
+      text-align: center;
+      font-family: PingFang SC;
+      font-size: 19px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: normal;
+      &:active {
+        opacity: 0.8;
+      }
+    }
+  }
+  .dia_footer_2 {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 58px;
+    .cancel {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 220px;
+      height: 52px;
+      border-radius: 6px;
+      background: #126cfe;
+      color: #fff;
+      text-align: center;
+      font-family: PingFang SC;
+      font-size: 19px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: normal;
+      &:active {
+        opacity: 0.8;
+      }
+    }
+    .confirm {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-sizing: border-box;
+      width: 220px;
+      height: 52px;
+      flex-shrink: 0;
+      border-radius: 6px;
+      border: 1px solid #126cfe;
+      background-color: #fff;
+      color: #126cfe;
+      text-align: center;
+      font-family: PingFang SC;
+      font-size: 19px;
+      font-style: normal;
+      font-weight: 600;
+      line-height: normal;
+      &:active {
+        opacity: 0.8;
+      }
+    }
+  }
+  .service {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    .service_title {
+      margin-top: 30px;
+      color: #000;
+      font-family: PingFang SC;
+      font-size: 30px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: normal;
+    }
+    .service_code {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 48px;
+      margin-bottom: 40px;
+      width: 320px;
+      height: 320px;
+      img {
+        width: 270px;
+        height: 270px;
       }
     }
   }
