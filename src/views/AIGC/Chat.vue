@@ -251,7 +251,7 @@
       <div class="dia_content">是否要退出登录</div>
       <div class="dia_footer_2">
         <div class="cancel" @click="exitVisible = false">取消</div>
-        <div class="confirm">确定</div>
+        <div class="confirm" @click="confirmExit">确定</div>
       </div>
     </el-dialog>
     <!-- 客服二维码 -->
@@ -283,6 +283,7 @@
 
 <script setup>
 import { reactive, ref, onMounted, watch } from "vue";
+import { useRouter } from "vue-router";
 import http from "../../http/index";
 import { ElMessage } from "element-plus";
 import { EventSourcePolyfill } from "event-source-polyfill";
@@ -291,6 +292,8 @@ import Clipboard from "clipboard";
 import { _getSign } from "@/http/sign";
 import utils from "@/common/utils";
 
+// 路由
+const router = useRouter();
 // 剩余提问次数
 const userInfo = utils.getUserInfo() || { residueQAQuantity: 0 };
 const residueQAQuantity = ref(Number(userInfo.residueQAQuantity || 0));
@@ -303,6 +306,17 @@ const exitVisible = ref(false);
 
 const handExit = () => {
   exitVisible.value = true;
+};
+
+// 确认退出登录
+const confirmExit = () => {
+  exitVisible.value = false;
+  utils.setToken("");
+  utils.setUserInfo("");
+  router.push({
+    path: "/login",
+    replace: true,
+  });
 };
 
 // 客服二维码弹窗
