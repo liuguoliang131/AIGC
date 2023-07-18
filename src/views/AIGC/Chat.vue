@@ -30,7 +30,7 @@
         <span>新建聊天</span>
       </div>
 
-      <div class="log_list" v-loading="tagListLoading">
+      <div class="log_list" v-loading="tagList.loading">
         <div class="scroll_view">
           <div v-if="tagList.isNull" class="scroll_page"></div>
           <div v-else v-infinite-scroll="getHistory" class="scroll_page">
@@ -151,7 +151,7 @@
           <div v-show="chatLoading" class="loading">正在加载...</div>
           <div class="scroll_page">
             <div class="list_content">
-              <template v-for="(item, idx) in msgList" :key="idx">
+              <template v-for="(item, idx) in chatList.list" :key="idx">
                 <div v-if="item.type == 1" class="msg_item question">
                   <div class="toright">
                     <div class="bubble">1</div>
@@ -196,7 +196,6 @@
               :autosize="{ minRows: 1, maxRows: 6 }"
               type="textarea"
               placeholder="请输入您需要提问的信息..."
-              @input="handInput"
             />
             <div class="length_count">
               <span
@@ -290,64 +289,6 @@ import { EventSourcePolyfill } from "event-source-polyfill";
 import api from "./api";
 import Clipboard from "clipboard";
 
-http.post("aaaaa", {
-  a: 1,
-});
-
-// 输入框的文本
-const asking = ref("");
-
-// 发送按钮的loading
-const sendLoading = ref(false);
-const msgList = reactive([
-  {
-    type: 1,
-  },
-  {
-    type: 2,
-  },
-  {
-    type: 1,
-  },
-  {
-    type: 2,
-  },
-  {
-    type: 1,
-  },
-]);
-
-// 敏感词提醒弹窗
-const dialogVisible = ref(false);
-
-// http.get("/chat/answerList", {
-//   tagId: 1,
-//   lastId: 1,
-//   pageSize: 10,
-//   mock: 156,
-// });
-// ElMessage({
-//   message: "aaaaaa",
-//   duration: 0,
-// });
-
-// 问题框输入事件
-const handInput = (e) => {
-  console.log(e);
-  if (e.length > 1000) {
-  } else {
-  }
-};
-
-// 发送问题
-const handSend = () => {
-  dialogVisible.value = true;
-  ElMessage({
-    message: "发送成功",
-    type: "success",
-  });
-};
-
 // 弹层关闭事件
 const dialogClose = () => {};
 
@@ -360,6 +301,9 @@ const handExit = () => {
 
 // 客服二维码弹窗
 const serviceVisible = ref(false);
+
+// 敏感词提醒弹窗
+const dialogVisible = ref(false);
 
 // -----------------左侧聊天历史列表----------------------
 // 左侧聊天历史列表
@@ -435,13 +379,14 @@ const chatList = reactive({
 });
 
 // 获取聊天列表
-const getAnswerList = () => {
+const getAnswerList = (tagId) => {
   if (chatList.finish) return false;
   if (chatList.loading) return false;
   chatList.loading = true;
   const pageSize = 10;
   http
     .get(api.chat_answerList, {
+      tagId,
       lastId: 0,
       pageSize,
     })
@@ -478,19 +423,6 @@ const clearChatList = () => {
 const chatScrollViewListen = (e) => {
   chatScrollTop.value = e.target.scrollTop;
 };
-
-// 监听scrollTop, 为0时调用加载列表方法getAnswerList
-watch(
-  chatScrollTop,
-  (newVal, oldVal) => {
-    if (newVal === 0) {
-      getAnswerList();
-    }
-  },
-  {
-    immediate: true,
-  }
-);
 
 // ------------------------------------
 
@@ -639,21 +571,6 @@ const initCopyClipboard = () => {
   });
 };
 
-// -----------------------------------------
-// 新增聊天
-const handNewChat = () => {
-  if (residueQAQuantity.value == 0) {
-    return ElMessage({
-      message: "您的免费问答次数不足",
-      type: "info",
-    });
-  }
-
-  // 清空聊天区
-};
-
-// ------------------------------------------
-
 // -----------------左侧聊天历史的选中和删除----------------------
 // 被选中的聊天历史id
 const activeTag = ref(null);
@@ -663,6 +580,7 @@ const handActiveTag = (item, index) => {
   activeTag.value = item.id;
   // 清空聊天窗口数据
   clearChatList();
+  getAnswerList(activeTag.value);
 };
 
 // 删除对话窗口弹窗
@@ -684,7 +602,58 @@ const handConfirmDeleteTag = () => {
   });
 };
 
-// -----------------------------------------
+// 新增聊天
+const handNewChat = () => {
+  if (tagList.residueQAQuantity == 0) {
+    return ElMessage({
+      message: "您的免费问答次数不足",
+      type: "info",
+    });
+  }
+
+  // 清空聊天区
+  activeTag.value = null;
+  clearChatList();
+};
+
+// ------------------------------------------
+
+// 监听scrollTop, 为0时调用加载列表方法getAnswerList
+watch(
+  chatScrollTop,
+  (newVal, oldVal) => {
+    if (newVal === 0) {
+      if (activeTag.value) {
+        getAnswerList(activeTag.value);
+      }
+    }
+  },
+  {
+    immediate: false,
+  }
+);
+
+// 输入框的文本
+const asking = ref("");
+
+// 发送按钮的loading
+const sendLoading = ref(false);
+
+// 发送问题
+const handSend = () => {
+  // dialogVisible.value = true;
+  // ElMessage({
+  //   message: "发送成功",
+  //   type: "success",
+  // });
+  if (tagList.residueQAQuantity === 0) {
+    return ElMessage({
+      message: "您的免费问答次数不足",
+      type: "info",
+    });
+  }
+  chatList.list.push({ type: 1, title: "aasds" });
+};
 
 // 加载完成事件
 onMounted(() => {
