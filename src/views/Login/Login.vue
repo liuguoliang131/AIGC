@@ -72,14 +72,16 @@ export default {
       // } else if (phone.value.length != 11) {
       //   return ElMessage('手机号格式错误')
       // }
+      console.log('手机号：' + this.phone);
 
       // 发送验证码的逻辑
       this.isSending = true;
       this.buttonText = '发送中...';
       this.isCounting = true
       http.get(api.send_verfyCode, {
-        tel: this.phone.value,
-        // mock: 156
+        params: {
+          tel: this.phone
+        }
       }).then((res) => {
         if (res.code == 200) {
           this.timer = setInterval(() => {
@@ -123,9 +125,10 @@ export default {
       console.log('手机号：' + this.phone);
       console.log('验证码：' + this.code);
       http.post(api.user_login, {
-        tel: this.phone.value,
-        code: this.code.value
-      }).then((res) => {
+        tel: this.phone,
+        verifyCode: this.code
+      }
+      ).then((res) => {
         if (res.code == 200) {
         }
         else {

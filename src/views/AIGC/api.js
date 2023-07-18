@@ -6,6 +6,4 @@ export default {
   chat_answerList: "/chat/answerList", // 问答列表
   chat_qa: "chat/qa", // 问答
   chat_delTag: "/chat/delTag", // 删除问答Tag
-  send_verfyCode: "/user/sendVerifyCode", // 发送验证码
-  user_login: "/user/login", // 登录
 }
