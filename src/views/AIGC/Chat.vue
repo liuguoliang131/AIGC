@@ -149,7 +149,7 @@
           @scroll="chatScrollViewListen"
         >
           <div v-show="chatLoading" class="loading">正在加载...</div>
-          <div class="scroll_page">
+          <div ref="chatScrollPage" class="scroll_page">
             <div class="list_content">
               <template v-for="(item, idx) in chatList.list" :key="idx">
                 <div v-if="item.type == 1" class="msg_item question">
@@ -173,7 +173,7 @@
                           />
                           复制
                         </div>
-                        <div class="del">
+                        <div class="del" @click="handShowRemoveMsg(item.id)">
                           <img
                             src="https://quanres.hanhoukeji.com/hanhou-ai-pc/delete-icon.svg"
                             alt=""
@@ -223,10 +223,10 @@
       <div class="dia_title">敏感词提醒</div>
       <div class="dia_content">{{ tipMessage }}</div>
       <div class="dia_footer_1">
-        <div class="confirm">确认</div>
+        <div class="confirm" @click="bowDownToTheCCP">确认</div>
       </div>
     </el-dialog>
-    <!-- 删除对话信息提醒 -->
+    <!-- 删除对话窗口提醒 -->
     <el-dialog
       v-model="removeVisible"
       width="610px"
@@ -235,10 +235,25 @@
       @close="dialogClose"
     >
       <div class="dia_title">温馨提示</div>
-      <div class="dia_content">是否要删除此对话信息？</div>
+      <div class="dia_content">是否要删除此对话窗口？</div>
       <div class="dia_footer_2">
         <div class="cancel" @click="removeVisible = false">取消</div>
         <div class="confirm" @click="handConfirmDeleteTag">删除</div>
+      </div>
+    </el-dialog>
+    <!-- 删除对话信息提醒 -->
+    <el-dialog
+      v-model="removeMsgVisible"
+      width="610px"
+      :show-close="false"
+      :close-on-click-modal="false"
+      @close="dialogClose"
+    >
+      <div class="dia_title">温馨提示</div>
+      <div class="dia_content">是否要删除此对话信息？</div>
+      <div class="dia_footer_2">
+        <div class="cancel" @click="removeMsgVisible = false">取消</div>
+        <div class="confirm" @click="handConfirmRemoveMsg">删除</div>
       </div>
     </el-dialog>
     <!-- 退出提醒 -->
@@ -284,7 +299,7 @@
 </template>
 
 <script setup>
-import { reactive, ref, onMounted, watch } from "vue";
+import { reactive, ref, onMounted, onUpdated, watch } from "vue";
 import { useRouter } from "vue-router";
 import http from "../../http/index";
 import { ElMessage } from "element-plus";
@@ -342,6 +357,15 @@ const serviceVisible = ref(false);
 const dialogVisible = ref(false);
 // 敏感词提示词
 const tipMessage = ref("");
+
+// 删除信息弹窗
+const removeMsgVisible = ref(false);
+// 点击删除的消息id
+const delMsgId = ref(null);
+const handShowRemoveMsg = (id) => {
+  delMsgId.value = id;
+  removeMsgVisible.value = true;
+};
 
 // 输入框的文本
 const question = ref("");
@@ -413,6 +437,10 @@ const getHistory = () => {
 
 // 聊天窗口scroll元素
 const chatScrollView = ref();
+// 聊天窗口scroll内子元素
+const chatScrollPage = ref();
+// 聊天列表高度
+const scrollPageHeight = ref(0);
 
 // 聊天列表是否加载中
 const chatLoading = ref(false);
@@ -438,7 +466,7 @@ const getAnswerList = (tagId) => {
     .get(api.chat_answerList, {
       params: {
         tagId,
-        lastId: 0,
+        lastId: chatList.lastId,
         pageSize,
       },
     })
@@ -462,6 +490,23 @@ const getAnswerList = (tagId) => {
     });
   console.log("加载列表");
 };
+
+// dom更新后调用  记录此时的聊天列表高度
+onUpdated(() => {
+  scrollPageHeight.value = chatScrollPage.value.offsetHeight;
+});
+
+// 每次加载列表后设置滚动高度
+watch(
+  scrollPageHeight,
+  (newVal, oldVal) => {
+    console.log("watch:chatScrollPage");
+    chatScrollView.value.scrollTop = newVal - oldVal;
+  },
+  {
+    deep: true,
+  }
+);
 
 // 清空聊天窗口数据
 const clearChatList = () => {
@@ -495,11 +540,15 @@ const _getResult = async (message, tagId) => {
   // 其他错误信息
   source.addEventListener("apiErrors", (err) => {
     err.data = JSON.parse(err.data);
-    // this.message.splice(this.message.length - 1, 1);
-    // this.message.splice(this.message.length - 1, 1);
 
     // 敏感词
     if (err.data.code == 1025) {
+      tipMessage.value = err.data.message;
+      dialogVisible.value = true;
+      return;
+    }
+    // 敏感词
+    if (err.data.code == 1026) {
       tipMessage.value = err.data.message;
       dialogVisible.value = true;
       return;
@@ -592,6 +641,12 @@ const _getResult = async (message, tagId) => {
   };
 };
 
+// 敏感词弹窗 确认
+const bowDownToTheCCP = () => {
+  chatList.list.splice(chatList.list.length - 2, 2);
+  dialogVisible.value = false;
+};
+
 // 复制
 const copy_text = ref();
 const handleCopy = (text) => {
@@ -638,21 +693,21 @@ const handDeleteTag = (item, index) => {
   removeVisible.value = true;
 };
 
-// 确认删除
+// 确认删除 左侧历史
 const handConfirmDeleteTag = () => {
-  // activeTag.value
+  const tagId = activeTag.value;
   activeTag.value = 0;
   removeVisible.value = false;
   http
     .post(api.ai_delTag, {
-      data: {
-        tagId,
-      },
+      tagId,
     })
     .then((res) => {
       if (res.code === 200) {
-        const idx = tagList.list.findIndex((item) => item.id == activeTag);
+        const idx = tagList.list.findIndex((item) => item.id == tagId);
+        console.log("idx", idx);
         tagList.list.splice(idx, 1);
+        clearChatList();
         ElMessage({
           message: "删除成功",
           type: "success",
@@ -688,6 +743,7 @@ watch(
   (newVal, oldVal) => {
     if (newVal === 0) {
       if (activeTag.value) {
+        console.log("watch:到顶");
         getAnswerList(activeTag.value);
       }
     }
@@ -735,18 +791,34 @@ const handSend = () => {
   _getResult(question1, activeTag.value);
 };
 
+// 删除信息确认
+const handConfirmRemoveMsg = () => {
+  removeMsgVisible.value = false;
+  http
+    .get(api.chat_delAnswer, {
+      params: {
+        answerId: chatList.lastId,
+      },
+    })
+    .then((res) => {
+      if (res.code == 200) {
+        const idx = chatList.list.findIndex(
+          (item) => item.id === delMsgId.value
+        );
+        chatList.list.splice(idx - 1, 2);
+      } else {
+        ElMessage({
+          type: "error",
+          message: res.message,
+        });
+      }
+    });
+};
+
 // 加载完成事件
 onMounted(() => {
   console.log("mount");
-  // getAnswerList();
-  console.log("chatScrollView", chatScrollView);
-  // const timer = setInterval(() => {
-  //   console.log(chatScrollView.value.scrollTop);
-  //   chatScrollView.value.scrollTop += 1;
-  //   if (chatScrollView.value.scrollTop >= 500) {
-  //     return clearInterval(timer);
-  //   }
-  // }, 10);
+
   initCopyClipboard();
 });
 </script>
