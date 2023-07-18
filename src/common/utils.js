@@ -1,21 +1,36 @@
 import {TOKEN,USER_INFO} from  './keys'
 const utils = {}
-utils.getToken = function () {
-  return window.localStorage.getItem(TOKEN) || ''
-}
-utils.setToken = function (param) {
-  window.localStorage.setItem(TOKEN, param)
-}
-utils.getUserInfo = function () {
-  return window.localStorage.getItem(USER_INFO) || ''
-}
-utils.setUserInfo = function (param) {
-  param = typeof param =='object'?JSON.stringify(param):param
-  window.localStorage.setItem(USER_INFO, param)
-}
-utils.getStorageSync = function (k) {
-  const val = window.localStorage.getItem(k) || ''
+
+// k:String 键名  j:Boolean 是否序列化
+utils.getStorageSync = function (k,j=false) {
+  let val = window.localStorage.getItem(k)
+  if (j) {
+    val = val ? JSON.parse(val):''
+  }
   return val
 }
+
+utils.setStorageSync = function (k, v) {
+  v = typeof v =='object'?JSON.stringify(v):v
+  window.localStorage.setItem(k,v)
+}
+
+// 获取token
+utils.getToken = function () {
+  return utils.getStorageSync(TOKEN)||''
+}
+// 储存token
+utils.setToken = function (param) {
+  utils.setStorageSync(TOKEN,param)
+}
+// 获取登陆接口返回信息
+utils.getUserInfo = function () {
+  return utils.setStorageSync(USER_INFO)
+}
+// 储存登录接口返回信息
+utils.setUserInfo = function (param) {
+  utils.setStorageSync(USER_INFO,param)
+}
+
 
 export default utils
