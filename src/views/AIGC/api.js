@@ -6,4 +6,5 @@ export default {
   chat_answerList: "/chat/answerList", // 问答列表
   chat_qa: "chat/qa", // 问答
   chat_delTag: "/chat/delTag", // 删除问答Tag
+  user_logout:'/user/logout', // 退出登录
 }

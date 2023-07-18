@@ -25,7 +25,7 @@ utils.setToken = function (param) {
 }
 // 获取登陆接口返回信息
 utils.getUserInfo = function () {
-  return utils.getStorageSync(USER_INFO)
+  return utils.getStorageSync(USER_INFO,true)
 }
 // 储存登录接口返回信息
 utils.setUserInfo = function (param) {

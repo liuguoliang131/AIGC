@@ -1,6 +1,7 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import Index from '../views/AIGC/Chat.vue'
 import Login from '../views/Login/Login.vue'
+import Agreement from '../views/Agreement/Index.vue'
 import utils from '@/common/utils'
 
 const routes = [
@@ -19,6 +20,14 @@ const routes = [
     meta: {
       isAuthenticated:false
     }
+  },
+  {
+    path: '/agreement',
+    name: 'Agreement',
+    component:Agreement,
+    meta: {
+      isAuthenticated:false
+    }
   }
 ]
 
@@ -34,7 +43,7 @@ router.beforeEach((to, from, next) => {
   if (utils.getToken()) {
     return next()
   }
-  
+
   if (to.name !== 'Login' && to.meta.isAuthenticated) next({ name: 'Login' })
   else next()
 })

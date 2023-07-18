@@ -154,7 +154,9 @@
               <template v-for="(item, idx) in chatList.list" :key="idx">
                 <div v-if="item.type == 1" class="msg_item question">
                   <div class="toright">
-                    <div class="bubble">1</div>
+                    <div class="bubble">
+                      <div v-html="item.description"></div>
+                    </div>
                     <img class="avatar" src="../../assets/logo.png" alt="" />
                   </div>
                 </div>
@@ -162,9 +164,9 @@
                   <div class="toleft">
                     <img class="avatar" src="../../assets//logo.png" alt="" />
                     <div class="bubble">
-                      1
+                      <div v-html="item.description"></div>
                       <div class="taptap">
-                        <div class="copy" @click="handleCopy('淦' + idx)">
+                        <div class="copy" @click="handleCopy(item.description)">
                           <img
                             src="https://quanres.hanhoukeji.com/hanhou-ai-pc/copy-icon.svg"
                             alt=""
@@ -296,6 +298,7 @@ import utils from "@/common/utils";
 const router = useRouter();
 // 剩余提问次数
 const userInfo = utils.getUserInfo() || { residueQAQuantity: 0 };
+
 const residueQAQuantity = ref(Number(userInfo.residueQAQuantity || 0));
 
 // 弹层关闭事件
@@ -311,12 +314,25 @@ const handExit = () => {
 // 确认退出登录
 const confirmExit = () => {
   exitVisible.value = false;
-  utils.setToken("");
-  utils.setUserInfo("");
-  router.push({
-    path: "/login",
-    replace: true,
-  });
+  http
+    .get(api.user_logout, {
+      params: {},
+    })
+    .then((res) => {
+      if (res.code == 200) {
+        utils.setToken("");
+        utils.setUserInfo("");
+        router.push({
+          path: "/login",
+          replace: true,
+        });
+      } else {
+        ElMessage({
+          type: "error",
+          message: res.msg,
+        });
+      }
+    });
 };
 
 // 客服二维码弹窗
@@ -327,7 +343,15 @@ const dialogVisible = ref(false);
 // 敏感词提示词
 const tipMessage = ref("");
 
+// 输入框的文本
+const question = ref("");
+
+// 发送按钮的loading
+const sendLoading = ref(false);
+
 // -----------------左侧聊天历史列表----------------------
+// 被选中的聊天历史id
+const activeTag = ref(0);
 // 左侧聊天历史列表
 const tagList = reactive({
   list: [],
@@ -342,23 +366,31 @@ const getHistory = () => {
   if (tagList.finish) return;
   tagList.loading = true;
   const pageSize = 20;
+  const lastId = tagList.list.length
+    ? tagList.list[tagList.list.length - 1].id
+    : 0;
   http
     .get(api.chat_tagList, {
       params: {
-        lastId: tagList.list.length
-          ? tagList.list[tagList.list.length - 1].id
-          : 0,
+        lastId,
         pageSize,
       },
     })
     .then((res) => {
       console.log("gethistory", res);
       if (res.code == 200) {
-        if (res.data && res.data.list && res.data.list.length === 0) {
+        if (
+          lastId === 0 &&
+          res.data &&
+          res.data.list &&
+          res.data.list.length === 0
+        ) {
           tagList.isNull = true;
         }
         // res.data.list.forEach((item) => (item.status = "none"));
-        const list = res.data.list.reverse();
+        // const list = res.data.list.reverse();
+        const list = res.data.list;
+
         tagList.list = [...tagList.list, ...list];
 
         // 条数不足 没有下一页了
@@ -404,9 +436,11 @@ const getAnswerList = (tagId) => {
   const pageSize = 10;
   http
     .get(api.chat_answerList, {
-      tagId,
-      lastId: 0,
-      pageSize,
+      params: {
+        tagId,
+        lastId: 0,
+        pageSize,
+      },
     })
     .then((res) => {
       if (res.code == 200) {
@@ -503,9 +537,7 @@ const _getResult = async (message, tagId) => {
     (event) => {
       console.log(event, "监听返回的信息添加到响应的会话信息");
       // 减少提问次数
-      // if (this.free === false) {
-      //   this.residueQAQuantity -= 1;
-      // }
+      residueQAQuantity.value -= 1;
       // if (this.isVip === false && this.freeTotal > 0) {
       //   this.freeTotal--;
       //   uni.setStorageSync("residueFreeQAQuantity", this.freeTotal);
@@ -514,23 +546,22 @@ const _getResult = async (message, tagId) => {
       //   console.log("ssss", this.freeTotal);
       // }
 
-      // let qd = JSON.parse(event.data);
-      // this.message[this.message.length - 1].id = qd.aId;
-      // this.message[this.message.length - 1].tagId = qd.tagId;
-      // this.message[this.message.length - 2].id = qd.qId;
-      // this.message[this.message.length - 2].tagId = qd.tagId;
-      // this.lastId = this.message[0].id;
+      let qd = JSON.parse(event.data);
+      chatList.list[chatList.list.length - 1].id = qd.aId;
+      chatList.list[chatList.list.length - 1].tagId = qd.tagId;
+      chatList.list[chatList.list.length - 2].id = qd.qId;
+      chatList.list[chatList.list.length - 2].tagId = qd.tagId;
+      chatList.lastId = chatList.list[0].id;
 
-      // // 如果tagId==0说明是第一次会话，把新的会话第一条添加到side
-      // if (tagId == 0) {
-      //   let h = {
-      //     id: qd.tagId,
-      //     title: this.message[this.message.length - 2].description,
-      //     status: "active",
-      //   };
-      //   this.history.unshift(h);
-      //   this.historyActive = JSON.parse(JSON.stringify(h));
-      // }
+      // 如果tagId==0说明是第一次会话，把新的会话第一条添加到side
+      if (activeTag.value == 0) {
+        let h = {
+          id: qd.tagId,
+          title: chatList.list[chatList.list.length - 2].description,
+        };
+        activeTag.value = qd.tagId;
+        tagList.list.unshift(h);
+      }
     },
     false
   );
@@ -542,19 +573,16 @@ const _getResult = async (message, tagId) => {
   source.onmessage = (e) => {
     console.log("onmessage", e);
     if (e.data == "[DONE]") {
+      sendLoading.value = false;
       source.close(source);
     } else if (e.type == "message") {
       let n = e.data.replace(/\\\\/g, "\\");
       n = n.replace(/\\n/g, "<br/>");
       n = n.replace(/\\/g, "");
 
-      // let s = n.substring(1, n.length - 1);
+      let s = n.substring(1, n.length - 1);
 
-      // this.message[this.message.length - 1].description += s;
-
-      // this.scrollTop += 100;
-
-      // this._setScrollTop(200);
+      chatList.list[chatList.list.length - 1].description += s;
     }
   };
 
@@ -593,8 +621,6 @@ const initCopyClipboard = () => {
 };
 
 // -----------------左侧聊天历史的选中和删除----------------------
-// 被选中的聊天历史id
-const activeTag = ref(0);
 
 // 选中
 const handActiveTag = (item, index) => {
@@ -617,15 +643,32 @@ const handConfirmDeleteTag = () => {
   // activeTag.value
   activeTag.value = 0;
   removeVisible.value = false;
-  ElMessage({
-    message: "删除成功",
-    type: "success",
-  });
+  http
+    .post(api.ai_delTag, {
+      data: {
+        tagId,
+      },
+    })
+    .then((res) => {
+      if (res.code === 200) {
+        const idx = tagList.list.findIndex((item) => item.id == activeTag);
+        tagList.list.splice(idx, 1);
+        ElMessage({
+          message: "删除成功",
+          type: "success",
+        });
+      } else {
+        ElMessage({
+          type: "error",
+          message: res.msg,
+        });
+      }
+    });
 };
 
 // 新增聊天
 const handNewChat = () => {
-  if (residueQAQuantity == 0) {
+  if (residueQAQuantity.value == 0) {
     return ElMessage({
       message: "您的免费问答次数不足",
       type: "info",
@@ -654,32 +697,42 @@ watch(
   }
 );
 
-// 输入框的文本
-const question = ref("");
-
-// 发送按钮的loading
-const sendLoading = ref(false);
-
 // 发送问题
 const handSend = () => {
-  // dialogVisible.value = true;
-  // ElMessage({
-  //   message: "发送成功",
-  //   type: "success",
-  // });
   if (question.value.length > 1000) {
     return ElMessage({
       message: "已达到最大字数限制，请缩小您的文本长度",
       type: "warning",
     });
   }
-  if (residueQAQuantity === 0) {
-    return ElMessage({
-      message: "您的免费问答次数不足",
-      type: "warning",
-    });
-  }
-  _getResult(question, activeTag);
+  // if (residueQAQuantity.value === 0) {
+  //   return ElMessage({
+  //     message: "您的免费问答次数不足",
+  //     type: "warning",
+  //   });
+  // }
+  const question1 = question.value;
+  question.value = "";
+  sendLoading.value = true;
+  // 添加问题和答案的位置到列表
+  chatList.list.push({
+    id: "",
+    userId: userInfo.userId,
+    tagId: "",
+    type: 1,
+    description: question1,
+    createdAt: "",
+  });
+  chatList.list.push({
+    id: "",
+    userId: userInfo.userId,
+    tagId: "",
+    type: 2,
+    description: "",
+    createdAt: "",
+  });
+
+  _getResult(question1, activeTag.value);
 };
 
 // 加载完成事件

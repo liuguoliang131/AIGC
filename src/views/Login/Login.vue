@@ -39,23 +39,19 @@
         <!-- <input v-model="agree" type="checkbox" class="checkbox"> -->
         <!-- <label for="agree">我同意相关协议</label> -->
         登录即代表您已同意
-        <a class="policy" href="https://baidu.com">《服务协议和隐私政策》</a>
-        和
-        <a
-          class="policy"
-          href="https://element-plus.org/en-US/component/message.html#basic-usage"
-          >《安全协议》</a
+        <span class="policy" @click="handGoAgree(1)"
+          >《服务协议和隐私政策》</span
         >
+        和
+        <span class="policy" @click="handGoAgree(2)">《安全协议》</span>
       </div>
     </div>
     <div class="footer">
       <div class="footer-record">
-        <span @click="handGoICP"
-          >京ICP备19041919号-2京公网安备11010502039881号</span
-        >
+        <a @click="handGoICP">京ICP备19041919号-2京公网安备11010502039881号</a>
       </div>
       <div class="footer-record">
-        <span @click="handGoICP">网络经营许可证京网文[2020]4683-870号</span>
+        <a @click="handGoICP">网络经营许可证京网文[2020]4683-870号</a>
       </div>
     </div>
   </div>
@@ -166,6 +162,16 @@ export default {
     // 去往工信部网站
     handGoICP() {
       window.open(`https://beian.miit.gov.cn/`);
+    },
+
+    // 去查看协议
+    handGoAgree(type) {
+      this.$router.push({
+        path: "/agreement",
+        query: {
+          type,
+        },
+      });
     },
   },
 };
