@@ -293,7 +293,7 @@ import utils from "@/common/utils";
 
 // 剩余提问次数
 const userInfo = utils.getUserInfo() || { residueQAQuantity: 0 };
-const residueQAQuantity = ref(Number(userInfo.residueQAQuantity));
+const residueQAQuantity = ref(Number(userInfo.residueQAQuantity || 0));
 
 // 弹层关闭事件
 const dialogClose = () => {};
