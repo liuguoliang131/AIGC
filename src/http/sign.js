@@ -4,12 +4,12 @@ import utils from '../common/utils.js'
  * 加密
  * varstrSign="sys="+sys+"&timestamp="+timestamp+"&token="+token+"&version="+version+appKey;
  * */
-export const _getSign = function(config) {
+export const _getSign = function(config={}) {
   return new Promise((resolve, reject) => {
     const sys = 'AIGC'
     const timestamp = Date.parse(new Date()).toString().substr(0, 10)
-    // const token = utils.getToken()
-    let token = "ffaa197f6075429697136e754e056ab8"
+    const token = utils.getToken()
+    // let token = "ffaa197f6075429697136e754e056ab8"
     const version = config.version || '1.0.0'
     const appKey = '4fffe8bdebd230e0f5a082a582d8d443'
 

@@ -1,21 +1,24 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
-import Index from '../views/Index/Index.vue'
+import Index from '../views/AIGC/Chat.vue'
+import Login from '../views/Login/Login.vue'
+import utils from '@/common/utils'
 
 const routes = [
   {
     path: '/',
     name: 'Index',
-    component: Index
+    component: Index,
+    meta: {
+      isAuthenticated:true
+    }
   },
   {
     path: '/login',
     name: 'Login',
-    component: () => import('../views/Login/Login.vue')
-  },
-  {
-    path: '/aigc/chat',
-    name: 'AIGC',
-    component: () => import('../views/AIGC/Chat.vue')
+    component:Login,
+    meta: {
+      isAuthenticated:false
+    }
   }
 ]
 
@@ -26,9 +29,14 @@ const router = createRouter({
 
 
 // 路由守卫
-// router.beforeEach((to, from, next) => {
-//   if (to.name !== 'Login' && !isAuthenticated) next({ name: 'Login' })
-//   else next()
-// })
+router.beforeEach((to, from, next) => {
+  console.log('router', to, from)
+  if (utils.getToken()) {
+    return next()
+  }
+  
+  if (to.name !== 'Login' && to.meta.isAuthenticated) next({ name: 'Login' })
+  else next()
+})
 
 export default router

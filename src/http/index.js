@@ -5,6 +5,9 @@ import {
   _getSign
 } from './sign.js'
 
+import utils from '../common/utils'
+import {router} from 'vue-router'
+
 const instance = axios.create({
   baseURL: process.env.VUE_APP_BASE_URL,
   timeout: 20000,
@@ -50,7 +53,14 @@ instance.interceptors.request.use(async (config) => {
 // 添加响应拦截器
 instance.interceptors.response.use(function (response) {
   // 对响应数据做点什么
-  // console.log('响应拦截器')
+  // console.log('响应拦截器', response.data)
+  if (response.data.code === 1000) {
+    utils.setUserInfo('')
+    utils.setToken('')
+    router.replace({
+      path: '/login'
+    })
+  }
   return response.data
 }, function (error) {
   // 对响应错误做点什么

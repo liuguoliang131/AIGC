@@ -140,7 +140,7 @@
     </div>
     <div class="container-body">
       <div class="body-top">
-        <span>您的免费问答次数：{{ tagList.residueQAQuantity }}次</span>
+        <span>您的免费问答次数：{{ residueQAQuantity }}次</span>
       </div>
       <div class="body-content">
         <div
@@ -191,7 +191,7 @@
           <div class="ask_input">
             <el-input
               class="textarea"
-              v-model="asking"
+              v-model="question"
               resize="none"
               :autosize="{ minRows: 1, maxRows: 6 }"
               type="textarea"
@@ -199,8 +199,8 @@
             />
             <div class="length_count">
               <span
-                :style="{ color: asking.length > 1000 ? 'red' : 'inherit' }"
-                >{{ asking.length }}</span
+                :style="{ color: question.length > 1000 ? 'red' : 'inherit' }"
+                >{{ question.length }}</span
               >/1000
             </div>
           </div>
@@ -219,7 +219,7 @@
       @close="dialogClose"
     >
       <div class="dia_title">敏感词提醒</div>
-      <div class="dia_content">答案涉及到敏感词，已被过滤</div>
+      <div class="dia_content">{{ tipMessage }}</div>
       <div class="dia_footer_1">
         <div class="confirm">确认</div>
       </div>
@@ -288,6 +288,12 @@ import { ElMessage } from "element-plus";
 import { EventSourcePolyfill } from "event-source-polyfill";
 import api from "./api";
 import Clipboard from "clipboard";
+import { _getSign } from "@/http/sign";
+import utils from "@/common/utils";
+
+// 剩余提问次数
+const userInfo = utils.getUserInfo() || { residueQAQuantity: 0 };
+const residueQAQuantity = ref(Number(userInfo.residueQAQuantity));
 
 // 弹层关闭事件
 const dialogClose = () => {};
@@ -304,12 +310,13 @@ const serviceVisible = ref(false);
 
 // 敏感词提醒弹窗
 const dialogVisible = ref(false);
+// 敏感词提示词
+const tipMessage = ref("");
 
 // -----------------左侧聊天历史列表----------------------
 // 左侧聊天历史列表
 const tagList = reactive({
   list: [],
-  residueQAQuantity: 0, // 剩余提问次数
   loading: false, // 左侧历史列表的loading
   finish: false, // 加载完成
   isNull: false, // 左侧聊天历史列表是否为空
@@ -339,10 +346,7 @@ const getHistory = () => {
         // res.data.list.forEach((item) => (item.status = "none"));
         const list = res.data.list.reverse();
         tagList.list = [...tagList.list, ...list];
-        if (res.data.residueQAQuantity === -1) {
-          // this.free = true;
-        }
-        tagList.residueQAQuantity = res.data.residueQAQuantity;
+
         // 条数不足 没有下一页了
         if (res.data.list.length < pageSize) {
           tagList.finish = true;
@@ -443,13 +447,13 @@ const _getResult = async (message, tagId) => {
   // 其他错误信息
   source.addEventListener("apiErrors", (err) => {
     err.data = JSON.parse(err.data);
-    this.message.splice(this.message.length - 1, 1);
-    this.message.splice(this.message.length - 1, 1);
+    // this.message.splice(this.message.length - 1, 1);
+    // this.message.splice(this.message.length - 1, 1);
 
     // 敏感词
     if (err.data.code == 1025) {
-      this.sensitiveText = err.data.message;
-      this.$refs.isSensitive.open();
+      tipMessage.value = err.data.message;
+      dialogVisible.value = true;
       return;
     }
 
@@ -464,9 +468,11 @@ const _getResult = async (message, tagId) => {
 
     // 充值会员
     if (err.data.code == 30108) {
-      this.sensitiveText =
-        "您的免费问答次数已用尽，开通会员享1000次/月问答权益!";
-      this.$refs.countRunOut.open();
+      //   "您的免费问答次数已用尽，开通会员享1000次/月问答权益!";
+      ElMessage({
+        message: err.data.message,
+        type: "info",
+      });
       return;
     }
 
@@ -483,34 +489,34 @@ const _getResult = async (message, tagId) => {
     (event) => {
       console.log(event, "监听返回的信息添加到响应的会话信息");
       // 减少提问次数
-      if (this.free === false) {
-        this.residueQAQuantity -= 1;
-      }
-      if (this.isVip === false && this.freeTotal > 0) {
-        this.freeTotal--;
-        uni.setStorageSync("residueFreeQAQuantity", this.freeTotal);
-        this.freeTotal = uni.getStorageSync("residueFreeQAQuantity");
+      // if (this.free === false) {
+      //   this.residueQAQuantity -= 1;
+      // }
+      // if (this.isVip === false && this.freeTotal > 0) {
+      //   this.freeTotal--;
+      //   uni.setStorageSync("residueFreeQAQuantity", this.freeTotal);
+      //   this.freeTotal = uni.getStorageSync("residueFreeQAQuantity");
 
-        console.log("ssss", this.freeTotal);
-      }
+      //   console.log("ssss", this.freeTotal);
+      // }
 
-      let qd = JSON.parse(event.data);
-      this.message[this.message.length - 1].id = qd.aId;
-      this.message[this.message.length - 1].tagId = qd.tagId;
-      this.message[this.message.length - 2].id = qd.qId;
-      this.message[this.message.length - 2].tagId = qd.tagId;
-      this.lastId = this.message[0].id;
+      // let qd = JSON.parse(event.data);
+      // this.message[this.message.length - 1].id = qd.aId;
+      // this.message[this.message.length - 1].tagId = qd.tagId;
+      // this.message[this.message.length - 2].id = qd.qId;
+      // this.message[this.message.length - 2].tagId = qd.tagId;
+      // this.lastId = this.message[0].id;
 
-      // 如果tagId==0说明是第一次会话，把新的会话第一条添加到side
-      if (tagId == 0) {
-        let h = {
-          id: qd.tagId,
-          title: this.message[this.message.length - 2].description,
-          status: "active",
-        };
-        this.history.unshift(h);
-        this.historyActive = JSON.parse(JSON.stringify(h));
-      }
+      // // 如果tagId==0说明是第一次会话，把新的会话第一条添加到side
+      // if (tagId == 0) {
+      //   let h = {
+      //     id: qd.tagId,
+      //     title: this.message[this.message.length - 2].description,
+      //     status: "active",
+      //   };
+      //   this.history.unshift(h);
+      //   this.historyActive = JSON.parse(JSON.stringify(h));
+      // }
     },
     false
   );
@@ -520,6 +526,7 @@ const _getResult = async (message, tagId) => {
   };
 
   source.onmessage = (e) => {
+    console.log("onmessage", e);
     if (e.data == "[DONE]") {
       source.close(source);
     } else if (e.type == "message") {
@@ -527,19 +534,19 @@ const _getResult = async (message, tagId) => {
       n = n.replace(/\\n/g, "<br/>");
       n = n.replace(/\\/g, "");
 
-      let s = n.substring(1, n.length - 1);
+      // let s = n.substring(1, n.length - 1);
 
-      this.message[this.message.length - 1].description += s;
+      // this.message[this.message.length - 1].description += s;
 
-      this.scrollTop += 100;
+      // this.scrollTop += 100;
 
-      this._setScrollTop(200);
+      // this._setScrollTop(200);
     }
   };
 
   source.onerror = (e) => {
     console.log(e, "onerror");
-    this._close(source);
+    source._close(source);
   };
 };
 
@@ -573,7 +580,7 @@ const initCopyClipboard = () => {
 
 // -----------------左侧聊天历史的选中和删除----------------------
 // 被选中的聊天历史id
-const activeTag = ref(null);
+const activeTag = ref(0);
 
 // 选中
 const handActiveTag = (item, index) => {
@@ -594,7 +601,7 @@ const handDeleteTag = (item, index) => {
 // 确认删除
 const handConfirmDeleteTag = () => {
   // activeTag.value
-  activeTag.value = null;
+  activeTag.value = 0;
   removeVisible.value = false;
   ElMessage({
     message: "删除成功",
@@ -604,7 +611,7 @@ const handConfirmDeleteTag = () => {
 
 // 新增聊天
 const handNewChat = () => {
-  if (tagList.residueQAQuantity == 0) {
+  if (residueQAQuantity == 0) {
     return ElMessage({
       message: "您的免费问答次数不足",
       type: "info",
@@ -612,7 +619,7 @@ const handNewChat = () => {
   }
 
   // 清空聊天区
-  activeTag.value = null;
+  activeTag.value = 0;
   clearChatList();
 };
 
@@ -634,7 +641,7 @@ watch(
 );
 
 // 输入框的文本
-const asking = ref("");
+const question = ref("");
 
 // 发送按钮的loading
 const sendLoading = ref(false);
@@ -646,13 +653,19 @@ const handSend = () => {
   //   message: "发送成功",
   //   type: "success",
   // });
-  if (tagList.residueQAQuantity === 0) {
+  if (question.value.length > 1000) {
     return ElMessage({
-      message: "您的免费问答次数不足",
-      type: "info",
+      message: "已达到最大字数限制，请缩小您的文本长度",
+      type: "warning",
     });
   }
-  chatList.list.push({ type: 1, title: "aasds" });
+  if (residueQAQuantity === 0) {
+    return ElMessage({
+      message: "您的免费问答次数不足",
+      type: "warning",
+    });
+  }
+  _getResult(question, activeTag);
 };
 
 // 加载完成事件
@@ -1075,6 +1088,7 @@ onMounted(() => {
           font-style: normal;
           font-weight: 500;
           line-height: normal;
+          cursor: pointer;
           &:active {
             opacity: 0.8;
           }
@@ -1096,6 +1110,7 @@ onMounted(() => {
           font-weight: 500;
           line-height: normal;
           opacity: 0.5;
+          cursor: auto;
         }
       }
     }

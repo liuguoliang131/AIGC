@@ -65,6 +65,7 @@
 import { ElMessage } from "element-plus";
 import http from "../../http/index";
 import api from "./api";
+import utils from "@/common/utils";
 
 export default {
   data() {
@@ -148,6 +149,11 @@ export default {
         })
         .then((res) => {
           if (res.code == 200) {
+            utils.setToken(res.data.token);
+            utils.setUserInfo(res.data);
+            this.$router.push({
+              path: "/",
+            });
           } else {
             ElMessage({
               message: res.message,
