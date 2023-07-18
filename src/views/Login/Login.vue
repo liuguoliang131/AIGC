@@ -10,11 +10,27 @@
       <div class="login-title">一起探索AIGC的无限可能</div>
       <div class="input-box">
         <div class="input-group">
-          <input type="tel" id="phone" v-model="phone" placeholder="请输入手机号" class="input-phone">
+          <input
+            type="tel"
+            id="phone"
+            maxlength="11"
+            v-model="phone"
+            placeholder="请输入手机号"
+            class="input-phone"
+          />
         </div>
         <div class="input-group">
-          <input type="text" id="code" v-model="code" placeholder="请输入验证码" class="input-verCode">
-          <button class="code-btn" @click="sendCode" :disabled="isSending">{{ buttonText }}</button>
+          <input
+            type="text"
+            id="code"
+            maxlength="4"
+            v-model="code"
+            placeholder="请输入验证码"
+            class="input-verCode"
+          />
+          <button class="code-btn" @click="sendCode" :disabled="timer !== null">
+            {{ timer ? countDown : "获取验证码" }}
+          </button>
         </div>
       </div>
       <!-- <button class="login-btn" :disabled="!isValid" @click="login">登录</button> -->
@@ -25,128 +41,134 @@
         登录即代表您已同意
         <a class="policy" href="https://baidu.com">《服务协议和隐私政策》</a>
         和
-        <a class="policy" href="https://element-plus.org/en-US/component/message.html#basic-usage">《安全协议》</a>
+        <a
+          class="policy"
+          href="https://element-plus.org/en-US/component/message.html#basic-usage"
+          >《安全协议》</a
+        >
       </div>
     </div>
     <div class="footer">
-      <div class="footer-record">京ICP备19041919号-2京公网安备11010502039881号</div>
-      <div class="footer-record">网络经营许可证京网文[2020]4683-870号</div>
+      <div class="footer-record">
+        <span @click="handGoICP"
+          >京ICP备19041919号-2京公网安备11010502039881号</span
+        >
+      </div>
+      <div class="footer-record">
+        <span @click="handGoICP">网络经营许可证京网文[2020]4683-870号</span>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import { ElMessage } from 'element-plus'
+import { ElMessage } from "element-plus";
 import http from "../../http/index";
 import api from "./api";
 
 export default {
   data() {
     return {
-      phone: '',
-      code: '',
-      isSending: false,
-      isCounting: false,
+      phone: "",
+      code: "",
       countDown: 60,
-      timer: null
+      timer: null,
     };
   },
-  computed: {
-    isValid() {
-      // return this.phone && this.code;
-    },
-    buttonText() {
-      if (this.isCounting) {
-        return `${this.countDown}秒`
-      } else {
-        return '获取验证码'
-      }
-    }
 
-  },
   methods: {
     sendCode() {
-      // if (phone.value.length == 0) {
-      //   return ElMessage('请输入手机号')
-
-      // } else if (phone.value.length != 11) {
-      //   return ElMessage('手机号格式错误')
-      // }
-      console.log('手机号：' + this.phone);
+      if (this.phone.length == 0) {
+        return ElMessage({
+          message: "请输入手机号",
+          type: "warning",
+        });
+      } else if (!/^[1]{1}[0-9]{10}$/.test(this.phone)) {
+        return ElMessage({
+          message: "手机号格式错误",
+          type: "warning",
+        });
+      }
 
       // 发送验证码的逻辑
-      this.isSending = true;
-      this.buttonText = '发送中...';
-      this.isCounting = true
-      http.get(api.send_verfyCode, {
-        params: {
-          tel: this.phone
-        }
-      }).then((res) => {
-        if (res.code == 200) {
-          this.timer = setInterval(() => {
-            if (this.countDown > 1) {
-              this.countDown--
-            } else {
-              this.isCounting = false
-              this.isSending = false;
-              this.countDown = 60
-              clearInterval(this.timer)
-              this.timer = null
-            }
-          }, 1000)
 
-        } else {
-          ElMessage({
-            message: res.message,
-            type: "error",
-          });
-
-        }
-      })
-
+      http
+        .get(api.send_verfyCode, {
+          params: {
+            tel: this.phone,
+          },
+        })
+        .then((res) => {
+          if (res.code == 200) {
+            this.timer = setInterval(() => {
+              if (this.countDown > 1) {
+                this.countDown--;
+              } else {
+                clearInterval(this.timer);
+                this.timer = null;
+              }
+            }, 1000);
+          } else {
+            ElMessage({
+              message: res.message,
+              type: "error",
+            });
+          }
+        });
     },
     login() {
-      // 登录的逻辑
-      if (phone.value.length == 0) {
-        ElMessage('请输入手机号')
-        retrun
-      } else if (phone.value.length != 11) {
-        ElMessage('手机号格式错误')
-        retrun
-      } else if (code.value.length == 0) {
-        ElMessage('请输入验证码')
-        retrun
-      } else if (code.value.length != 4) {
-        ElMessage('‘验证码错误，请重新提交')
-        retrun
+      if (this.phone.length == 0) {
+        return ElMessage({
+          message: "请输入手机号",
+          type: "warning",
+        });
+      } else if (!/^[1]{1}[0-9]{10}$/.test(this.phone)) {
+        return ElMessage({
+          message: "手机号格式错误",
+          type: "warning",
+        });
       }
 
-      console.log('手机号：' + this.phone);
-      console.log('验证码：' + this.code);
-      http.post(api.user_login, {
-        tel: this.phone,
-        verifyCode: this.code
+      if (this.code.length == 0) {
+        return ElMessage({
+          message: "请输入验证码",
+          type: "warning",
+        });
+      } else if (!/^\d{4}$/.test(this.code)) {
+        return ElMessage({
+          message: "验证码格式错误",
+          type: "warning",
+        });
       }
-      ).then((res) => {
-        if (res.code == 200) {
-        }
-        else {
-          ElMessage({
-            message: res.message,
-            type: "error",
-          });
-        }
-      })
-    }
-  }
+
+      http
+        .post(api.user_login, {
+          tel: this.phone,
+          verifyCode: this.code,
+        })
+        .then((res) => {
+          if (res.code == 200) {
+          } else {
+            ElMessage({
+              message: res.message,
+              type: "error",
+            });
+          }
+        });
+    },
+
+    // 去往工信部网站
+    handGoICP() {
+      window.open(`https://beian.miit.gov.cn/`);
+    },
+  },
 };
 </script>
 
 <style scoped>
 .container {
   height: 100%;
-  background-image: url('../../assets/login/login_bg.png');
+  background-image: url("../../assets/login/login_bg.png");
   background-size: cover;
   display: flex;
   justify-content: space-between;
@@ -160,7 +182,7 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: url('../../assets/login/login_bg.png');
+  background-image: url("../../assets/login/login_bg.png");
   background-size: cover;
   opacity: 0.5;
   z-index: -1;
@@ -172,14 +194,12 @@ export default {
   position: absolute;
   top: 13px;
   left: 22px;
-
-
 }
 
 .logo {
   width: 40px;
   height: 30.025px;
-  background-image: url('../../assets/login/login_logo.png');
+  background-image: url("../../assets/login/login_logo.png");
   background-size: contain;
   background-repeat: no-repeat;
 }
@@ -193,7 +213,6 @@ export default {
   font-weight: 600;
 }
 
-
 .login-box {
   background-color: #ffffff;
   border-radius: 5px;
@@ -201,7 +220,6 @@ export default {
   float: right;
   margin-right: 200px;
   padding: 90px 70px;
-
 }
 
 .login-title {
@@ -226,7 +244,6 @@ export default {
   /* margin-bottom: 10px; */
 }
 
-
 /* input[type='tel'],
 input[type='text'] {
   flex: 1;
@@ -243,24 +260,23 @@ input[type='text'] {
 input::-webkit-input-placeholder,
 input:-ms-input-placeholder,
 input::placeholder {
-  color: #9B9AB9;
+  color: #9b9ab9;
   font-family: PingFang SC;
   font-size: 19px;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
-
 }
 
 .input-phone {
   margin-top: 30px;
   width: 390px;
   height: 52px;
-  border: 1px solid #FFF;
-  color: #9B9AB9;
+  border: 1px solid #fff;
+  color: #9b9ab9;
   font-size: 19px;
   border-radius: 10px;
-  background-color: #F6F6FA;
+  background-color: #f6f6fa;
   padding-left: 30px;
   outline: none;
 }
@@ -269,11 +285,11 @@ input::placeholder {
   margin-top: 24px;
   width: 390px;
   height: 52px;
-  border: 1px solid #FFF;
-  color: #9B9AB9;
+  border: 1px solid #fff;
+  color: #9b9ab9;
   font-size: 19px;
   border-radius: 10px;
-  background-color: #F6F6FA;
+  background-color: #f6f6fa;
   padding-left: 30px;
   outline: none;
 }
@@ -286,7 +302,7 @@ input::placeholder {
   right: 27px;
   top: 33px;
   background-color: transparent;
-  color: #126CFE;
+  color: #126cfe;
   text-align: center;
   font-family: PingFang SC;
   font-size: 18px;
@@ -313,14 +329,13 @@ input::placeholder {
   height: 52px;
   border: none;
   border-radius: 10px;
-  background: #126CFE;
+  background: #126cfe;
   color: #ffffff;
   font-size: 19px;
   cursor: pointer;
   font-weight: 500;
   line-height: normal;
   font-family: PingFang SC;
-
 }
 
 .login-btn:disabled {
@@ -344,7 +359,6 @@ input::placeholder {
   font-size: 14px;
   font-style: normal;
   font-weight: 400;
-
 }
 
 .footer {
@@ -362,5 +376,6 @@ input::placeholder {
 
 .footer-record {
   margin-top: 16px;
+  cursor: pointer;
 }
 </style>
