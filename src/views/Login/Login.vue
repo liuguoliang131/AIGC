@@ -38,6 +38,7 @@
 <script>
 import { ElMessage } from 'element-plus'
 import http from "../../http/index";
+import api from "./api";
 
 export default {
   data() {
@@ -76,20 +77,32 @@ export default {
       this.isSending = true;
       this.buttonText = '发送中...';
       this.isCounting = true
-      http.post('user/sendVerifyCode', {
-        tel: this.phone,
-      });
+      http.get(api.send_verfyCode, {
+        tel: this.phone.value,
+        // mock: 156
+      }).then((res) => {
+        if (res.code == 200) {
+          this.timer = setInterval(() => {
+            if (this.countDown > 1) {
+              this.countDown--
+            } else {
+              this.isCounting = false
+              this.isSending = false;
+              this.countDown = 60
+              clearInterval(this.timer)
+              this.timer = null
+            }
+          }, 1000)
 
-      this.timer = setInterval(() => {
-        if (this.countDown > 1) {
-          this.countDown--
         } else {
-          this.isCounting = false
-          this.countDown = 60
-          clearInterval(this.timer)
-          this.timer = null
+          ElMessage({
+            message: res.message,
+            type: "error",
+          });
+
         }
-      }, 1000)
+      })
+
     },
     login() {
       // 登录的逻辑
@@ -109,7 +122,19 @@ export default {
 
       console.log('手机号：' + this.phone);
       console.log('验证码：' + this.code);
-      alert('登录成功！');
+      http.post(api.user_login, {
+        tel: this.phone.value,
+        code: this.code.value
+      }).then((res) => {
+        if (res.code == 200) {
+        }
+        else {
+          ElMessage({
+            message: res.message,
+            type: "error",
+          });
+        }
+      })
     }
   }
 };
