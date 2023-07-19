@@ -73,6 +73,7 @@ export default {
       countDown: 60,
       timer: null,
       loading: false,
+      getCodeLoading: false,
     };
   },
 
@@ -91,7 +92,8 @@ export default {
       }
 
       // 发送验证码的逻辑
-
+      if (this.getCodeLoading) return;
+      this.getCodeLoading = true;
       http
         .get(api.send_verfyCode, {
           params: {
@@ -99,6 +101,7 @@ export default {
           },
         })
         .then((res) => {
+          this.getCodeLoading = false;
           if (res.code == 200) {
             this.timer = setInterval(() => {
               if (this.countDown > 1) {
@@ -106,6 +109,7 @@ export default {
               } else {
                 clearInterval(this.timer);
                 this.timer = null;
+                this.countDown = 60;
               }
             }, 1000);
           } else {
@@ -155,6 +159,7 @@ export default {
               path: "/",
             });
           } else {
+            this.loading = false;
             ElMessage({
               message: res.message,
               type: "error",
@@ -385,6 +390,7 @@ input::placeholder {
   font-size: 14px;
   font-style: normal;
   font-weight: 400;
+  cursor: pointer;
 }
 
 .footer {

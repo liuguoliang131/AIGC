@@ -216,19 +216,17 @@
                           !(chatList.list.length - 1 == idx && sendLoading)
                         "
                       >
-                        <div class="copy">
+                        <div class="copy" @click="handleCopy(item.description)">
                           <img
                             src="https://quanres.hanhoukeji.com/hanhou-ai-pc/copy-icon.svg"
                             alt=""
-                            @click="handleCopy(item.description)"
                           />
                           复制
                         </div>
-                        <div class="del">
+                        <div class="del" @click="handShowRemoveMsg(item.id)">
                           <img
                             src="https://quanres.hanhoukeji.com/hanhou-ai-pc/delete-icon.svg"
                             alt=""
-                            @click="handShowRemoveMsg(item.id)"
                           />
                           删除
                         </div>
@@ -469,6 +467,10 @@ const getHistory = () => {
         const list = res.data.list;
 
         tagList.list = [...tagList.list, ...list];
+        // 第一次获取列表时默认选中第一个tag
+        if (lastId === 0 && res.data && res.data.list && res.data.list.length) {
+          handActiveTag(tagList.list[0]);
+        }
 
         // 条数不足 没有下一页了
         if (res.data.list.length < pageSize) {
@@ -660,6 +662,7 @@ const _getResult = async (message, tagId) => {
         };
         activeTag.value = qd.tagId;
         tagList.list.unshift(h);
+        // tagList.list = [h];
       }
     },
     false
@@ -894,13 +897,16 @@ watch(
       // 动作状态为加载列表时: 触发列表加载完成后,卷轴scrollTop设定为加载之前观看的位置
       chatScrollView.value.scrollTop = newVal - oldVal;
       // 滑动动画:下滑一点点
-      slideAnimation(-50);
+      slideAnimation(-20);
     } else if (actionState === "2") {
       // 动作状态为发送新问题时: 卷轴scrollTop设定到最底下位置
       // 滑动动画:滑到最底
       slideAnimation(oldVal);
     } else if (actionState === "3") {
       // 接收答案中 不滚动卷轴
+    } else if (actionState === "4") {
+      // 动作状态为删除对话信息: 删除对话信息,卷轴scrollTop设定为加载之前观看的位置
+      chatScrollView.value.scrollTop = oldVal - newVal;
     }
   },
   {
@@ -913,10 +919,11 @@ const handConfirmRemoveMsg = () => {
   removeMsgVisible.value = false;
   http
     .post(api.chat_delAnswer, {
-      answerId: chatList.lastId,
+      answerId: delMsgId.value,
     })
     .then((res) => {
       if (res.code == 200) {
+        actionState = "4";
         const idx = chatList.list.findIndex(
           (item) => item.id === delMsgId.value
         );
@@ -1263,11 +1270,10 @@ onMounted(() => {
                         height: 30px;
                         margin-right: 15px;
                         cursor: pointer;
-
-                        &:active {
-                          border-radius: 5px;
-                          background-color: rgba(18, 108, 254, 0.5);
-                        }
+                      }
+                      &:active {
+                        border-radius: 5px;
+                        background-color: rgba(18, 108, 254, 0.5);
                       }
                     }
                     .del {
@@ -1278,11 +1284,10 @@ onMounted(() => {
                         height: 30px;
                         margin-right: 15px;
                         cursor: pointer;
-
-                        &:active {
-                          border-radius: 5px;
-                          background-color: rgba(18, 108, 254, 0.5);
-                        }
+                      }
+                      &:active {
+                        border-radius: 5px;
+                        background-color: rgba(18, 108, 254, 0.5);
                       }
                     }
                   }
