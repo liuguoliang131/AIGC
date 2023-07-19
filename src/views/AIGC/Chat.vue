@@ -9,7 +9,28 @@
         />
         Hanhou·AIGC
       </div>
-      <div class="newchat" @click="handNewChat">
+
+      <div v-if="sendLoading" class="newchat_disabled">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="14"
+          height="14"
+          viewBox="0 0 14 14"
+          fill="none"
+        >
+          <rect y="6" width="14" height="2" fill="white" />
+          <rect
+            x="6"
+            y="14"
+            width="14"
+            height="2"
+            transform="rotate(-90 6 14)"
+            fill="white"
+          />
+        </svg>
+        <span>新建聊天</span>
+      </div>
+      <div v-else class="newchat" @click="handNewChat">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="14"
@@ -148,7 +169,7 @@
           ref="chatScrollView"
           @scroll="chatScrollViewListen"
         >
-          <div v-show="chatLoading" class="loading">正在加载...</div>
+          <div v-show="chatList.loading" class="loading">正在加载...</div>
           <div ref="chatScrollPage" class="scroll_page">
             <div class="list_content">
               <template v-for="(item, idx) in chatList.list" :key="idx">
@@ -157,26 +178,39 @@
                     <div class="bubble">
                       <div v-html="item.description"></div>
                     </div>
-                    <img class="avatar" src="../../assets/logo.png" alt="" />
+                    <img
+                      class="avatar"
+                      src="https://quanres.hanhoukeji.com/hanhou-ai-pc/mine-avatar.png"
+                      alt=""
+                    />
                   </div>
                 </div>
                 <div v-else-if="item.type == 2" class="msg_item answer">
                   <div class="toleft">
-                    <img class="avatar" src="../../assets//logo.png" alt="" />
+                    <img
+                      class="avatar"
+                      src="https://quanres.hanhoukeji.com/hanhou-ai-pc/robot-avatar.png"
+                      alt=""
+                    />
                     <div class="bubble">
-                      <div v-html="item.description"></div>
+                      <div v-if="!item.description">
+                        <el-icon class="rotate_icon"><loading-icon /></el-icon>
+                      </div>
+                      <div v-else v-html="item.description"></div>
                       <div class="taptap">
-                        <div class="copy" @click="handleCopy(item.description)">
+                        <div class="copy">
                           <img
                             src="https://quanres.hanhoukeji.com/hanhou-ai-pc/copy-icon.svg"
                             alt=""
+                            @click="handleCopy(item.description)"
                           />
                           复制
                         </div>
-                        <div class="del" @click="handShowRemoveMsg(item.id)">
+                        <div class="del">
                           <img
                             src="https://quanres.hanhoukeji.com/hanhou-ai-pc/delete-icon.svg"
                             alt=""
+                            @click="handShowRemoveMsg(item.id)"
                           />
                           删除
                         </div>
@@ -303,6 +337,7 @@ import { reactive, ref, onMounted, onUpdated, watch } from "vue";
 import { useRouter } from "vue-router";
 import http from "../../http/index";
 import { ElMessage } from "element-plus";
+import { Loading as LoadingIcon } from "@element-plus/icons-vue";
 import { EventSourcePolyfill } from "event-source-polyfill";
 import api from "./api";
 import Clipboard from "clipboard";
@@ -472,6 +507,13 @@ const getAnswerList = (tagId) => {
     })
     .then((res) => {
       if (res.code == 200) {
+        // 防止在加载列表时切换tag
+        if (
+          chatList.list.length &&
+          chatList.list[0].tagId !== activeTag.value
+        ) {
+          return;
+        }
         chatList.list = [...res.data.list.reverse(), ...chatList.list];
         chatList.lastId = res.data.lastId;
 
@@ -585,8 +627,7 @@ const _getResult = async (message, tagId) => {
     "qInfo",
     (event) => {
       console.log(event, "监听返回的信息添加到响应的会话信息");
-      // 减少提问次数
-      residueQAQuantity.value -= 1;
+
       // if (this.isVip === false && this.freeTotal > 0) {
       //   this.freeTotal--;
       //   uni.setStorageSync("residueFreeQAQuantity", this.freeTotal);
@@ -596,6 +637,12 @@ const _getResult = async (message, tagId) => {
       // }
 
       let qd = JSON.parse(event.data);
+
+      // 减少提问次数
+      residueQAQuantity.value = Number(qd.residueQAQuantity);
+      userInfo.residueQAQuantity = residueQAQuantity.value;
+      utils.setUserInfo(userInfo);
+
       chatList.list[chatList.list.length - 1].id = qd.aId;
       chatList.list[chatList.list.length - 1].tagId = qd.tagId;
       chatList.list[chatList.list.length - 2].id = qd.qId;
@@ -637,6 +684,7 @@ const _getResult = async (message, tagId) => {
 
   source.onerror = (e) => {
     console.log(e, "onerror");
+    sendLoading.value = false;
     source._close(source);
   };
 };
@@ -644,6 +692,10 @@ const _getResult = async (message, tagId) => {
 // 敏感词弹窗 确认
 const bowDownToTheCCP = () => {
   chatList.list.splice(chatList.list.length - 2, 2);
+  // 重新设置lastId
+  chatList.lastId = chatList.list.length
+    ? chatList.list[chatList.list.length - 1].id
+    : 0;
   dialogVisible.value = false;
 };
 
@@ -679,6 +731,8 @@ const initCopyClipboard = () => {
 
 // 选中
 const handActiveTag = (item, index) => {
+  // 正在提问中不允许切换tag
+  if (sendLoading.value) return;
   activeTag.value = item.id;
   // 清空聊天窗口数据
   clearChatList();
@@ -707,6 +761,9 @@ const handConfirmDeleteTag = () => {
         const idx = tagList.list.findIndex((item) => item.id == tagId);
         console.log("idx", idx);
         tagList.list.splice(idx, 1);
+        tagList.lastId = tagList.list.length
+          ? tagList.list[tagList.list.length - 1].id
+          : 0;
         clearChatList();
         ElMessage({
           message: "删除成功",
@@ -761,12 +818,12 @@ const handSend = () => {
       type: "warning",
     });
   }
-  // if (residueQAQuantity.value === 0) {
-  //   return ElMessage({
-  //     message: "您的免费问答次数不足",
-  //     type: "warning",
-  //   });
-  // }
+  if (residueQAQuantity.value === 0) {
+    return ElMessage({
+      message: "您的免费问答次数不足",
+      type: "warning",
+    });
+  }
   const question1 = question.value;
   question.value = "";
   sendLoading.value = true;
@@ -795,10 +852,8 @@ const handSend = () => {
 const handConfirmRemoveMsg = () => {
   removeMsgVisible.value = false;
   http
-    .get(api.chat_delAnswer, {
-      params: {
-        answerId: chatList.lastId,
-      },
+    .post(api.chat_delAnswer, {
+      answerId: chatList.lastId,
     })
     .then((res) => {
       if (res.code == 200) {
@@ -875,6 +930,27 @@ onMounted(() => {
       }
       &:active {
         opacity: 0.8;
+      }
+    }
+    .newchat_disabled {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 266px;
+      height: 46px;
+      color: #fff;
+      font-family: PingFang SC;
+      font-size: 19px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: normal;
+      border-radius: 5px;
+      background: #126cfe;
+      margin: 28px auto 0 auto;
+      cursor: auto;
+      opacity: 0.5;
+      span {
+        margin-left: 11px;
       }
     }
 
@@ -1398,6 +1474,19 @@ onMounted(() => {
     left: 0;
     width: 200px;
     height: 200px;
+  }
+  @keyframes rotateLoading {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  /deep/.rotate_icon {
+    transform-origin: center center;
+    animation: rotateLoading 1.5s linear infinite;
   }
 }
 </style>
