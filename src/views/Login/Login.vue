@@ -17,16 +17,18 @@
             v-model="phone"
             placeholder="请输入手机号"
             class="input-phone"
+            @input="handlePhoneInput"
           />
         </div>
         <div class="input-group">
           <input
-            type="text"
+            type="tel"
             id="code"
             maxlength="4"
             v-model="code"
             placeholder="请输入验证码"
             class="input-verCode"
+            @input="handleCodeInput"
           />
           <button class="code-btn" @click="sendCode" :disabled="timer !== null">
             {{ timer ? countDown : "获取验证码" }}
@@ -174,6 +176,16 @@ export default {
           type,
         },
       });
+    },
+
+    handlePhoneInput(event) {
+      // 使用正则表达式来限制输入框只能输入数字
+      let value = event.target.value.replace(/[^\d]/g, "");
+      this.phone = value;
+    },
+    handleCodeInput(event) {
+      let value = event.target.value.replace(/[^\d]/g, "");
+      this.code = value;
     },
   },
 };
