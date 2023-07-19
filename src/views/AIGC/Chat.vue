@@ -52,7 +52,7 @@
       </div>
 
       <div class="log_list" v-loading="tagList.loading">
-        <div class="scroll_view">
+        <div class="scroll_view scrollbar_show">
           <div v-if="tagList.isNull" class="scroll_page"></div>
           <div v-else v-infinite-scroll="getHistory" class="scroll_page">
             <div
@@ -176,7 +176,10 @@
                 <div v-if="item.type == 1" class="msg_item question">
                   <div class="toright">
                     <div class="bubble">
-                      <div v-html="item.description"></div>
+                      <div
+                        v-html="item.description"
+                        style="white-space: pre-wrap"
+                      ></div>
                     </div>
                     <img
                       class="avatar"
@@ -193,11 +196,26 @@
                       alt=""
                     />
                     <div class="bubble">
-                      <div v-if="!item.description">
+                      <div
+                        v-if="
+                          !item.description &&
+                          sendLoading &&
+                          chatList.list.length - 1 === idx
+                        "
+                      >
                         <el-icon class="rotate_icon"><loading-icon /></el-icon>
                       </div>
-                      <div v-else v-html="item.description"></div>
-                      <div class="taptap">
+                      <div
+                        v-else
+                        v-html="item.description"
+                        style="white-space: pre-wrap"
+                      ></div>
+                      <div
+                        class="taptap"
+                        v-show="
+                          !(chatList.list.length - 1 == idx && sendLoading)
+                        "
+                      >
                         <div class="copy">
                           <img
                             src="https://quanres.hanhoukeji.com/hanhou-ai-pc/copy-icon.svg"
@@ -477,8 +495,8 @@ const chatScrollPage = ref();
 // 聊天列表高度
 const scrollPageHeight = ref(0);
 
-// 聊天列表是否加载中
-const chatLoading = ref(false);
+// 记录当前动作状态是1加载列表 2发送新问题 3接收答案中
+let actionState = "1";
 
 // 滚动条距离顶部距离scrollTop
 const chatScrollTop = ref(0);
@@ -533,29 +551,13 @@ const getAnswerList = (tagId) => {
   console.log("加载列表");
 };
 
-// dom更新后调用  记录此时的聊天列表高度
-onUpdated(() => {
-  scrollPageHeight.value = chatScrollPage.value.offsetHeight;
-});
-
-// 每次加载列表后设置滚动高度
-watch(
-  scrollPageHeight,
-  (newVal, oldVal) => {
-    console.log("watch:chatScrollPage");
-    chatScrollView.value.scrollTop = newVal - oldVal;
-  },
-  {
-    deep: true,
-  }
-);
-
 // 清空聊天窗口数据
 const clearChatList = () => {
   chatList.list = [];
   chatList.lastId = 0;
   chatList.loading = false;
   chatList.finish = false;
+  actionState = "1";
 };
 
 // 聊天窗口滚动监听
@@ -627,6 +629,7 @@ const _getResult = async (message, tagId) => {
     "qInfo",
     (event) => {
       console.log(event, "监听返回的信息添加到响应的会话信息");
+      actionState = "3"; // 接收答案时卷轴不调用滚动方法
 
       // if (this.isVip === false && this.freeTotal > 0) {
       //   this.freeTotal--;
@@ -731,6 +734,7 @@ const initCopyClipboard = () => {
 
 // 选中
 const handActiveTag = (item, index) => {
+  if (item.id === activeTag.value) return;
   // 正在提问中不允许切换tag
   if (sendLoading.value) return;
   activeTag.value = item.id;
@@ -801,6 +805,7 @@ watch(
     if (newVal === 0) {
       if (activeTag.value) {
         console.log("watch:到顶");
+        actionState = "1"; // 动作状态设定为加载列表
         getAnswerList(activeTag.value);
       }
     }
@@ -812,6 +817,12 @@ watch(
 
 // 发送问题
 const handSend = () => {
+  if (question.value.length === 0) {
+    return ElMessage({
+      message: "声带落家了?",
+      type: "warning",
+    });
+  }
   if (question.value.length > 1000) {
     return ElMessage({
       message: "已达到最大字数限制，请缩小您的文本长度",
@@ -824,6 +835,7 @@ const handSend = () => {
       type: "warning",
     });
   }
+  actionState = "2"; //动作状态设定为添加新问题
   const question1 = question.value;
   question.value = "";
   sendLoading.value = true;
@@ -847,6 +859,54 @@ const handSend = () => {
 
   _getResult(question1, activeTag.value);
 };
+
+let slideTimer = null;
+// 滑动动画 length:number 滑动距离
+const slideAnimation = (length) => {
+  console.log("滑动动画", length);
+  if (slideTimer) {
+    clearInterval(slideTimer);
+    slideTimer = null;
+  }
+  let countDown = 1000; // 毫秒
+  const step = (length / countDown) * 10; // 每一帧走的长度
+  slideTimer = setInterval(() => {
+    chatScrollView.value.scrollTop += step;
+    countDown -= 10;
+    if (countDown <= 0) {
+      clearInterval(slideTimer);
+      slideTimer = null;
+    }
+  }, 10);
+};
+
+// dom更新后调用  记录此时的聊天列表高度
+onUpdated(() => {
+  scrollPageHeight.value = chatScrollPage.value.offsetHeight;
+});
+
+// 每次加载列表后设置滚动高度
+watch(
+  scrollPageHeight,
+  (newVal, oldVal) => {
+    console.log("watch:chatScrollPage");
+    if (actionState === "1") {
+      // 动作状态为加载列表时: 触发列表加载完成后,卷轴scrollTop设定为加载之前观看的位置
+      chatScrollView.value.scrollTop = newVal - oldVal;
+      // 滑动动画:下滑一点点
+      slideAnimation(-50);
+    } else if (actionState === "2") {
+      // 动作状态为发送新问题时: 卷轴scrollTop设定到最底下位置
+      // 滑动动画:滑到最底
+      slideAnimation(oldVal);
+    } else if (actionState === "3") {
+      // 接收答案中 不滚动卷轴
+    }
+  },
+  {
+    deep: true,
+  }
+);
 
 // 删除信息确认
 const handConfirmRemoveMsg = () => {
@@ -962,9 +1022,9 @@ onMounted(() => {
       .scroll_view {
         height: 100%;
         overflow-y: scroll;
-        &::-webkit-scrollbar {
-          display: none;
-        }
+        // &::-webkit-scrollbar {
+        //   display: none;
+        // }
         .scroll_page {
           width: 266px;
           margin: 0 auto;
@@ -1030,6 +1090,11 @@ onMounted(() => {
           }
         }
       }
+      // .scrollbar_show {
+      //   &::-webkit-scrollbar {
+      //     display: block;
+      //   }
+      // }
     }
 
     .side-fo {

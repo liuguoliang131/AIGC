@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container" v-loading="loading">
     <div class="background"></div>
     <div class="logo-view">
       <div class="logo"></div>
@@ -70,6 +70,7 @@ export default {
       code: "",
       countDown: 60,
       timer: null,
+      loading: false,
     };
   },
 
@@ -137,7 +138,7 @@ export default {
           type: "warning",
         });
       }
-
+      this.loading = true;
       http
         .post(api.user_login, {
           tel: this.phone,
@@ -147,6 +148,7 @@ export default {
           if (res.code == 200) {
             utils.setToken(res.data.token);
             utils.setUserInfo(res.data);
+            this.loading = false;
             this.$router.push({
               path: "/",
             });
