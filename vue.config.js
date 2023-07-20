@@ -1,6 +1,6 @@
 const { defineConfig } = require('@vue/cli-service')
 module.exports = defineConfig({
-  transpileDependencies: true,
+  transpileDependencies: ["*"],
   lintOnSave: false,
   devServer: {
     proxy: {
@@ -17,6 +17,9 @@ module.exports = defineConfig({
         pathReWrite: {
           '^/mock': '/mock'
         }
+      },
+      '/ws': {
+        changeOrigin: false,
       }
     }
   },

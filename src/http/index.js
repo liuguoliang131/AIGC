@@ -1,12 +1,13 @@
 import axios from 'axios'
 // 环境变量
-// console.log('环境变量', process.env.VUE_APP_ENV) // dev test prod
+// console.log('环境变量', process.env.VUE_APP_SELF_ENV) // dev test prod
 import {
   _getSign
 } from './sign.js'
 
 import utils from '../common/utils'
-import {router} from 'vue-router'
+import { useRouter } from 'vue-router'
+const router = useRouter()
 
 const instance = axios.create({
   baseURL: process.env.VUE_APP_BASE_URL,

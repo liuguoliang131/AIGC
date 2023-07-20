@@ -14,7 +14,6 @@ module.exports = {
     'postcss-pxtorem': {
       rootValue: 192, // 设计稿宽度的 1/ 10
       propList: ['*'], // 所有 px 转 rem
-      exclude: /node_modules\/(?!(element-plus)\/).*/,
     }
   }
 }
