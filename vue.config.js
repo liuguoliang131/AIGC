@@ -26,5 +26,8 @@ module.exports = defineConfig({
   publicPath: './',  // 静态文件路径
   assetsDir: 'static', 
   productionSourceMap: true,  //生成map文件
-
+  // ...其他配置
+  css: {
+    extract: true
+  }
 })
