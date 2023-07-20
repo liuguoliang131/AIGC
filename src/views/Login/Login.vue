@@ -199,7 +199,7 @@ export default {
 <style scoped lang="less">
 .container {
   height: 100%;
-  background-image: url("https://quanres.hanhoukeji.com/hanhou-ai-pc/login_bg.png");
+  background-image: url("https://quanres.hanhoukeji.com/hanhou-ai-pc/login_bg2.png");
   background-size: cover;
   display: flex;
   justify-content: space-between;
@@ -213,7 +213,7 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: url("https://quanres.hanhoukeji.com/hanhou-ai-pc/login_bg.png");
+  background-image: url("https://quanres.hanhoukeji.com/hanhou-ai-pc/login_bg2.png");
   background-size: cover;
   opacity: 0.5;
   z-index: -1;
@@ -246,11 +246,11 @@ export default {
 
 .login-box {
   background-color: #ffffff;
-  border-radius: 5px;
+  border-radius: 18px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   float: right;
   margin-right: 200px;
-  padding: 90px 70px;
+  padding: 75px 90px;
 }
 
 .login-title {
@@ -260,7 +260,7 @@ export default {
   font-size: 34px;
   font-style: normal;
   font-weight: 500;
-  line-height: normal;
+  line-height: 47.6px;
 }
 
 .input-box {

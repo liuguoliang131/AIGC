@@ -7,7 +7,7 @@
           src="https://quanres.hanhoukeji.com/hanhou-ai-pc/hanhou-monkey-icon.png"
           alt=""
         />
-        Hanhou·AIGC
+        HANHOU·AIGC
       </div>
 
       <div v-if="sendLoading" class="newchat_disabled">
@@ -91,8 +91,8 @@
         <div class="menu-item mt20" @click="serviceVisible = true">
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            width="19"
-            height="21"
+            width="24"
+            height="24"
             viewBox="0 0 19 21"
             fill="none"
           >
@@ -141,7 +141,7 @@
           >
             <path
               d="M15.857 3.28498C15.857 2.85898 15.55 2.51398 15.172 2.51398H6.21201C4.73601 2.51398 3.51501 3.76398 3.51501 5.34298V17.685C3.51501 19.265 4.73501 20.514 6.21201 20.514H15.172C15.55 20.514 15.857 20.169 15.857 19.743C15.857 19.317 15.55 18.971 15.172 18.971H6.21201C5.46601 18.971 4.88601 18.378 4.88601 17.685V5.34298C4.88601 4.64998 5.46601 4.05698 6.21201 4.05698H15.172C15.55 4.05698 15.857 3.71098 15.857 3.28498ZM20.335 11.106L20.26 11.02L16.146 6.90598C16.0089 6.76632 15.8237 6.68407 15.6281 6.6759C15.4326 6.66773 15.2412 6.73425 15.0929 6.86197C14.9445 6.9897 14.8503 7.16906 14.8294 7.36368C14.8084 7.5583 14.8623 7.7536 14.98 7.90998L15.055 7.99698L17.851 10.794H10.149C9.91601 10.794 9.72401 11.079 9.69101 11.451L9.68601 11.565C9.68601 11.953 9.85701 12.273 10.08 12.328L10.149 12.337H17.852L15.055 15.134C14.9242 15.2647 14.8447 15.4381 14.8309 15.6226C14.8171 15.807 14.8701 15.9903 14.98 16.139L15.055 16.225C15.1857 16.3555 15.3589 16.4349 15.5431 16.4487C15.7273 16.4624 15.9104 16.4097 16.059 16.3L16.146 16.225L20.26 12.111C20.3908 11.9802 20.4704 11.8068 20.4841 11.6224C20.4979 11.438 20.445 11.2547 20.335 11.106Z"
-              fill="#126CFE"
+              fill="#333333"
             />
           </svg>
           <span>退出登录</span>
@@ -170,13 +170,13 @@
       </div>
       <div class="body-content">
         <div class="chat_box">
-          <div v-show="chatList.loading" class="loading">正在加载...</div>
           <div
             class="scroll_page"
             @scroll="chatScrollViewListen"
             ref="chatScrollView"
           >
             <div class="list_content" ref="chatScrollPage">
+              <div v-show="chatList.loading" class="loading">正在加载...</div>
               <template v-for="(item, idx) in chatList.list" :key="idx">
                 <div v-if="item.type == 1" class="msg_item question">
                   <div class="toright">
@@ -269,6 +269,7 @@
     </div>
     <!-- 敏感词提醒 -->
     <el-dialog
+      align-center
       v-model="dialogVisible"
       width="3.1777rem"
       :show-close="false"
@@ -283,6 +284,7 @@
     </el-dialog>
     <!-- 删除对话窗口提醒 -->
     <el-dialog
+      align-center
       v-model="removeVisible"
       width="3.1777rem"
       :show-close="false"
@@ -298,6 +300,7 @@
     </el-dialog>
     <!-- 删除对话信息提醒 -->
     <el-dialog
+      align-center
       v-model="removeMsgVisible"
       width="3.1777rem"
       :show-close="false"
@@ -313,6 +316,7 @@
     </el-dialog>
     <!-- 退出提醒 -->
     <el-dialog
+      align-center
       v-model="exitVisible"
       width="3.1777rem"
       :show-close="false"
@@ -328,11 +332,13 @@
     </el-dialog>
     <!-- 客服二维码 -->
     <el-dialog
+      align-center
       v-model="serviceVisible"
       width="3.1777rem"
       :show-close="true"
       :close-on-click-modal="false"
       @close="dialogClose"
+      class="service_dia"
     >
       <div class="service">
         <div class="service_title">扫描二维码添加专属客服</div>
@@ -348,7 +354,7 @@
       ref="copy_text"
       class="clipboard_text"
       data-clipboard-action="copy"
-      data-clipboard-text="copytext..."
+      data-clipboard-text="copytext"
     ></div>
   </div>
 </template>
@@ -357,7 +363,14 @@
 import { reactive, ref, onMounted, onUpdated, watch } from "vue";
 import { useRouter } from "vue-router";
 import http from "../../http/index";
-import { ElMessage } from "element-plus";
+import {
+  ElMessage,
+  ElDialog,
+  ElInput,
+  ElIcon,
+  ElLoadingDirective,
+  ElInfiniteScrollDirective,
+} from "element-plus";
 import { Loading as LoadingIcon } from "@element-plus/icons-vue";
 import { EventSourcePolyfill } from "event-source-polyfill";
 import api from "./api";
@@ -608,6 +621,12 @@ const _getResult = async (message, tagId) => {
 
     // 非常抱歉，您的问答次数已用尽
     if (err.data.code == 30104) {
+      // 减少提问次数
+      residueQAQuantity.value = 0;
+      userInfo.residueQAQuantity = residueQAQuantity.value;
+      utils.setUserInfo(userInfo);
+      // 移除列表中最后一对
+      chatList.list.splice(chatList.list.length - 2, 2);
       ElMessage({
         message: err.data.message,
         type: "info",
@@ -670,7 +689,7 @@ const _getResult = async (message, tagId) => {
       if (activeTag.value == 0) {
         let h = {
           id: qd.tagId,
-          title: chatList.list[chatList.list.length - 2].description,
+          title: qd.tagTitle,
         };
         activeTag.value = qd.tagId;
         tagList.list.unshift(h);
@@ -1145,13 +1164,13 @@ onMounted(() => {
 
         span {
           margin-left: 16.25px;
-          margin-right: 137.5px;
           color: #333;
           font-family: PingFang SC;
           font-size: 19px;
           font-style: normal;
           font-weight: 400;
           line-height: normal;
+          text-align: left;
           &:active {
             color: #126cfe;
           }
@@ -1199,30 +1218,30 @@ onMounted(() => {
         &::-webkit-scrollbar {
           display: none;
         }
-        .loading {
-          position: absolute;
-          top: 20px;
-          left: 0;
-          width: 100%;
-          height: 22px;
-          display: block;
-          text-align: center;
-          color: #999;
-          text-align: center;
-          font-family: PingFang SC;
-          font-size: 16px;
-          font-style: normal;
-          font-weight: 400;
-          line-height: 22px;
-        }
+
         .scroll_page {
           position: relative;
           height: 100%;
           overflow-y: scroll;
           .list_content {
             padding: 0 30px;
+
+            .loading {
+              width: 100%;
+              height: 22px;
+              margin-bottom: 40px;
+              display: block;
+              text-align: center;
+              color: #999;
+              text-align: center;
+              font-family: PingFang SC;
+              font-size: 16px;
+              font-style: normal;
+              font-weight: 400;
+              line-height: 22px;
+            }
             .msg_item {
-              margin: 40px;
+              margin: 40px 0;
             }
             .question {
               display: flex;
@@ -1433,9 +1452,15 @@ onMounted(() => {
   }
   /deep/.el-dialog__header {
     height: 0;
+  }
+
+  /deep/.service_dia {
+    .el-dialog__headerbtn {
+      width: 60px;
+      height: 60px;
+    }
     .el-dialog__close {
-      width: 20.5px;
-      height: 20.5px;
+      font-size: 30.5px;
     }
   }
   /deep/.el-dialog__body {
