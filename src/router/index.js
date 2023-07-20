@@ -1,7 +1,5 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import Index from '../views/AIGC/Chat.vue'
-import Login from '../views/Login/Login.vue'
-import Agreement from '../views/Agreement/Index.vue'
 import utils from '@/common/utils'
 
 const routes = [
@@ -16,7 +14,7 @@ const routes = [
   {
     path: '/login',
     name: 'Login',
-    component:Login,
+    component:()=>import('../views/Login/Login.vue'),
     meta: {
       isAuthenticated:false
     }
@@ -24,7 +22,7 @@ const routes = [
   {
     path: '/agreement',
     name: 'Agreement',
-    component:Agreement,
+    component:()=>import('../views/Agreement/Index.vue'),
     meta: {
       isAuthenticated:false
     }
@@ -47,5 +45,7 @@ router.beforeEach((to, from, next) => {
   if (to.name !== 'Login' && to.meta.isAuthenticated) next({ name: 'Login' })
   else next()
 })
+
+document.title = 'HANHOU·AIGC'
 
 export default router

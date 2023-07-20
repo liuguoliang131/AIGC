@@ -3,7 +3,7 @@
     <div class="background"></div>
     <div class="logo-view">
       <div class="logo"></div>
-      <div class="logo-name">Hanhou·AIGC</div>
+      <div class="logo-name">HANHOU·AIGC</div>
     </div>
     <div></div>
     <div class="login-box">
@@ -50,7 +50,7 @@
     </div>
     <div class="footer">
       <div class="footer-record">
-        <a @click="handGoICP">京ICP备19041919号-2京公网安备11010502039881号</a>
+        <a @click="handGoICP">京ICP备19041918号-1京公网安备11010502039881号</a>
       </div>
       <div class="footer-record">
         <a @click="handGoICP">网络经营许可证京网文[2020]4683-870号</a>
@@ -196,10 +196,10 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped lang="less">
 .container {
   height: 100%;
-  background-image: url("../../assets/login/login_bg.png");
+  background-image: url("https://quanres.hanhoukeji.com/hanhou-ai-pc/login_bg.png");
   background-size: cover;
   display: flex;
   justify-content: space-between;
@@ -213,7 +213,7 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: url("../../assets/login/login_bg.png");
+  background-image: url("https://quanres.hanhoukeji.com/hanhou-ai-pc/login_bg.png");
   background-size: cover;
   opacity: 0.5;
   z-index: -1;
@@ -230,7 +230,7 @@ export default {
 .logo {
   width: 40px;
   height: 30.025px;
-  background-image: url("../../assets/login/login_logo.png");
+  background-image: url("https://quanres.hanhoukeji.com/hanhou-ai-pc/login_logo.png");
   background-size: contain;
   background-repeat: no-repeat;
 }
@@ -272,7 +272,9 @@ export default {
   justify-content: space-between;
   align-items: center;
   position: relative;
-  /* margin-bottom: 10px; */
+  input {
+    width: 100%;
+  }
 }
 
 /* input[type='tel'],
@@ -356,7 +358,7 @@ input::placeholder {
 
 .login-btn {
   margin-top: 40px;
-  width: 420px;
+  width: 100%;
   height: 52px;
   border: none;
   border-radius: 10px;

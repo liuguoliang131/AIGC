@@ -15,6 +15,23 @@ export default {
   padding: 0;
   margin: 0;
 }
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-thumb {
+  background-color: #bac5ea;
+  border-radius: 10px;
+  transition: all 0.2s ease-in-out;
+  border-radius: 11px;
+}
+::-webkit-scrollbar-track {
+  border-radius: 10px;
+}
+::-webkit-scrollbar-track-piece {
+  background-color: #dae0f5;
+  border-radius: 11px;
+}
+
 body {
   font-size: 14px;
 }

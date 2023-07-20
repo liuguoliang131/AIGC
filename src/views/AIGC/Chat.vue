@@ -52,9 +52,14 @@
       </div>
 
       <div class="log_list" v-loading="tagList.loading">
-        <div class="scroll_view scrollbar_show">
+        <div class="scroll_view">
           <div v-if="tagList.isNull" class="scroll_page"></div>
-          <div v-else v-infinite-scroll="getHistory" class="scroll_page">
+          <div
+            v-else
+            v-infinite-scroll="getHistory"
+            :infinite-scroll-disabled="tagList.finish"
+            class="scroll_page"
+          >
             <div
               v-for="(item, index) in tagList.list"
               :key="index"
@@ -93,19 +98,19 @@
           >
             <path
               d="M1.4674 20.5124C1.05215 20.5124 0.717529 20.1777 0.717529 19.7625C0.717529 18.1337 2.64059 16.9565 6.02309 16.4848V16.259C3.72912 14.5013 3.72912 11.2437 3.72912 9.26021C3.72912 5.98657 5.65622 4.03125 8.88148 4.03125H9.05484C12.2801 4.03125 14.2072 5.98657 14.2072 9.26021C14.2072 9.50211 14.2032 9.744 14.1991 9.99396C14.187 10.4092 13.8484 10.7358 13.4291 10.7237C13.0139 10.7116 12.6873 10.3689 12.6994 9.95364C12.7075 9.71981 12.7075 9.49001 12.7075 9.26021C12.7075 6.78482 11.4778 5.531 9.05484 5.531H8.88148C6.4585 5.531 5.22887 6.78482 5.22887 9.26021C5.22887 11.655 5.37804 14.0941 7.17612 15.239C7.39383 15.3761 7.52284 15.614 7.52284 15.872V17.15C7.52284 17.533 7.23256 17.8555 6.8536 17.8959C3.842 18.2144 2.21728 19.0973 2.21728 19.7625C2.21728 20.1737 1.87862 20.5124 1.4674 20.5124Z"
-              fill="#333333"
+              fill="#126CFE"
             />
             <path
               d="M16.5416 20.5124C16.1264 20.5124 15.7918 20.1778 15.7918 19.7625C15.7918 19.0933 14.167 18.2144 11.1555 17.8959C10.7725 17.8556 10.4822 17.5331 10.4822 17.1501V15.868C10.4822 15.4528 10.8168 15.1182 11.2321 15.1182C11.6473 15.1182 11.9819 15.4528 11.9819 15.868V16.4849C15.3644 16.9525 17.2875 18.1338 17.2875 19.7625C17.2915 20.1738 16.9569 20.5124 16.5416 20.5124Z"
-              fill="#333333"
+              fill="#126CFE"
             />
             <path
               d="M11.3488 13.7836C10.3168 13.7836 9.54672 13.6788 9.52657 13.6748C9.15566 13.5619 8.93392 13.187 9.01456 12.804C9.09116 12.425 9.44594 12.175 9.83297 12.2113C11.7036 12.4169 14.558 12.2395 15.0579 11.1994C15.2353 10.8285 15.6828 10.6672 16.0577 10.8486C16.4327 11.026 16.5899 11.4776 16.4085 11.8485C15.6263 13.4772 13.1106 13.7836 11.3488 13.7836Z"
-              fill="#333333"
+              fill="#126CFE"
             />
             <path
               d="M18.001 12.9976C17.5858 12.9976 17.2511 12.663 17.2511 12.2477V9.62722L16.2473 9.26841C15.9489 9.16359 15.7474 8.87735 15.7474 8.56288C15.7474 4.80142 12.7196 1.73742 8.99849 1.73742C5.27734 1.73742 2.24962 4.80142 2.24962 8.56288C2.24962 8.80478 2.13271 9.03054 1.93516 9.17165L1.49975 9.48208V12.2477C1.49975 12.663 1.16513 12.9976 0.749874 12.9976C0.334621 12.9976 0 12.663 0 12.2477V9.09908C0 8.85719 0.116916 8.63142 0.314463 8.49031L0.757937 8.17182C0.963548 3.7653 4.57988 0.241699 8.99849 0.241699C13.3687 0.241699 16.9568 3.6887 17.231 8.03071L18.251 8.39355C18.5493 8.49838 18.7509 8.78462 18.7509 9.09908V12.2477C18.7509 12.663 18.4163 12.9976 18.001 12.9976Z"
-              fill="#333333"
+              fill="#126CFE"
             />
           </svg>
           <span>联系客服</span>
@@ -164,14 +169,14 @@
         <span>您的免费问答次数：{{ residueQAQuantity }}次</span>
       </div>
       <div class="body-content">
-        <div
-          class="chat_box"
-          ref="chatScrollView"
-          @scroll="chatScrollViewListen"
-        >
+        <div class="chat_box">
           <div v-show="chatList.loading" class="loading">正在加载...</div>
-          <div ref="chatScrollPage" class="scroll_page">
-            <div class="list_content">
+          <div
+            class="scroll_page"
+            @scroll="chatScrollViewListen"
+            ref="chatScrollView"
+          >
+            <div class="list_content" ref="chatScrollPage">
               <template v-for="(item, idx) in chatList.list" :key="idx">
                 <div v-if="item.type == 1" class="msg_item question">
                   <div class="toright">
@@ -265,7 +270,7 @@
     <!-- 敏感词提醒 -->
     <el-dialog
       v-model="dialogVisible"
-      width="610px"
+      width="3.1777rem"
       :show-close="false"
       :close-on-click-modal="false"
       @close="dialogClose"
@@ -279,7 +284,7 @@
     <!-- 删除对话窗口提醒 -->
     <el-dialog
       v-model="removeVisible"
-      width="610px"
+      width="3.1777rem"
       :show-close="false"
       :close-on-click-modal="false"
       @close="dialogClose"
@@ -294,7 +299,7 @@
     <!-- 删除对话信息提醒 -->
     <el-dialog
       v-model="removeMsgVisible"
-      width="610px"
+      width="3.1777rem"
       :show-close="false"
       :close-on-click-modal="false"
       @close="dialogClose"
@@ -309,7 +314,7 @@
     <!-- 退出提醒 -->
     <el-dialog
       v-model="exitVisible"
-      width="610px"
+      width="3.1777rem"
       :show-close="false"
       :close-on-click-modal="false"
       @close="dialogClose"
@@ -324,7 +329,7 @@
     <!-- 客服二维码 -->
     <el-dialog
       v-model="serviceVisible"
-      width="610px"
+      width="3.1777rem"
       :show-close="true"
       :close-on-click-modal="false"
       @close="dialogClose"
@@ -438,7 +443,6 @@ const tagList = reactive({
 // 获取聊天历史列表 和 剩余提问次数
 const getHistory = () => {
   if (tagList.loading) return;
-  if (tagList.finish) return;
   tagList.loading = true;
   const pageSize = 20;
   const lastId = tagList.list.length
@@ -512,7 +516,7 @@ const chatList = reactive({
 });
 
 // 获取聊天列表
-const getAnswerList = (tagId) => {
+const getAnswerList = () => {
   if (chatList.finish) return false;
   if (chatList.loading) return false;
   chatList.loading = true;
@@ -520,7 +524,7 @@ const getAnswerList = (tagId) => {
   http
     .get(api.chat_answerList, {
       params: {
-        tagId,
+        tagId: activeTag.value,
         lastId: chatList.lastId,
         pageSize,
       },
@@ -575,7 +579,9 @@ const _getResult = async (message, tagId) => {
   let resultSign = await _getSign({});
 
   const source = new EventSourcePolyfill(
-    `${process.env.VUE_APP_BASE_URL}${api.chat_qa}?question=${message}&tagId=${tagId}`,
+    `${process.env.VUE_APP_BASE_URL}${api.chat_qa}?question=${encodeURI(
+      message
+    )}&tagId=${tagId}`,
     {
       headers: {
         ...resultSign,
@@ -612,6 +618,12 @@ const _getResult = async (message, tagId) => {
     // 充值会员
     if (err.data.code == 30108) {
       //   "您的免费问答次数已用尽，开通会员享1000次/月问答权益!";
+      // 减少提问次数
+      residueQAQuantity.value = 0;
+      userInfo.residueQAQuantity = residueQAQuantity.value;
+      utils.setUserInfo(userInfo);
+      // 移除列表中最后一对
+      chatList.list.splice(chatList.list.length - 2, 2);
       ElMessage({
         message: err.data.message,
         type: "info",
@@ -662,6 +674,7 @@ const _getResult = async (message, tagId) => {
         };
         activeTag.value = qd.tagId;
         tagList.list.unshift(h);
+        tagList.isNull = false;
         // tagList.list = [h];
       }
     },
@@ -772,6 +785,10 @@ const handConfirmDeleteTag = () => {
           ? tagList.list[tagList.list.length - 1].id
           : 0;
         clearChatList();
+        // 列表不足的时候填充
+        if (tagList.list.length < 20 && tagList.finish !== false) {
+          getHistory();
+        }
         ElMessage({
           message: "删除成功",
           type: "success",
@@ -789,13 +806,14 @@ const handConfirmDeleteTag = () => {
 const handNewChat = () => {
   if (residueQAQuantity.value == 0) {
     return ElMessage({
-      message: "您的免费问答次数不足",
+      message: "您的问答次数已用尽，请联系客服购买",
       type: "info",
     });
   }
 
   // 清空聊天区
   activeTag.value = 0;
+  question.value = "";
   clearChatList();
 };
 
@@ -809,7 +827,7 @@ watch(
       if (activeTag.value) {
         console.log("watch:到顶");
         actionState = "1"; // 动作状态设定为加载列表
-        getAnswerList(activeTag.value);
+        getAnswerList();
       }
     }
   },
@@ -821,10 +839,7 @@ watch(
 // 发送问题
 const handSend = () => {
   if (question.value.length === 0) {
-    return ElMessage({
-      message: "声带落家了?",
-      type: "warning",
-    });
+    return;
   }
   if (question.value.length > 1000) {
     return ElMessage({
@@ -834,7 +849,7 @@ const handSend = () => {
   }
   if (residueQAQuantity.value === 0) {
     return ElMessage({
-      message: "您的免费问答次数不足",
+      message: "您的问答次数已用尽，请联系客服购买",
       type: "warning",
     });
   }
@@ -865,22 +880,28 @@ const handSend = () => {
 
 let slideTimer = null;
 // 滑动动画 length:number 滑动距离
-const slideAnimation = (length) => {
+const slideAnimation = (length, time = 1000) => {
   console.log("滑动动画", length);
   if (slideTimer) {
     clearInterval(slideTimer);
     slideTimer = null;
   }
-  let countDown = 1000; // 毫秒
-  const step = (length / countDown) * 10; // 每一帧走的长度
+  let length1 = Math.abs(length); //正数值
+  const di = length >= 0 ? true : false; // 方向
+  const interval = 10; // 间隔时间 毫秒
+  let step = Math.max((length / time) * interval, 1); // 每一步的长度
   slideTimer = setInterval(() => {
-    chatScrollView.value.scrollTop += step;
-    countDown -= 10;
-    if (countDown <= 0) {
+    if (di) {
+      chatScrollView.value.scrollTop += step;
+    } else {
+      chatScrollView.value.scrollTop -= step;
+    }
+    length1 -= step;
+    if (length1 <= 0) {
       clearInterval(slideTimer);
       slideTimer = null;
     }
-  }, 10);
+  }, interval);
 };
 
 // dom更新后调用  记录此时的聊天列表高度
@@ -892,12 +913,19 @@ onUpdated(() => {
 watch(
   scrollPageHeight,
   (newVal, oldVal) => {
-    console.log("watch:chatScrollPage");
+    console.log("watch:chatScrollPage", scrollPageHeight.value);
+    console.log("chatScrollPage父卷轴", chatScrollView.value.offsetHeight);
+    // 列表不满一屏 加载
+    if (scrollPageHeight.value <= chatScrollView.value.offsetHeight) {
+      console.log();
+      return getAnswerList("列表不满一屏 加载");
+    }
+
     if (actionState === "1") {
       // 动作状态为加载列表时: 触发列表加载完成后,卷轴scrollTop设定为加载之前观看的位置
       chatScrollView.value.scrollTop = newVal - oldVal;
       // 滑动动画:下滑一点点
-      slideAnimation(-20);
+      slideAnimation(-40);
     } else if (actionState === "2") {
       // 动作状态为发送新问题时: 卷轴scrollTop设定到最底下位置
       // 滑动动画:滑到最底
@@ -923,11 +951,16 @@ const handConfirmRemoveMsg = () => {
     })
     .then((res) => {
       if (res.code == 200) {
+        // 设置动作为删除  删除后填充新数据到列表
         actionState = "4";
         const idx = chatList.list.findIndex(
           (item) => item.id === delMsgId.value
         );
         chatList.list.splice(idx - 1, 2);
+
+        if (chatList.list.length < 10 && chatList.finish !== false) {
+          getAnswerList();
+        }
       } else {
         ElMessage({
           type: "error",
@@ -1023,18 +1056,17 @@ onMounted(() => {
 
     // 历史列表
     .log_list {
+      width: 310px;
       height: calc(100% - 331px);
       margin: auto;
       padding: 22px 0;
       .scroll_view {
+        width: 310px;
         height: 100%;
-        overflow-y: scroll;
-        // &::-webkit-scrollbar {
-        //   display: none;
-        // }
+        overflow-y: hidden;
         .scroll_page {
-          width: 266px;
-          margin: 0 auto;
+          height: 100%;
+          overflow-y: scroll;
           .log_item {
             position: relative;
             box-sizing: border-box;
@@ -1046,7 +1078,7 @@ onMounted(() => {
             padding: 0 13px;
             border: 1px solid #dae0f5;
             border-radius: 5px;
-            margin: 22px 0;
+            margin: 22px auto;
             font-family: PingFang SC;
             font-size: 19px;
             font-weight: 400;
@@ -1097,11 +1129,6 @@ onMounted(() => {
           }
         }
       }
-      // .scrollbar_show {
-      //   &::-webkit-scrollbar {
-      //     display: block;
-      //   }
-      // }
     }
 
     .side-fo {
@@ -1169,7 +1196,6 @@ onMounted(() => {
       .chat_box {
         position: relative;
         height: 100%;
-        overflow-y: scroll;
         &::-webkit-scrollbar {
           display: none;
         }
@@ -1191,6 +1217,8 @@ onMounted(() => {
         }
         .scroll_page {
           position: relative;
+          height: 100%;
+          overflow-y: scroll;
           .list_content {
             padding: 0 30px;
             .msg_item {
@@ -1296,7 +1324,7 @@ onMounted(() => {
             }
           }
           .page_bottom {
-            height: 400px;
+            height: 225px;
           }
         }
       }

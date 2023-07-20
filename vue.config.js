@@ -4,22 +4,19 @@ module.exports = defineConfig({
   lintOnSave: false,
   devServer: {
     proxy: {
-      '/': {
+      '/api': {
         target: 'http://hhosaigcapi.yctmt.com',
         changeOrigin: true,
-        pathReWrite: {
-          '^/': '/'
+        pathRewrite: {
+          '^/api': '/'
         }
       },
       '/mock': {
         target: 'http://yapi.hanhoukeji.com',
         changeOrigin: true,
-        pathReWrite: {
+        pathRewrite: {
           '^/mock': '/mock'
         }
-      },
-      '/ws': {
-        changeOrigin: false,
       }
     }
   },
@@ -29,5 +26,11 @@ module.exports = defineConfig({
   // ...其他配置
   css: {
     extract: true
+  },
+// 编译配置
+  configureWebpack(config) {
+    if (process.env.NODE_ENV === 'production') {
+        config.optimization.minimizer[0].options.terserOptions.compress.drop_console = true
+    }
   }
 })
