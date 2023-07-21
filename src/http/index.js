@@ -7,6 +7,7 @@ import {
 
 import utils from '../common/utils'
 import { useRouter } from 'vue-router'
+import {ElMessage} from 'element-plus'
 const router = useRouter()
 
 const instance = axios.create({
@@ -23,7 +24,7 @@ const instance = axios.create({
 
 // 添加请求拦截器
 instance.interceptors.request.use(async (config) => {
-  console.log(config)
+  console.log('request',config)
   const sign = await _getSign(config.headers)
   // 在发送请求之前做些什么
   config.headers = {
@@ -47,7 +48,7 @@ instance.interceptors.request.use(async (config) => {
   return config
 }, function (error) {
   // 对请求错误做些什么
-  console.log(error)
+  console.log('request error',error)
   return Promise.reject(error)
 })
 
@@ -65,7 +66,12 @@ instance.interceptors.response.use(function (response) {
   return response.data
 }, function (error) {
   // 对响应错误做点什么
-  console.log(error)
+  if(error.response.status == 500){
+    ElMessage({
+      message: '网络连接中断，请检查您的网络并重试。',
+      type:'error'
+    })
+  }
   return Promise.reject(error)
 })
 export default instance

@@ -52,14 +52,13 @@
       </div>
 
       <div class="log_list" v-loading="tagList.loading">
-        <div class="scroll_view">
+        <div
+          class="scroll_view"
+          ref="tagListScroll"
+          @scroll="handTagListScroll"
+        >
           <div v-if="tagList.isNull" class="scroll_page"></div>
-          <div
-            v-else
-            v-infinite-scroll="getHistory"
-            :infinite-scroll-disabled="tagList.finish"
-            class="scroll_page"
-          >
+          <div v-else ref="tagListPage" class="scroll_page">
             <div
               v-for="(item, index) in tagList.list"
               :key="index"
@@ -197,7 +196,7 @@
                   <div class="toleft">
                     <img
                       class="avatar"
-                      src="https://quanres.hanhoukeji.com/hanhou-ai-pc/robot-avatar.png"
+                      src="https://quanres.hanhoukeji.com/hanhou-ai-pc/hhrobot-avatar.png"
                       alt=""
                     />
                     <div class="bubble">
@@ -360,23 +359,28 @@
 </template>
 
 <script setup>
-import { reactive, ref, onMounted, onUpdated, watch } from "vue";
+import {
+  reactive,
+  ref,
+  onMounted,
+  onUpdated,
+  watch,
+  getCurrentInstance,
+} from "vue";
 import { useRouter } from "vue-router";
 import http from "../../http/index";
-import {
-  ElMessage,
-  ElDialog,
-  ElInput,
-  ElIcon,
-  ElLoadingDirective,
-  ElInfiniteScrollDirective,
-} from "element-plus";
+import { ElMessage, ElDialog, ElInput, ElIcon } from "element-plus";
 import { Loading as LoadingIcon } from "@element-plus/icons-vue";
 import { EventSourcePolyfill } from "event-source-polyfill";
 import api from "./api";
 import Clipboard from "clipboard";
 import { _getSign } from "@/http/sign";
 import utils from "@/common/utils";
+
+// 上下文
+// const instance = getCurrentInstance();
+// console.log("app", instance.appContext);
+// instance.appContext.app.directive("loading", vLoading);
 
 // 路由
 const router = useRouter();
@@ -443,6 +447,31 @@ const question = ref("");
 const sendLoading = ref(false);
 
 // -----------------左侧聊天历史列表----------------------
+
+// tagList滚动卷轴ref
+const tagListScroll = ref();
+// tagList内容盒子
+const tagListPage = ref();
+// tagList内容盒子高度
+const tagListPageHeight = ref(0);
+
+// 左侧tag列表滚动事件
+const handTagListScroll = (e) => {
+  console.log("tagList scroll", e);
+  console.log(
+    "对话列表scrollTop:",
+    e.target.scrollTop,
+    "高度:",
+    tagListPageHeight.value
+  );
+  if (
+    e.target.scrollTop + tagListScroll.value.offsetHeight + 10 >
+    tagListPageHeight.value
+  ) {
+    console.log("触底");
+    getHistory();
+  }
+};
 // 被选中的聊天历史id
 const activeTag = ref(0);
 // 左侧聊天历史列表
@@ -456,6 +485,7 @@ const tagList = reactive({
 // 获取聊天历史列表 和 剩余提问次数
 const getHistory = () => {
   if (tagList.loading) return;
+  if (tagList.finish) return;
   tagList.loading = true;
   const pageSize = 20;
   const lastId = tagList.list.length
@@ -503,6 +533,30 @@ const getHistory = () => {
       tagList.loading = false;
     });
 };
+
+// dom更新后调用  记录此时的聊天列表高度
+onUpdated(() => {
+  console.log("onUpdated: 对话列表");
+  tagListPageHeight.value = tagListPage.value.offsetHeight;
+});
+
+// 对话列表不满一屏 加载
+watch(
+  tagListPageHeight,
+  (newVal, oldVal) => {
+    console.log("watch:tagListPageHeight", newVal);
+    console.log("tagListScroll卷轴", tagListScroll.value.offsetHeight);
+
+    if (tagListPageHeight.value <= tagListScroll.value.offsetHeight) {
+      console.log("对话列表不满一屏,加载");
+      return getHistory();
+    }
+  },
+  {
+    deep: true,
+  }
+);
+
 // -------------------------------------
 
 // -----------------聊天窗口--------------------
@@ -592,9 +646,7 @@ const _getResult = async (message, tagId) => {
   let resultSign = await _getSign({});
 
   const source = new EventSourcePolyfill(
-    `${process.env.VUE_APP_BASE_URL}${api.chat_qa}?question=${encodeURI(
-      message
-    )}&tagId=${tagId}`,
+    `${process.env.VUE_APP_BASE_URL}${api.chat_qa}?question=${message}&tagId=${tagId}`,
     {
       headers: {
         ...resultSign,
@@ -651,6 +703,8 @@ const _getResult = async (message, tagId) => {
     }
 
     console.log(err, "其他错误信息");
+    // 移除列表中最后一对
+    chatList.list.splice(chatList.list.length - 2, 2);
     ElMessage({
       message: err.data.message,
       type: "info",
@@ -713,7 +767,6 @@ const _getResult = async (message, tagId) => {
       let n = e.data.replace(/\\\\/g, "\\");
       n = n.replace(/\\n/g, "<br/>");
       n = n.replace(/\\/g, "");
-
       let s = n.substring(1, n.length - 1);
 
       chatList.list[chatList.list.length - 1].description += s;
@@ -737,10 +790,17 @@ const bowDownToTheCCP = () => {
   dialogVisible.value = false;
 };
 
+// 过滤换行符方法  使用``包裹的换行符不会被替换
+const reString = (str) => {
+  const outputString = str.replace(/(?<!`)<br\s*\/?>/gi, "");
+  return outputString;
+};
+
 // 复制
 const copy_text = ref();
 const handleCopy = (text) => {
-  copy_text.value.setAttribute("data-clipboard-text", text);
+  const text1 = reString(text);
+  copy_text.value.setAttribute("data-clipboard-text", text1);
   copy_text.value.click();
 };
 
@@ -804,10 +864,6 @@ const handConfirmDeleteTag = () => {
           ? tagList.list[tagList.list.length - 1].id
           : 0;
         clearChatList();
-        // 列表不足的时候填充
-        if (tagList.list.length < 20 && tagList.finish !== false) {
-          getHistory();
-        }
         ElMessage({
           message: "删除成功",
           type: "success",
@@ -862,7 +918,7 @@ const handSend = () => {
   }
   if (question.value.length > 1000) {
     return ElMessage({
-      message: "已达到最大字数限制，请缩小您的文本长度",
+      message: "您的输入已超出1000字，请进行修改。",
       type: "warning",
     });
   }
@@ -873,7 +929,7 @@ const handSend = () => {
     });
   }
   actionState = "2"; //动作状态设定为添加新问题
-  const question1 = question.value;
+  const question1 = reString(question.value);
   question.value = "";
   sendLoading.value = true;
   // 添加问题和答案的位置到列表
@@ -932,18 +988,20 @@ onUpdated(() => {
 watch(
   scrollPageHeight,
   (newVal, oldVal) => {
-    console.log("watch:chatScrollPage", scrollPageHeight.value);
+    console.log("watch:chatScrollPage", newVal);
     console.log("chatScrollPage父卷轴", chatScrollView.value.offsetHeight);
+    if (!chatScrollView) return;
     // 列表不满一屏 加载
-    if (scrollPageHeight.value <= chatScrollView.value.offsetHeight) {
-      console.log();
-      return getAnswerList("列表不满一屏 加载");
+    if (newVal <= chatScrollView.value.offsetHeight) {
+      console.log("聊天列表不满一屏,加载");
+      return getAnswerList();
     }
 
     if (actionState === "1") {
       // 动作状态为加载列表时: 触发列表加载完成后,卷轴scrollTop设定为加载之前观看的位置
       chatScrollView.value.scrollTop = newVal - oldVal;
       // 滑动动画:下滑一点点
+      console.log("actionState 1", chatScrollView);
       slideAnimation(-40);
     } else if (actionState === "2") {
       // 动作状态为发送新问题时: 卷轴scrollTop设定到最底下位置
@@ -970,16 +1028,12 @@ const handConfirmRemoveMsg = () => {
     })
     .then((res) => {
       if (res.code == 200) {
-        // 设置动作为删除  删除后填充新数据到列表
+        // 设置动作为删除  删除后不用手动填充新数据到列表, 监听高度不足一屏时会自动获取
         actionState = "4";
         const idx = chatList.list.findIndex(
           (item) => item.id === delMsgId.value
         );
         chatList.list.splice(idx - 1, 2);
-
-        if (chatList.list.length < 10 && chatList.finish !== false) {
-          getAnswerList();
-        }
       } else {
         ElMessage({
           type: "error",
@@ -992,8 +1046,8 @@ const handConfirmRemoveMsg = () => {
 // 加载完成事件
 onMounted(() => {
   console.log("mount");
-
   initCopyClipboard();
+  getHistory();
 });
 </script>
 
@@ -1082,10 +1136,8 @@ onMounted(() => {
       .scroll_view {
         width: 310px;
         height: 100%;
-        overflow-y: hidden;
+        overflow-y: scroll;
         .scroll_page {
-          height: 100%;
-          overflow-y: scroll;
           .log_item {
             position: relative;
             box-sizing: border-box;
