@@ -255,9 +255,9 @@
             />
             <div class="length_count">
               <span
-                :style="{ color: question.length > 1000 ? 'red' : 'inherit' }"
+                :style="{ color: question.length > 800 ? 'red' : 'inherit' }"
                 >{{ question.length }}</span
-              >/1000
+              >/800
             </div>
           </div>
 
@@ -916,9 +916,9 @@ const handSend = () => {
   if (question.value.length === 0) {
     return;
   }
-  if (question.value.length > 1000) {
+  if (question.value.length > 800) {
     return ElMessage({
-      message: "您的输入已超出1000字，请进行修改。",
+      message: "您的输入已超出800字，请进行修改。",
       type: "warning",
     });
   }
