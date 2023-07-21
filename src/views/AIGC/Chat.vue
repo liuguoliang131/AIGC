@@ -537,7 +537,9 @@ const getHistory = () => {
 // dom更新后调用  记录此时的聊天列表高度
 onUpdated(() => {
   console.log("onUpdated: 对话列表");
-  tagListPageHeight.value = tagListPage.value.offsetHeight;
+  if (tagListPage.value) {
+    tagListPageHeight.value = tagListPage.value.offsetHeight;
+  }
 });
 
 // 对话列表不满一屏 加载
@@ -558,6 +560,16 @@ watch(
 );
 
 // -------------------------------------
+
+// 过滤换行符方法  使用``包裹的换行符不会被替换
+const reString = (str) => {
+  try {
+    const outputString = str.replace(/<br\s*\/?>/gi, "\n");
+    return outputString;
+  } catch (error) {
+    return str;
+  }
+};
 
 // -----------------聊天窗口--------------------
 
@@ -605,6 +617,14 @@ const getAnswerList = () => {
         ) {
           return;
         }
+
+        // 去掉<br/>
+        res.data.list.forEach((item) => {
+          let n = item.description.replace(/\\\\/g, "\\");
+          n = n.replace(/\\n/g, "<br/>");
+          n = n.replace(/\\/g, "");
+          item.description = n;
+        });
         chatList.list = [...res.data.list.reverse(), ...chatList.list];
         chatList.lastId = res.data.lastId;
 
@@ -646,7 +666,9 @@ const _getResult = async (message, tagId) => {
   let resultSign = await _getSign({});
 
   const source = new EventSourcePolyfill(
-    `${process.env.VUE_APP_BASE_URL}${api.chat_qa}?question=${message}&tagId=${tagId}`,
+    `${process.env.VUE_APP_BASE_URL}${
+      api.chat_qa
+    }?question=${encodeURIComponent(message)}&tagId=${tagId}`,
     {
       headers: {
         ...resultSign,
@@ -657,7 +679,7 @@ const _getResult = async (message, tagId) => {
   // 其他错误信息
   source.addEventListener("apiErrors", (err) => {
     err.data = JSON.parse(err.data);
-
+    console.log(err, "apiErrors");
     // 敏感词
     if (err.data.code == 1025) {
       tipMessage.value = err.data.message;
@@ -748,7 +770,6 @@ const _getResult = async (message, tagId) => {
         activeTag.value = qd.tagId;
         tagList.list.unshift(h);
         tagList.isNull = false;
-        // tagList.list = [h];
       }
     },
     false
@@ -774,9 +795,16 @@ const _getResult = async (message, tagId) => {
   };
 
   source.onerror = (e) => {
-    console.log(e, "onerror");
     sendLoading.value = false;
     source._close(source);
+    try {
+      console.log(e, "onerror");
+      const data = JSON.parse(e.data);
+      ElMessage({
+        type: "error",
+        message: data.code + ":" + data.error,
+      });
+    } catch (error) {}
   };
 };
 
@@ -790,17 +818,12 @@ const bowDownToTheCCP = () => {
   dialogVisible.value = false;
 };
 
-// 过滤换行符方法  使用``包裹的换行符不会被替换
-const reString = (str) => {
-  const outputString = str.replace(/(?<!`)<br\s*\/?>/gi, "");
-  return outputString;
-};
-
 // 复制
 const copy_text = ref();
 const handleCopy = (text) => {
   const text1 = reString(text);
   copy_text.value.setAttribute("data-clipboard-text", text1);
+  initCopyClipboard();
   copy_text.value.click();
 };
 
@@ -813,7 +836,7 @@ const initCopyClipboard = () => {
       type: "success",
     });
     // 清空选中
-    e.clearSelection();
+    clipboard.destroy();
   });
   clipboard.on("error", function (e) {
     ElMessage({
@@ -821,7 +844,7 @@ const initCopyClipboard = () => {
       type: "error",
     });
     // 清空选中
-    e.clearSelection();
+    clipboard.destroy();
   });
 };
 
@@ -965,16 +988,21 @@ const slideAnimation = (length, time = 1000) => {
   const di = length >= 0 ? true : false; // 方向
   const interval = 10; // 间隔时间 毫秒
   let step = Math.max((length / time) * interval, 1); // 每一步的长度
+
   slideTimer = setInterval(() => {
-    if (di) {
-      chatScrollView.value.scrollTop += step;
-    } else {
-      chatScrollView.value.scrollTop -= step;
-    }
-    length1 -= step;
-    if (length1 <= 0) {
+    if (!chatScrollView) {
       clearInterval(slideTimer);
-      slideTimer = null;
+    } else {
+      if (di) {
+        chatScrollView.value.scrollTop += step;
+      } else {
+        chatScrollView.value.scrollTop -= step;
+      }
+      length1 -= step;
+      if (length1 <= 0) {
+        clearInterval(slideTimer);
+        slideTimer = null;
+      }
     }
   }, interval);
 };
@@ -1046,7 +1074,7 @@ const handConfirmRemoveMsg = () => {
 // 加载完成事件
 onMounted(() => {
   console.log("mount");
-  initCopyClipboard();
+  // initCopyClipboard();
   getHistory();
 });
 </script>
@@ -1275,6 +1303,7 @@ onMounted(() => {
           position: relative;
           height: 100%;
           overflow-y: scroll;
+
           .list_content {
             padding: 0 30px;
 
@@ -1397,6 +1426,9 @@ onMounted(() => {
           .page_bottom {
             height: 225px;
           }
+        }
+        .scroll_page::-webkit-scrollbar {
+          display: none !important;
         }
       }
 
