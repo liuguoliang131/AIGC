@@ -170,7 +170,7 @@
       <div class="body-content">
         <div class="chat_box">
           <div
-            class="scroll_page"
+            class="chat_scroll_view"
             @scroll="chatScrollViewListen"
             ref="chatScrollView"
           >
@@ -366,6 +366,7 @@ import {
   onUpdated,
   watch,
   getCurrentInstance,
+  nextTick,
 } from "vue";
 import { useRouter } from "vue-router";
 import http from "../../http/index";
@@ -452,8 +453,6 @@ const sendLoading = ref(false);
 const tagListScroll = ref();
 // tagList内容盒子
 const tagListPage = ref();
-// tagList内容盒子高度
-const tagListPageHeight = ref(0);
 
 // 左侧tag列表滚动事件
 const handTagListScroll = (e) => {
@@ -462,11 +461,11 @@ const handTagListScroll = (e) => {
     "对话列表scrollTop:",
     e.target.scrollTop,
     "高度:",
-    tagListPageHeight.value
+    tagListPage.value.offsetHeight
   );
   if (
     e.target.scrollTop + tagListScroll.value.offsetHeight + 10 >
-    tagListPageHeight.value
+    tagListPage.value.offsetHeight
   ) {
     console.log("触底");
     getHistory();
@@ -534,24 +533,17 @@ const getHistory = () => {
     });
 };
 
-// dom更新后调用  记录此时的聊天列表高度
-onUpdated(() => {
-  console.log("onUpdated: 对话列表");
-  if (tagListPage.value) {
-    tagListPageHeight.value = tagListPage.value.offsetHeight;
-  }
-});
-
 // 对话列表不满一屏 加载
 watch(
-  tagListPageHeight,
+  tagListPage,
   (newVal, oldVal) => {
-    console.log("watch:tagListPageHeight", newVal);
+    console.log("watch:tagListPageHeight", newVal, oldVal);
     console.log("tagListScroll卷轴", tagListScroll.value.offsetHeight);
-
-    if (tagListPageHeight.value <= tagListScroll.value.offsetHeight) {
-      console.log("对话列表不满一屏,加载");
-      return getHistory();
+    if (newVal) {
+      if (newVal.offsetHeight <= tagListScroll.value.offsetHeight) {
+        console.log("对话列表不满一屏,加载");
+        return getHistory();
+      }
     }
   },
   {
@@ -576,7 +568,7 @@ const reString = (str) => {
 // 聊天窗口scroll元素
 const chatScrollView = ref();
 // 聊天窗口scroll内子元素
-const chatScrollPage = ref();
+const chatScrollPage = ref(null);
 // 聊天列表高度
 const scrollPageHeight = ref(0);
 
@@ -596,6 +588,7 @@ const chatList = reactive({
 
 // 获取聊天列表
 const getAnswerList = () => {
+  console.log("getAnswerList");
   if (chatList.finish) return false;
   if (chatList.loading) return false;
   chatList.loading = true;
@@ -615,6 +608,7 @@ const getAnswerList = () => {
           chatList.list.length &&
           chatList.list[0].tagId !== activeTag.value
         ) {
+          chatList.loading = false;
           return;
         }
 
@@ -858,6 +852,7 @@ const handActiveTag = (item, index) => {
   activeTag.value = item.id;
   // 清空聊天窗口数据
   clearChatList();
+  console.log("选中tag,获取聊天");
   getAnswerList(activeTag.value);
 };
 
@@ -972,13 +967,16 @@ const handSend = () => {
     description: "",
     createdAt: "",
   });
+  nextTick(() => {
+    slideAnimation(chatScrollPage.value.offsetHeight);
+  });
 
   _getResult(question1, activeTag.value);
 };
 
 let slideTimer = null;
 // 滑动动画 length:number 滑动距离
-const slideAnimation = (length, time = 1000) => {
+const slideAnimation = (length, time = 800) => {
   console.log("滑动动画", length);
   if (slideTimer) {
     clearInterval(slideTimer);
@@ -1002,13 +1000,14 @@ const slideAnimation = (length, time = 1000) => {
       if (length1 <= 0) {
         clearInterval(slideTimer);
         slideTimer = null;
+        chatScrollTop;
       }
     }
   }, interval);
 };
 
-// dom更新后调用  记录此时的聊天列表高度
 onUpdated(() => {
+  if (sendLoading.value) return;
   scrollPageHeight.value = chatScrollPage.value.offsetHeight;
 });
 
@@ -1016,15 +1015,13 @@ onUpdated(() => {
 watch(
   scrollPageHeight,
   (newVal, oldVal) => {
-    console.log("watch:chatScrollPage", newVal);
-    console.log("chatScrollPage父卷轴", chatScrollView.value.offsetHeight);
-    if (!chatScrollView) return;
+    if (!activeTag.value) return;
     // 列表不满一屏 加载
     if (newVal <= chatScrollView.value.offsetHeight) {
       console.log("聊天列表不满一屏,加载");
       return getAnswerList();
     }
-
+    console.log("actionState", actionState);
     if (actionState === "1") {
       // 动作状态为加载列表时: 触发列表加载完成后,卷轴scrollTop设定为加载之前观看的位置
       chatScrollView.value.scrollTop = newVal - oldVal;
@@ -1299,7 +1296,7 @@ onMounted(() => {
           display: none;
         }
 
-        .scroll_page {
+        .chat_scroll_view {
           position: relative;
           height: 100%;
           overflow-y: scroll;
