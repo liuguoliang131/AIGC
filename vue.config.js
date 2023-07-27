@@ -22,30 +22,11 @@ module.exports = defineConfig({
     }
   },
   publicPath: './',  // 静态文件路径
-  assetsDir: 'static', 
+  assetsDir: 'static',
   productionSourceMap: false,  //生成map文件
   // ...其他配置
   css: {
     extract: true
-  },
-  // 编译配置
-  configureWebpack: (config) => {
-    if (process.env.NODE_ENV === 'production') {
-      config.optimization.minimizer.push(
-        new TerserPlugin({
-          terserOptions: {
-            compress: {
-              drop_console: true, // 删除 console 语句
-              drop_debugger: true, // 删除 debugger 语句
-            },
-            mangle: {
-              // 解决删除 debugger 语句的问题
-              safari10: true,
-            },
-          },
-        })
-      );
-    }
   },
   // 拆包
   chainWebpack: config => {

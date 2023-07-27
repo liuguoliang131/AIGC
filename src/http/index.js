@@ -6,9 +6,10 @@ import {
 } from './sign.js'
 
 import utils from '../common/utils'
-import { useRouter } from 'vue-router'
+import router from '../router/index'
 import {ElMessage} from 'element-plus'
-const router = useRouter()
+
+
 
 const instance = axios.create({
   baseURL: process.env.VUE_APP_BASE_URL,
@@ -59,8 +60,9 @@ instance.interceptors.response.use(function (response) {
   if (response.data.code === 1000) {
     utils.setUserInfo('')
     utils.setToken('')
-    router.replace({
-      path: '/login'
+    router.push({
+      path: '/login',
+      replace:true
     })
   }
   return response.data
