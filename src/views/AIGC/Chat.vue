@@ -370,7 +370,7 @@ import {
   nextTick,
 } from "vue";
 import { useRouter } from "vue-router";
-import http from "../../http/index";
+import request from "@/http/index";
 import { ElMessage, ElDialog, ElInput, ElIcon } from "element-plus";
 import { Loading as LoadingIcon } from "@element-plus/icons-vue";
 import { EventSourcePolyfill } from "event-source-polyfill";
@@ -404,10 +404,7 @@ const handExit = () => {
 // 确认退出登录
 const confirmExit = () => {
   exitVisible.value = false;
-  http
-    .get(api.user_logout, {
-      params: {},
-    })
+  request.get(api.user_logout, {})
     .then((res) => {
       if (res.code == 200) {
         utils.setToken("");
@@ -491,13 +488,10 @@ const getHistory = () => {
   const lastId = tagList.list.length
     ? tagList.list[tagList.list.length - 1].id
     : 0;
-  http
-    .get(api.chat_tagList, {
-      params: {
-        lastId,
-        pageSize,
-      },
-    })
+  request.get(api.chat_tagList, {
+    lastId,
+    pageSize,
+  })
     .then((res) => {
       console.log("gethistory", res);
       if (res.code == 200) {
@@ -594,14 +588,11 @@ const getAnswerList = () => {
   if (chatList.loading) return false;
   chatList.loading = true;
   const pageSize = 10;
-  http
-    .get(api.chat_answerList, {
-      params: {
-        tagId: activeTag.value,
-        lastId: chatList.lastId,
-        pageSize,
-      },
-    })
+  request.get(api.chat_answerList, {
+    tagId: activeTag.value,
+    lastId: chatList.lastId,
+    pageSize,
+  })
     .then((res) => {
       if (res.code == 200) {
         // 防止在加载列表时切换tag
@@ -870,8 +861,7 @@ const handConfirmDeleteTag = () => {
   const tagId = activeTag.value;
   activeTag.value = 0;
   removeVisible.value = false;
-  http
-    .post(api.ai_delTag, {
+  request.post(api.ai_delTag, {
       tagId,
     })
     .then((res) => {
@@ -1054,10 +1044,9 @@ watch(
 // 删除信息确认
 const handConfirmRemoveMsg = () => {
   removeMsgVisible.value = false;
-  http
-    .post(api.chat_delAnswer, {
-      answerId: delMsgId.value,
-    })
+  request.post(api.chat_delAnswer, {
+    answerId: delMsgId.value,
+  })
     .then((res) => {
       if (res.code == 200) {
         // 设置动作为删除  删除后不用手动填充新数据到列表, 监听高度不足一屏时会自动获取

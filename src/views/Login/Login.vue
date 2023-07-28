@@ -61,8 +61,7 @@
 
 <script>
 import { ElMessage } from "element-plus";
-import http from "../../http/index";
-import api from "./api";
+import api, {sendVerifyCode, userLogin} from "./api";
 import utils from "@/common/utils";
 
 export default {
@@ -94,13 +93,7 @@ export default {
       // 发送验证码的逻辑
       if (this.getCodeLoading) return;
       this.getCodeLoading = true;
-      http
-        .get(api.send_verfyCode, {
-          params: {
-            tel: this.phone,
-          },
-        })
-        .then((res) => {
+      sendVerifyCode(this.phone).then((res) => {
           this.getCodeLoading = false;
           if (res.code == 200) {
             this.timer = setInterval(() => {
@@ -145,11 +138,7 @@ export default {
         });
       }
       this.loading = true;
-      http
-        .post(api.user_login, {
-          tel: this.phone,
-          verifyCode: this.code,
-        })
+      userLogin(this.phone, this.code)
         .then((res) => {
           if (res.code == 200) {
             utils.setToken(res.data.token);

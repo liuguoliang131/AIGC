@@ -76,4 +76,14 @@ instance.interceptors.response.use(function (response) {
   }
   return Promise.reject(error)
 })
-export default instance
+
+const request = {
+  get(url, params) {
+    return instance.get(url, { params });
+  },
+  post(url, data) {
+    return instance.post(url, data);
+  },
+};
+
+export default request
