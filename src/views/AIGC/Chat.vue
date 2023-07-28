@@ -249,6 +249,7 @@
               class="textarea"
               v-model="question"
               resize="none"
+              @keydown="sendByKey"
               :autosize="{ minRows: 1, maxRows: 6 }"
               type="textarea"
               placeholder="请输入您需要提问的信息..."
@@ -973,6 +974,12 @@ const handSend = () => {
 
   _getResult(question1, activeTag.value);
 };
+
+const sendByKey = (event) => {
+  if (event.ctrlKey && event.code === "Enter") {
+    handSend();
+  }
+}
 
 let slideTimer = null;
 // 滑动动画 length:number 滑动距离
