@@ -1,12 +1,28 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
-import Index from '../views/AIGC/Chat.vue'
+import Home from '../views/Home/Index.vue'
 import utils from '@/common/utils'
 
 const routes = [
   {
     path: '/',
-    name: 'Index',
-    component: Index,
+    name: 'Home',
+    component: Home,
+    meta: {
+      isAuthenticated:false
+    }
+  },
+  {
+    path: '/aigc/chat',
+    name: 'Chat',
+    component: ()=>import('../views/AIGC/Chat.vue'),
+    meta: {
+      isAuthenticated:true
+    }
+  },
+  {
+    path: '/aigc/draw',
+    name: 'Draw',
+    component: ()=>import('../views/AIGC/Draw.vue'),
     meta: {
       isAuthenticated:true
     }
@@ -25,6 +41,14 @@ const routes = [
     component:()=>import('../views/Agreement/Index.vue'),
     meta: {
       isAuthenticated:false
+    }
+  },
+  {
+    path: '/learn_center',
+    name: 'LearnCenter',
+    component:()=>import('../views/LearnCenter/Index.vue'),
+    meta: {
+      isAuthenticated:true
     }
   }
 ]
