@@ -2,7 +2,7 @@
 import { ref } from "vue";
 import Sidebar from "./components/Sidebar.vue";
 import MyDialog from "@/components/MyDialog.vue";
-
+import DataTab from "./components/DataTab.vue";
 const visible = ref(false);
 </script>
 
@@ -10,8 +10,7 @@ const visible = ref(false);
   <div class="container">
     <sidebar :foo="666" :giao="333" :aaa="123"></sidebar>
     <div class="container-body">
-      <div @click="visible = true">打开按钮</div>
-      <my-dialog :visible="visible"></my-dialog>
+      <data-tab></data-tab>
     </div>
   </div>
 </template>

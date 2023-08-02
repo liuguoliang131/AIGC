@@ -1257,10 +1257,11 @@ onMounted(() => {
       margin: auto;
       padding: 22px 0;
       .scroll_view {
-        width: 310px;
+        width: 301px;
         height: 100%;
         overflow-y: scroll;
         .scroll_page {
+          margin-left: 22px;
           .log_item {
             position: relative;
             box-sizing: border-box;
@@ -1272,7 +1273,7 @@ onMounted(() => {
             padding: 0 13px;
             border: 1px solid #dae0f5;
             border-radius: 5px;
-            margin: 22px auto;
+            margin: 22px 0;
             font-family: PingFang SC;
             font-size: 19px;
             font-weight: 400;
