@@ -1,6 +1,128 @@
 <template>
   <div class="container">
-    <div class="container-side">
+    <sidebar>
+      <div class="side-content">
+        <div v-if="sendLoading" class="newchat_disabled">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="14"
+            height="14"
+            viewBox="0 0 14 14"
+            fill="none"
+          >
+            <rect y="6" width="14" height="2" fill="white" />
+            <rect
+              x="6"
+              y="14"
+              width="14"
+              height="2"
+              transform="rotate(-90 6 14)"
+              fill="white"
+            />
+          </svg>
+          <span>新建聊天</span>
+        </div>
+        <div v-else class="newchat" @click="handNewChat">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="14"
+            height="14"
+            viewBox="0 0 14 14"
+            fill="none"
+          >
+            <rect y="6" width="14" height="2" fill="white" />
+            <rect
+              x="6"
+              y="14"
+              width="14"
+              height="2"
+              transform="rotate(-90 6 14)"
+              fill="white"
+            />
+          </svg>
+          <span>新建聊天</span>
+        </div>
+
+        <div class="log_list" v-loading="tagList.loading">
+          <div
+            class="scroll_view"
+            ref="tagListScroll"
+            @scroll="handTagListScroll"
+          >
+            <div v-if="tagList.isNull" class="scroll_page"></div>
+            <div v-else ref="tagListPage" class="scroll_page">
+              <div
+                v-for="(item, index) in tagList.list"
+                :key="index"
+                :class="[
+                  'log_item',
+                  item.id === activeTag ? 'log_item_active' : '',
+                ]"
+                @click="handActiveTag(item, index)"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 20 20"
+                  fill="none"
+                >
+                  <g clip-path="url(#clip0_58_1653)">
+                    <path
+                      d="M3.75 8.5C3.75 8.73206 3.84219 8.95462 4.00628 9.11872C4.17038 9.28281 4.39294 9.375 4.625 9.375C4.85706 9.375 5.07962 9.28281 5.24372 9.11872C5.40781 8.95462 5.5 8.73206 5.5 8.5C5.5 8.26794 5.40781 8.04538 5.24372 7.88128C5.07962 7.71719 4.85706 7.625 4.625 7.625C4.39294 7.625 4.17038 7.71719 4.00628 7.88128C3.84219 8.04538 3.75 8.26794 3.75 8.5Z"
+                      fill="white"
+                      fill-opacity="0.8"
+                    />
+                    <path
+                      d="M19.25 0.75H0.75C0.375 0.75 0 1.125 0 1.5V15.375C0 15.75 0.375 16.125 0.75 16.125H7.625C8 16.125 8.375 15.75 8.375 15.375C8.375 15 8.125 14.625 7.625 14.625H1.5V2.25H18.375V14.5H12.25C12 14.5 11.875 14.625 11.75 14.75L8 18.5C7.75 18.625 7.625 18.875 7.625 19.125C7.625 19.5 8 19.875 8.375 19.875C8.625 19.875 8.75 19.75 8.875 19.625L12.5 16H19.125C19.5 16 19.875 15.625 19.875 15.25V1.5C20 1.125 19.625 0.75 19.25 0.75Z"
+                      fill="white"
+                      fill-opacity="0.8"
+                    />
+                    <path
+                      d="M9.125 8.5C9.125 8.61491 9.14763 8.72869 9.19161 8.83485C9.23558 8.94101 9.30003 9.03747 9.38128 9.11872C9.46253 9.19997 9.55899 9.26442 9.66515 9.30839C9.77131 9.35237 9.88509 9.375 10 9.375C10.1149 9.375 10.2287 9.35237 10.3348 9.30839C10.441 9.26442 10.5375 9.19997 10.6187 9.11872C10.7 9.03747 10.7644 8.94101 10.8084 8.83485C10.8524 8.72869 10.875 8.61491 10.875 8.5C10.875 8.26794 10.7828 8.04538 10.6187 7.88128C10.4546 7.71719 10.2321 7.625 10 7.625C9.76794 7.625 9.54538 7.71719 9.38128 7.88128C9.21719 8.04538 9.125 8.26794 9.125 8.5Z"
+                      fill="white"
+                      fill-opacity="0.8"
+                    />
+                    <path
+                      d="M14.5 8.5C14.5 8.73206 14.5922 8.95462 14.7563 9.11872C14.9204 9.28281 15.1429 9.375 15.375 9.375C15.6071 9.375 15.8296 9.28281 15.9937 9.11872C16.1578 8.95462 16.25 8.73206 16.25 8.5C16.25 8.26794 16.1578 8.04538 15.9937 7.88128C15.8296 7.71719 15.6071 7.625 15.375 7.625C15.1429 7.625 14.9204 7.71719 14.7563 7.88128C14.5922 8.04538 14.5 8.26794 14.5 8.5Z"
+                      fill="white"
+                      fill-opacity="0.8"
+                    />
+                  </g>
+                  <defs>
+                    <clipPath id="clip0_58_1653">
+                      <rect width="20" height="20" fill="white" />
+                    </clipPath>
+                  </defs>
+                </svg>
+                <span class="log_name nowrap">{{ item.title }}</span>
+
+                <svg
+                  v-if="item.id === activeTag"
+                  @click.self="handDeleteTag(item, index)"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="20"
+                  viewBox="0 0 18 20"
+                  fill="none"
+                >
+                  <path
+                    d="M2.39449 5.48451C2.59157 5.48451 2.78059 5.56484 2.91995 5.70784C3.05931 5.85083 3.13761 6.04478 3.13761 6.24701V16.9784C3.13761 17.1749 3.17535 17.3696 3.24867 17.5512C3.322 17.7328 3.42947 17.8978 3.56496 18.0368C3.70044 18.1758 3.86129 18.286 4.0383 18.3612C4.21531 18.4364 4.40502 18.475 4.5966 18.475H13.4038C13.7906 18.475 14.1616 18.3173 14.4352 18.0366C14.7087 17.756 14.8624 17.3753 14.8624 16.9784V6.24701C14.8624 6.04478 14.9407 5.85083 15.08 5.70784C15.2194 5.56484 15.4084 5.48451 15.6055 5.48451C15.8026 5.48451 15.9916 5.56484 16.131 5.70784C16.2703 5.85083 16.3486 6.04478 16.3486 6.24701V16.9784C16.3486 17.7798 16.0384 18.5483 15.4861 19.115C14.9338 19.6817 14.1848 20 13.4038 20H4.59618C3.81517 20 3.06614 19.6817 2.51388 19.115C1.96162 18.5483 1.65137 17.7798 1.65137 16.9784V6.24701C1.65137 6.04478 1.72966 5.85083 1.86902 5.70784C2.00838 5.56484 2.1974 5.48451 2.39449 5.48451ZM6.24797 3.78413C6.44506 3.78413 6.63408 3.70379 6.77344 3.5608C6.9128 3.4178 6.99109 3.22385 6.99109 3.02163C6.99104 2.82505 7.02873 2.63039 7.102 2.44876C7.17528 2.26714 7.28271 2.1021 7.41815 1.96308C7.5536 1.82406 7.71441 1.71378 7.8914 1.63854C8.06839 1.56331 8.25809 1.52458 8.44967 1.52458H9.55031C9.74192 1.52452 9.93167 1.56321 10.1087 1.63842C10.2857 1.71364 10.4466 1.82391 10.5821 1.96293C10.7176 2.10195 10.8251 2.26701 10.8984 2.44866C10.9717 2.63032 11.0094 2.82502 11.0093 3.02163C11.0093 3.22385 11.0876 3.4178 11.227 3.5608C11.3663 3.70379 11.5553 3.78413 11.7524 3.78413C11.9495 3.78413 12.1385 3.70379 12.2779 3.5608C12.4172 3.4178 12.4955 3.22385 12.4955 3.02163C12.4956 2.22702 12.1906 1.46437 11.6466 0.898822C11.1027 0.333277 10.3635 0.0103601 9.58912 0H8.41128C7.63697 0.0104696 6.89783 0.333421 6.35387 0.898943C5.80991 1.46446 5.50489 2.22705 5.50485 3.02163C5.50485 3.22385 5.58315 3.4178 5.72251 3.5608C5.86187 3.70379 6.05089 3.78413 6.24797 3.78413Z"
+                    fill="#C9E1FF"
+                  />
+                  <path
+                    d="M0 3.70537C0 3.50314 0.0782929 3.3092 0.217655 3.1662C0.357017 3.02321 0.546032 2.94287 0.743119 2.94287H17.2569C17.454 2.94287 17.643 3.02321 17.7823 3.1662C17.9217 3.3092 18 3.50314 18 3.70537C18 3.9076 17.9217 4.10155 17.7823 4.24454C17.643 4.38754 17.454 4.46787 17.2569 4.46787H0.743119C0.546032 4.46787 0.357017 4.38754 0.217655 4.24454C0.0782929 4.10155 0 3.9076 0 3.70537ZM6.7983 6.47283C6.99539 6.47283 7.18441 6.55317 7.32377 6.69616C7.46313 6.83916 7.54142 7.0331 7.54142 7.23533V15.7076C7.54142 15.9098 7.46313 16.1037 7.32377 16.2467C7.18441 16.3897 6.99539 16.4701 6.7983 16.4701C6.60122 16.4701 6.4122 16.3897 6.27284 16.2467C6.13348 16.1037 6.05518 15.9098 6.05518 15.7076V7.23533C6.05518 7.0331 6.13348 6.83916 6.27284 6.69616C6.4122 6.55317 6.60122 6.47283 6.7983 6.47283ZM11.2021 6.47283C11.3992 6.47283 11.5882 6.55317 11.7276 6.69616C11.8669 6.83916 11.9452 7.0331 11.9452 7.23533V15.7076C11.9452 15.9098 11.8669 16.1037 11.7276 16.2467C11.5882 16.3897 11.3992 16.4701 11.2021 16.4701C11.005 16.4701 10.816 16.3897 10.6766 16.2467C10.5373 16.1037 10.459 15.9098 10.459 15.7076V7.23533C10.459 7.0331 10.5373 6.83916 10.6766 6.69616C10.816 6.55317 11.005 6.47283 11.2021 6.47283Z"
+                    fill="#C9E1FF"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </sidebar>
+
+    <!-- <div class="container-side">
       <div class="title">
         <img
           class="logo"
@@ -162,7 +284,7 @@
           </svg>
         </div>
       </div>
-    </div>
+    </div> -->
     <div class="container-body">
       <div class="body-top">
         <span>您的免费问答次数：{{ residueQAQuantity }}次</span>
@@ -378,6 +500,7 @@ import api from "./api";
 import Clipboard from "clipboard";
 import { _getSign } from "@/http/sign";
 import utils from "@/common/utils";
+import Sidebar from "./components/Sidebar.vue";
 
 // 上下文
 // const instance = getCurrentInstance();
@@ -404,22 +527,21 @@ const handExit = () => {
 // 确认退出登录
 const confirmExit = () => {
   exitVisible.value = false;
-  request.get(api.user_logout, {})
-    .then((res) => {
-      if (res.code == 200) {
-        utils.setToken("");
-        utils.setUserInfo("");
-        router.push({
-          path: "/login",
-          replace: true,
-        });
-      } else {
-        ElMessage({
-          type: "error",
-          message: res.msg,
-        });
-      }
-    });
+  request.get(api.user_logout, {}).then((res) => {
+    if (res.code == 200) {
+      utils.setToken("");
+      utils.setUserInfo("");
+      router.push({
+        path: "/login",
+        replace: true,
+      });
+    } else {
+      ElMessage({
+        type: "error",
+        message: res.msg,
+      });
+    }
+  });
 };
 
 // 客服二维码弹窗
@@ -488,10 +610,11 @@ const getHistory = () => {
   const lastId = tagList.list.length
     ? tagList.list[tagList.list.length - 1].id
     : 0;
-  request.get(api.chat_tagList, {
-    lastId,
-    pageSize,
-  })
+  request
+    .get(api.chat_tagList, {
+      lastId,
+      pageSize,
+    })
     .then((res) => {
       console.log("gethistory", res);
       if (res.code == 200) {
@@ -588,11 +711,12 @@ const getAnswerList = () => {
   if (chatList.loading) return false;
   chatList.loading = true;
   const pageSize = 10;
-  request.get(api.chat_answerList, {
-    tagId: activeTag.value,
-    lastId: chatList.lastId,
-    pageSize,
-  })
+  request
+    .get(api.chat_answerList, {
+      tagId: activeTag.value,
+      lastId: chatList.lastId,
+      pageSize,
+    })
     .then((res) => {
       if (res.code == 200) {
         // 防止在加载列表时切换tag
@@ -861,7 +985,8 @@ const handConfirmDeleteTag = () => {
   const tagId = activeTag.value;
   activeTag.value = 0;
   removeVisible.value = false;
-  request.post(api.ai_delTag, {
+  request
+    .post(api.ai_delTag, {
       tagId,
     })
     .then((res) => {
@@ -969,7 +1094,7 @@ const sendByKey = (event) => {
   if (event.ctrlKey && event.code === "Enter") {
     handSend();
   }
-}
+};
 
 let slideTimer = null;
 // 滑动动画 length:number 滑动距离
@@ -1044,9 +1169,10 @@ watch(
 // 删除信息确认
 const handConfirmRemoveMsg = () => {
   removeMsgVisible.value = false;
-  request.post(api.chat_delAnswer, {
-    answerId: delMsgId.value,
-  })
+  request
+    .post(api.chat_delAnswer, {
+      answerId: delMsgId.value,
+    })
     .then((res) => {
       if (res.code == 200) {
         // 设置动作为删除  删除后不用手动填充新数据到列表, 监听高度不足一屏时会自动获取
@@ -1077,32 +1203,8 @@ onMounted(() => {
   display: flex;
   height: 100%;
 
-  .container-side {
-    width: 310px;
+  .side-content {
     height: 100%;
-    border-right: 1px solid #dae0f5;
-    background-color: #f2f3f7;
-    text-align: center;
-    .title {
-      display: flex;
-      align-items: center;
-      width: 270px;
-      height: 67px;
-      border-bottom: #dae0f5 1px solid;
-      margin: auto;
-      color: #000;
-      text-align: center;
-      font-family: PingFang SC;
-      font-size: 28px;
-      font-style: normal;
-      font-weight: 600;
-      line-height: 68px;
-      .logo {
-        width: 40px;
-        height: 30px;
-        margin-right: 14px;
-      }
-    }
     .newchat {
       display: flex;
       align-items: center;
@@ -1117,7 +1219,7 @@ onMounted(() => {
       line-height: normal;
       border-radius: 5px;
       background: #126cfe;
-      margin: 28px auto 0 auto;
+      margin: auto;
       cursor: pointer;
       span {
         margin-left: 11px;
@@ -1140,7 +1242,7 @@ onMounted(() => {
       line-height: normal;
       border-radius: 5px;
       background: #126cfe;
-      margin: 28px auto 0 auto;
+      margin: auto;
       cursor: auto;
       opacity: 0.5;
       span {
@@ -1151,7 +1253,7 @@ onMounted(() => {
     // 历史列表
     .log_list {
       width: 310px;
-      height: calc(100% - 331px);
+      height: calc(100% - 90px);
       margin: auto;
       padding: 22px 0;
       .scroll_view {
@@ -1186,7 +1288,7 @@ onMounted(() => {
               min-width: 0;
               padding-right: 30px;
               text-indent: 10px;
-              color: #333;
+              color: #c9e1ff;
               font-family: PingFang SC;
               font-size: 19px;
               font-style: normal;
@@ -1203,10 +1305,10 @@ onMounted(() => {
               height: 20px;
               border-radius: 5px;
               &:hover {
-                background-color: rgba(0, 0, 0, 0.06);
+                background-color: rgba(0, 0, 0, 0.4);
               }
               &:active {
-                background-color: rgba(0, 0, 0, 0.1);
+                background-color: rgba(0, 0, 0, 0.5);
               }
             }
           }
@@ -1217,49 +1319,9 @@ onMounted(() => {
             margin-bottom: 0;
           }
           .log_item_active {
-            background-color: #dae0f5;
+            background-color: rgba(0, 0, 0, 0.3);
           }
         }
-      }
-    }
-
-    .side-fo {
-      width: 270px;
-      height: 144px;
-      border-top: 1px solid #dae0f5;
-      margin: auto;
-      .menu-item {
-        position: relative;
-        margin: auto;
-        display: flex;
-        align-items: center;
-        cursor: pointer;
-
-        span {
-          margin-left: 16.25px;
-          color: #333;
-          font-family: PingFang SC;
-          font-size: 19px;
-          font-style: normal;
-          font-weight: 400;
-          line-height: normal;
-          text-align: left;
-          &:active {
-            color: #126cfe;
-          }
-        }
-        .gt {
-          position: absolute;
-          right: 10px;
-          top: 50%;
-          transform: translate(0, -50%);
-        }
-      }
-      .mt20 {
-        margin-top: 20px;
-      }
-      .mt30 {
-        margin-top: 30px;
       }
     }
   }
@@ -1288,14 +1350,14 @@ onMounted(() => {
       .chat_box {
         position: relative;
         height: 100%;
-        &::-webkit-scrollbar {
-          display: none;
-        }
 
         .chat_scroll_view {
           position: relative;
           height: 100%;
           overflow-y: scroll;
+          &::-webkit-scrollbar {
+            display: none;
+          }
 
           .list_content {
             padding: 0 30px;
