@@ -17,10 +17,11 @@ export default {
   overscroll-behavior: none; // 取消ios系统回弹动画效果
 }
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 4px;
 }
 ::-webkit-scrollbar-thumb {
-  background-color: #bac5ea;
+  background-color: #0a1432;
+
   border-radius: 10px;
   transition: all 0.2s ease-in-out;
   border-radius: 11px;
@@ -29,7 +30,7 @@ export default {
   border-radius: 10px;
 }
 ::-webkit-scrollbar-track-piece {
-  background-color: #dae0f5;
+  background-color: rgba(34, 46, 81, 1);
   border-radius: 11px;
 }
 
