@@ -15,13 +15,11 @@
         </div>
       </div>
     </el-scrollbar>
-    <div class="banner" :style="{ backgroundColor: `rgba(255, 255, 255, ${opacity})` }">
+    <!-- <div class="banner" :style="{ backgroundColor: `rgba(255, 255, 255, ${opacity})` }">
       <div class="banner_left">
         <img src="@/assets/logo.png" class="logo" @click="goHome" />
         <span class="banner_text">产品</span>
         <span class="banner_text">学习中心</span>
-        <!-- <span @click="handGoChat">AI对话</span>
-        <span @click="handGoDraw">AI绘画</span> -->
       </div>
       <div class="banner_right">
         <el-button type="primary" plain v-if="!isLogged()" @click="goLogin" class="login">登录/注册</el-button>
@@ -30,7 +28,9 @@
           <el-button type="primary" class="logout" @click="handExit">退出登录</el-button>
         </div>
       </div>
-    </div>
+    </div> -->
+    <!-- 顶部切换 -->
+    <TopTabItem></TopTabItem>
     <!-- 退出提醒 -->
     <el-dialog align-center v-model="exitVisible" width="3.1777rem" :show-close="false" :close-on-click-modal="false"
       @close="dialogClose">
@@ -48,6 +48,7 @@
 import utils from "@/common/utils";
 import request from "@/http/index";
 import api from "./api";
+import TopTabItem from "../../components/TopTabItem.vue";
 import { ElButton, ElDialog, ElScrollbar } from "element-plus";
 import {
   ref
@@ -55,7 +56,6 @@ import {
 import { useRouter } from "vue-router";
 const router = useRouter();
 const opacity = ref(0);
-
 function userInfo() {
   return utils.getUserInfo();
 }
