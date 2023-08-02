@@ -30,7 +30,7 @@
       </div>
     </div> -->
     <!-- 顶部切换 -->
-    <TopTabItem></TopTabItem>
+    <TopTabItem productTitle="产品" studyTitle="学习中心"></TopTabItem>
     <!-- 退出提醒 -->
     <el-dialog align-center v-model="exitVisible" width="3.1777rem" :show-close="false" :close-on-click-modal="false"
       @close="dialogClose">
