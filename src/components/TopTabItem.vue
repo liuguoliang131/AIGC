@@ -44,6 +44,7 @@ export default {
   methods: {
     goHome() {
       this.$emit("goHome")
+      this.$emit('active', null)
     },
     goProduction() {
       this.$emit("goProduction")

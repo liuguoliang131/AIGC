@@ -15,7 +15,7 @@
         </div>
       </div>
     </el-scrollbar>
-    <!-- <div class="banner" :style="{ backgroundColor: `rgba(255, 255, 255, ${opacity})` }">
+    <div class="banner" :style="{ backgroundColor: `rgba(255, 255, 255, ${opacity})` }">
       <div class="banner_left">
         <img src="@/assets/logo.png" class="logo" @click="goHome" />
         <span class="banner_text">产品</span>
@@ -28,9 +28,9 @@
           <el-button type="primary" class="logout" @click="handExit">退出登录</el-button>
         </div>
       </div>
-    </div> -->
+    </div>
     <!-- 顶部切换 -->
-    <TopTabItem productTitle="产品" studyTitle="学习中心"></TopTabItem>
+    <!-- <TopTabItem productTitle="产品" studyTitle="学习中心" @active="goHome"></TopTabItem> -->
     <!-- 退出提醒 -->
     <el-dialog align-center v-model="exitVisible" width="3.1777rem" :show-close="false" :close-on-click-modal="false"
       @close="dialogClose">
@@ -49,7 +49,7 @@ import utils from "@/common/utils";
 import request from "@/http/index";
 import api from "./api";
 import TopTabItem from "../../components/TopTabItem.vue";
-import { ElButton, ElDialog, ElScrollbar } from "element-plus";
+import { ElButton, ElDialog, ElScrollbar, ElMessage } from "element-plus";
 import {
   ref
 } from "vue";
