@@ -1,6 +1,7 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import Home from '../views/Home/Index.vue'
 import utils from '@/common/utils'
+import { useRouterConfigStore } from '@/store/routerConfigStore';
 
 const routes = [
   {
@@ -8,6 +9,7 @@ const routes = [
     name: 'Home',
     component: Home,
     meta: {
+      titleBar: true,
       isAuthenticated: false
     }
   },
@@ -48,6 +50,7 @@ const routes = [
     name: 'LearnCenter',
     component: () => import('../views/LearnCenter/Index.vue'),
     meta: {
+      titleBar: true,
       isAuthenticated: true
     }
   },
@@ -56,9 +59,9 @@ const routes = [
     name: 'ProductCenter',
     component: () => import('../views/ProductCenter/ProductCenter.vue'),
     meta: {
+      titleBar: true,
       isAuthenticated: false
-    }
-    ,
+    },
   }
 ]
 
@@ -70,6 +73,12 @@ const router = createRouter({
 
 // 路由守卫
 router.beforeEach((to, from, next) => {
+  const useRouterConfig = useRouterConfigStore();
+  useRouterConfig.saveConfig({
+    titleBar: to.meta.titleBar || false,
+    currentPath: to.path
+  })
+
   console.log('router', to, from)
   if (utils.getToken()) {
     return next()

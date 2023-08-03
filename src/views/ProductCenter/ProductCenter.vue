@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <div class="banner" :style="{ backgroundColor: `rgba(255, 255, 255, ${opacity})` }">
+    <!-- <div class="banner" :style="{ backgroundColor: `rgba(255, 255, 255, ${opacity})` }">
       <div class="banner_left">
         <img src="@/assets/logo.png" class="logo" @click="goHome" />
         <span class="banner_text">产品</span>
@@ -13,7 +13,7 @@
           <el-button type="primary" class="logout" @click="handExit">退出登录</el-button>
         </div>
       </div>
-    </div>
+    </div> -->
     <div class="item-box">
       <img src="https://quanres.hanhoukeji.com/hanhou-ai-pc/ai-chat-card.png" class="item-image" @click="navToItem(1)" />
       <img src="https://quanres.hanhoukeji.com/hanhou-ai-pc/ai-draw-card.png" class="item-image size-box"
