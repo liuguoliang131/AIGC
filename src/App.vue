@@ -102,18 +102,19 @@ function goHome() {
 function goProduct() {
   router.push({
     path: "/product_center",
+    replace: true,
   });
 }
 
 function goLearnCenter() {
-  // return ElMessage({
-  //   message: "学习中心功能正在开发中，敬请期待~",
-  //   type: "warning",
-  // });
-  router.push({
-    path: "/learn_center",
-    replace: true,
+  return ElMessage({
+    message: "学习中心功能正在开发中，敬请期待~",
+    type: "warning",
   });
+  // router.push({
+  //   path: "/learn_center",
+  //   replace: true,
+  // });
 }
 
 function goLogin() {
