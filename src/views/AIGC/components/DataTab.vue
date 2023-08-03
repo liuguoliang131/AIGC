@@ -55,16 +55,47 @@
         </div>
       </el-tooltip>
     </div>
-    <div class="upload">
-      <div class="upload-none"></div>
-      <img src="" alt="" />
+    <div>
+      <file-upload v-model:value="cardData.bgImageUrl">
+        <div class="upload">
+          <div class="cover" v-if="cardData.bgImageUrl">
+            <el-image
+              style="width: 100%; height: 100%; border-radius: inherit"
+              :src="cardData.bgImageUrl"
+              fit="cover"
+            />
+          </div>
+          <div class="upload-none" v-else>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="15"
+              height="15"
+              viewBox="0 0 15 15"
+              fill="none"
+            >
+              <path
+                d="M1 7.59937H13.56"
+                stroke="#AFAFAF"
+                stroke-linecap="round"
+              />
+              <path
+                d="M7.20996 14.021L7.20996 1.461"
+                stroke="#AFAFAF"
+                stroke-linecap="round"
+              />
+            </svg>
+            <div class="none-text">支持JPG、PNG 10M以内</div>
+          </div>
+        </div>
+      </file-upload>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from "vue";
-import { ElDialog, ElInput, ElTooltip } from "element-plus";
+import { ref, reactive } from "vue";
+import { ElDialog, ElInput, ElTooltip, ElImage } from "element-plus";
+import FileUpload from "@/components/FileUpload.vue";
 
 const { showClose, closeOnClickModal, visible } = defineProps({
   showClose: {
@@ -83,11 +114,15 @@ const { showClose, closeOnClickModal, visible } = defineProps({
     description: "打开/关闭",
   },
 });
-console.log("props", showClose, closeOnClickModal, visible);
 
 const emit = defineEmits(["close"]);
 
 const ipt = ref("");
+
+const cardData = reactive({
+  bgImageUrl:
+    "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg", //参考图(背景图cdn地址)
+});
 </script>
 <style lang="less">
 .is-dark {
@@ -217,6 +252,47 @@ const ipt = ref("");
         font-weight: 400;
         line-height: normal;
       }
+    }
+  }
+
+  .upload {
+    width: 89px;
+    height: 89px;
+    border: 1px dashed #e3e3e3;
+    margin-top: 15.4px;
+    background-color: #fafafa;
+    border-radius: 5px;
+    user-select: none;
+    cursor: pointer;
+    &:active {
+      border: 1px dashed #5e9dfe;
+    }
+    .upload-none {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      height: 100%;
+      border-radius: 5px;
+      svg {
+        margin-top: 25px;
+        margin-bottom: 15px;
+      }
+      .none-text {
+        color: rgba(0, 0, 0, 0.3);
+        text-align: center;
+        font-family: PingFang SC;
+        font-size: 12px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 12px; /* 120% */
+        transform: scale(0.83);
+      }
+    }
+    .cover {
+      width: 100%;
+      height: 100%;
+      border-radius: 5px;
     }
   }
 }
