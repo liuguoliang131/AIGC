@@ -203,6 +203,24 @@ const handGoLearn = () => {
   }
   .sidebar-slot {
     height: calc(100% - 367px);
+
+    ::-webkit-scrollbar {
+      width: 4px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background-color: #0a1432;
+
+      border-radius: 10px;
+      transition: all 0.2s ease-in-out;
+      border-radius: 11px;
+    }
+    ::-webkit-scrollbar-track {
+      border-radius: 10px;
+    }
+    ::-webkit-scrollbar-track-piece {
+      background-color: rgba(34, 46, 81, 1);
+      border-radius: 11px;
+    }
   }
 
   /deep/.el-dialog {
