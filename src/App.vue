@@ -16,22 +16,18 @@ export default {
   margin: 0;
   overscroll-behavior: none; // 取消ios系统回弹动画效果
 }
-::-webkit-scrollbar {
-  width: 4px;
-}
-::-webkit-scrollbar-thumb {
-  background-color: #0a1432;
 
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #0003;
   border-radius: 10px;
   transition: all 0.2s ease-in-out;
-  border-radius: 11px;
 }
 ::-webkit-scrollbar-track {
   border-radius: 10px;
-}
-::-webkit-scrollbar-track-piece {
-  background-color: rgba(34, 46, 81, 1);
-  border-radius: 11px;
 }
 
 body {
