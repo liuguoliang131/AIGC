@@ -14,12 +14,25 @@
         </div>
       </div>
     </div>
-
+    <div class="item-box">
+      <img src="https://quanres.hanhoukeji.com/hanhou-ai-pc/ai-chat-card.png" class="item-image" @click="navToItem(1)" />
+      <img src="https://quanres.hanhoukeji.com/hanhou-ai-pc/ai-draw-card.png" class="item-image size-box"
+        @click="navToItem(2)" />
+    </div>
+    <div class="footer">
+      <div class="footer-record">
+        <a @click="handGoICP">京ICP备19041918号-1京公网安备11010502039881号</a>
+      </div>
+      <div class="footer-record">
+        <a @click="handGoICP">网络经营许可证京网文[2020]4683-870号</a>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import utils from "@/common/utils";
+import { ElMessage } from "element-plus";
 
 export default {
   data() {
@@ -33,7 +46,21 @@ export default {
     isLogged() {
       let info = utils.getUserInfo();
       return !!info;
-    }
+    },
+    navToItem(value) {
+      if (value == 1) {
+        this.$router.push({
+          path: "aigc/chat",
+        });
+
+      } else if (value == 2) {
+        return ElMessage({
+          message: "AI绘画功能正在开发中，敬请期待~",
+          type: "warning",
+        });
+      }
+    },
+
   },
 
 }
@@ -42,7 +69,8 @@ export default {
 <style>
 .container {
   height: 100%;
-  background-image: url("https://quanres.hanhoukeji.com/hanhou-ai-pc/login_bg2.png");
+  background-color: #fff;
+  background-image: url('https://quanres.hanhoukeji.com/hanhou-ai-pc/index-background1.png');
   background-size: cover;
   display: flex;
   justify-content: space-between;
@@ -105,5 +133,38 @@ export default {
       height: 42px;
     }
   }
+}
+
+.item-box {
+  text-align: center;
+  width: 100%;
+
+}
+
+.item-image {
+  width: 431px;
+  height: 570px
+}
+
+.size-box {
+  margin-left: 172px;
+}
+
+.footer {
+  color: #666;
+  text-align: center;
+  font-family: PingFang SC;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  position: absolute;
+  bottom: 76px;
+  width: 100%;
+}
+
+.footer-record {
+  margin-top: 16px;
+  cursor: pointer;
 }
 </style>
