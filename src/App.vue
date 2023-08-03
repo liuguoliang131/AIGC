@@ -254,6 +254,7 @@ body {
         position: absolute;
         bottom: -6px;
         left: 50%;
+        transform: translate(-50%, 0);
         content: "";
         width: 25px;
         height: 4px;
