@@ -56,7 +56,7 @@
       </el-tooltip>
     </div>
     <div>
-      <file-upload v-model:value="cardData.bgImageUrl">
+      <my-upload v-model:value="cardData.bgImageUrl">
         <div class="upload">
           <div class="cover" v-if="cardData.bgImageUrl">
             <el-image
@@ -87,7 +87,76 @@
             <div class="none-text">支持JPG、PNG 10M以内</div>
           </div>
         </div>
-      </file-upload>
+      </my-upload>
+    </div>
+    <div class="title2">
+      <span class="title2-n">图片品质</span>
+      <el-tooltip
+        class="box-item"
+        effect="dark"
+        content="品质越高，绘制时间越长"
+        placement="right"
+      >
+        <div class="title2-t">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="12"
+            height="13"
+            viewBox="0 0 12 13"
+            fill="none"
+          >
+            <mask
+              id="mask0_57_258"
+              style="mask-type: luminance"
+              maskUnits="userSpaceOnUse"
+              x="0"
+              y="0"
+              width="12"
+              height="13"
+            >
+              <path d="M11.9977 0H0V12.0164H11.9977V0Z" fill="white" />
+            </mask>
+            <g mask="url(#mask0_57_258)">
+              <path
+                d="M5.9917 0.00939941C9.30195 0.00939941 11.9859 2.6933 11.9859 6.00355C11.9859 9.31379 9.30195 11.9977 5.9917 11.9977C2.68146 11.9977 -0.00244141 9.31379 -0.00244141 6.00355C-0.00244141 2.6933 2.68146 0.00939941 5.9917 0.00939941ZM5.9917 1.00842C3.23346 1.00842 0.996583 3.2453 0.996583 6.00355C0.996583 8.76179 3.23346 10.9987 5.9917 10.9987C8.74995 10.9987 10.9868 8.76179 10.9868 6.00355C10.9868 3.2453 8.74995 1.00842 5.9917 1.00842ZM6.09863 7.71633C6.51249 7.71633 6.8479 8.05194 6.8479 8.46559C6.8479 8.87945 6.51249 9.21486 6.09863 9.21486C5.68478 9.21486 5.34936 8.87945 5.34936 8.46559C5.34936 8.05194 5.68478 7.71633 6.09863 7.71633ZM6.06312 3.00647C6.33902 3.00647 6.56263 3.23008 6.56263 3.50598V6.36023C6.56263 6.63613 6.33902 6.85974 6.06312 6.85974C5.78722 6.85974 5.56361 6.63613 5.56361 6.36023V3.50598C5.56361 3.23008 5.78722 3.00647 6.06312 3.00647Z"
+                fill="#111111"
+                fill-opacity="0.3"
+              />
+            </g>
+          </svg>
+        </div>
+      </el-tooltip>
+    </div>
+
+    <div class="quality">
+      <div class="quality-item_active">普通</div>
+      <div class="quality-item">高清</div>
+      <div class="quality-item">超高清</div>
+    </div>
+    <div class="title2 mt18">
+      <span class="title2-n">图片比例</span>
+    </div>
+    <div class="scale">
+      <div class="scale-item_active">
+        <div class="t1">1:1</div>
+        <div class="t2">适用头像</div>
+      </div>
+      <div class="scale-item">
+        <div class="t1">3:2</div>
+        <div class="t2">适用文章配文</div>
+      </div>
+      <div class="scale-item">
+        <div class="t1">4:3</div>
+        <div class="t2">适用文章配文</div>
+      </div>
+      <div class="scale-item">
+        <div class="t1">9:16</div>
+        <div class="t2">适用海报</div>
+      </div>
+      <div class="scale-item">
+        <div class="t1">16:9</div>
+        <div class="t2">适用电脑壁纸</div>
+      </div>
     </div>
   </div>
 </template>
@@ -95,7 +164,7 @@
 <script setup>
 import { ref, reactive } from "vue";
 import { ElDialog, ElInput, ElTooltip, ElImage } from "element-plus";
-import FileUpload from "@/components/FileUpload.vue";
+import MyUpload from "@/components/MyUpload.vue";
 
 const { showClose, closeOnClickModal, visible } = defineProps({
   showClose: {
@@ -228,6 +297,7 @@ const cardData = reactive({
 
   .title2 {
     margin-top: 30.49px;
+    margin-bottom: 15.3px;
     display: flex;
     align-items: center;
     color: #000;
@@ -295,5 +365,114 @@ const cardData = reactive({
       border-radius: 5px;
     }
   }
+
+  .quality {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    .quality-item {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 89px;
+      height: 29px;
+      border-radius: 5px;
+      border: 0.7px dashed #848484;
+      color: #848484;
+      font-family: PingFang SC;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: normal;
+    }
+    .quality-item_active {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 89px;
+      height: 29px;
+      border-radius: 5px;
+      border: 0.7px solid #126cfe;
+      color: #126cfe;
+      font-family: PingFang SC;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 600;
+      line-height: normal;
+    }
+  }
+  .scale {
+    display: grid;
+    grid-template-rows: 31px;
+    grid-template-columns: 91px 91px 91px;
+    grid-row-gap: 12.67px;
+    grid-column-gap: 37.32px;
+    width: 100%;
+    .scale-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 89px;
+      height: 29px;
+      border-radius: 5px;
+      border: 0.7px dashed #848484;
+      color: #848484;
+      text-align: center;
+
+      .t1 {
+        margin-top: 1.5px;
+        font-family: PingFang SC;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 20px;
+      }
+      .t2 {
+        position: relative;
+        top: -6px;
+        width: 132px;
+        font-family: PingFang SC;
+        font-size: 12px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 12px;
+        transform: scale(0.67);
+      }
+    }
+    .scale-item_active {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 89px;
+      height: 29px;
+      margin-bottom: 12.67px;
+      border-radius: 5px;
+      border: 0.7px solid #126cfe;
+      color: #126cfe;
+      text-align: center;
+      .t1 {
+        margin-top: 1.5px;
+        font-family: PingFang SC;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 20px;
+      }
+      .t2 {
+        position: relative;
+        top: -6px;
+        width: 132px;
+        font-family: PingFang SC;
+        font-size: 12px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 12px;
+        transform: scale(0.67);
+      }
+    }
+  }
+  // .mt18 {
+  //   margin-top: 18px;
+  // }
 }
 </style>

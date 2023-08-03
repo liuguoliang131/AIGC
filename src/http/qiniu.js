@@ -11,7 +11,6 @@ let subscription = null
 const getQiniuToken = () => {
 	return new Promise(resolve => {
     http.get('/other/getUploadToken', {
-      params:{}
     }).then(res => {
       if (res.code !== 200) {
         return resolve(false)
