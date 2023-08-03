@@ -63,8 +63,9 @@ function goProduct() {
 };
 
 function goLearnCenter() {
-  router.push({
-    path: "/learn_center"
+  return ElMessage({
+    message: "学习中心功能正在开发中，敬请期待~",
+    type: "warning",
   });
 };
 
