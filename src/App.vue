@@ -1,63 +1,37 @@
 <template>
   <router-view />
-  <div
-    class="banner"
-    :style="{
-      backgroundColor: `rgba(255, 255, 255, ${useRouterConfig.titleBarOpacity})`,
-      display: useRouterConfig.titleBar ? 'flex' : 'none',
-    }"
-  >
+  <div class="banner" :style="{
+    backgroundColor: `rgba(255, 255, 255, ${useRouterConfig.titleBarOpacity})`,
+    display: useRouterConfig.titleBar ? 'flex' : 'none',
+  }">
     <div class="banner_left">
       <img src="@/assets/logo.png" class="logo" @click="goHome" />
-      <span
-        :class="[
-          'banner_text',
-          useRouterConfig.currentPath == '/product_center'
-            ? 'banner_text_selected'
-            : '',
-        ]"
-        @click="goProduct"
-        >产品</span
-      >
-      <span
-        :class="[
-          'banner_text',
-          useRouterConfig.currentPath == '/learn_center'
-            ? 'banner_text_selected'
-            : '',
-        ]"
-        @click="goLearnCenter"
-        >学习中心</span
-      >
+      <span :class="[
+        'banner_text',
+        useRouterConfig.currentPath == '/product_center'
+          ? 'banner_text_selected'
+          : '',
+      ]" @click="goProduct">产品</span>
+      <span :class="[
+        'banner_text',
+        useRouterConfig.currentPath == '/learn_center'
+          ? 'banner_text_selected'
+          : '',
+      ]" @click="goLearnCenter">学习中心</span>
     </div>
     <div class="banner_right">
-      <el-button
-        type="primary"
-        plain
-        v-if="!isLogged()"
-        @click="goLogin"
-        class="login"
-        >登录/注册</el-button
-      >
+      <el-button type="primary" plain v-if="!isLogged()" @click="goLogin" class="login">登录/注册</el-button>
       <div v-else>
         <span style="font-size: 15px; color: #1e1e1e; margin-right: 20px">{{
           userInfo().tel
         }}</span>
-        <el-button type="primary" class="logout" @click="handExit"
-          >退出登录</el-button
-        >
+        <el-button type="primary" class="logout" @click="handExit">退出登录</el-button>
       </div>
     </div>
   </div>
   <!-- 退出提醒 -->
-  <el-dialog
-    align-center
-    v-model="exitVisible"
-    width="3.1777rem"
-    :show-close="false"
-    :close-on-click-modal="false"
-    @close="dialogClose"
-  >
+  <el-dialog align-center v-model="exitVisible" width="3.1777rem" :show-close="false" :close-on-click-modal="false"
+    @close="dialogClose">
     <div class="dia_title">退出提醒</div>
     <div class="dia_content">是否要退出登录</div>
     <div class="dia_footer_2">
@@ -71,6 +45,8 @@ import { onMounted } from "vue";
 import { useRouterConfigStore } from "@/store/routerConfigStore";
 import utils from "@/common/utils";
 import request from "@/http/index";
+import api from "./http/api";
+
 import {
   ElButton,
   ElDialog,
@@ -124,7 +100,7 @@ function goLogin() {
 }
 
 // 弹层关闭事件
-const dialogClose = () => {};
+const dialogClose = () => { };
 
 // 退出登录弹窗
 const exitVisible = ref(false);
@@ -141,9 +117,8 @@ const confirmExit = () => {
       utils.setToken("");
       utils.setUserInfo("");
       router.push({
-        path: "/",
+        path: "/login",
         replace: true,
-        force: true,
       });
     } else {
       ElMessage({
@@ -170,6 +145,7 @@ const confirmExit = () => {
   border-radius: 10px;
   transition: all 0.2s ease-in-out;
 }
+
 ::-webkit-scrollbar-track {
   border-radius: 10px;
 }
@@ -265,6 +241,7 @@ body {
 
     .banner_text_selected {
       font-weight: 600;
+
       &::after {
         opacity: 1;
       }

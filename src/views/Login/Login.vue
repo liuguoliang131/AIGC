@@ -10,26 +10,12 @@
       <div class="login-title">一起探索AIGC的无限可能</div>
       <div class="input-box">
         <div class="input-group">
-          <input
-            type="tel"
-            id="phone"
-            maxlength="11"
-            v-model="phone"
-            placeholder="请输入手机号"
-            class="input-phone"
-            @input="handlePhoneInput"
-          />
+          <input type="tel" id="phone" maxlength="11" v-model="phone" placeholder="请输入手机号" class="input-phone"
+            @input="handlePhoneInput" />
         </div>
         <div class="input-group">
-          <input
-            type="tel"
-            id="code"
-            maxlength="4"
-            v-model="code"
-            placeholder="请输入验证码"
-            class="input-verCode"
-            @input="handleCodeInput"
-          />
+          <input type="tel" id="code" maxlength="4" v-model="code" placeholder="请输入验证码" class="input-verCode"
+            @input="handleCodeInput" />
           <button class="code-btn" @click="sendCode" :disabled="timer !== null">
             {{ timer ? countDown : "获取验证码" }}
           </button>
@@ -41,9 +27,7 @@
         <!-- <input v-model="agree" type="checkbox" class="checkbox"> -->
         <!-- <label for="agree">我同意相关协议</label> -->
         登录即代表您已同意
-        <span class="policy" @click="handGoAgree(1)"
-          >《服务协议和隐私政策》</span
-        >
+        <span class="policy" @click="handGoAgree(1)">《服务协议和隐私政策》</span>
         和
         <span class="policy" @click="handGoAgree(2)">《安全协议》</span>
       </div>
@@ -61,7 +45,7 @@
 
 <script>
 import { ElMessage } from "element-plus";
-import api, {sendVerifyCode, userLogin} from "./api";
+import api, { sendVerifyCode, userLogin } from "./api";
 import utils from "@/common/utils";
 
 export default {
@@ -94,24 +78,24 @@ export default {
       if (this.getCodeLoading) return;
       this.getCodeLoading = true;
       sendVerifyCode(this.phone).then((res) => {
-          this.getCodeLoading = false;
-          if (res.code == 200) {
-            this.timer = setInterval(() => {
-              if (this.countDown > 1) {
-                this.countDown--;
-              } else {
-                clearInterval(this.timer);
-                this.timer = null;
-                this.countDown = 60;
-              }
-            }, 1000);
-          } else {
-            ElMessage({
-              message: res.message,
-              type: "error",
-            });
-          }
-        });
+        this.getCodeLoading = false;
+        if (res.code == 200) {
+          this.timer = setInterval(() => {
+            if (this.countDown > 1) {
+              this.countDown--;
+            } else {
+              clearInterval(this.timer);
+              this.timer = null;
+              this.countDown = 60;
+            }
+          }, 1000);
+        } else {
+          ElMessage({
+            message: res.message,
+            type: "error",
+          });
+        }
+      });
     },
     login() {
       if (this.phone.length == 0) {
@@ -261,6 +245,7 @@ export default {
   justify-content: space-between;
   align-items: center;
   position: relative;
+
   input {
     width: 100%;
   }
