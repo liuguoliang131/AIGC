@@ -8,48 +8,57 @@ const routes = [
     name: 'Home',
     component: Home,
     meta: {
-      isAuthenticated:false
+      isAuthenticated: false
     }
   },
   {
     path: '/aigc/chat',
     name: 'Chat',
-    component: ()=>import('../views/AIGC/Chat.vue'),
+    component: () => import('../views/AIGC/Chat.vue'),
     meta: {
-      isAuthenticated:true
+      isAuthenticated: true
     }
   },
   {
     path: '/aigc/draw',
     name: 'Draw',
-    component: ()=>import('../views/AIGC/Draw.vue'),
+    component: () => import('../views/AIGC/Draw.vue'),
     meta: {
-      isAuthenticated:true
+      isAuthenticated: true
     }
   },
   {
     path: '/login',
     name: 'Login',
-    component:()=>import('../views/Login/Login.vue'),
+    component: () => import('../views/Login/Login.vue'),
     meta: {
-      isAuthenticated:false
+      isAuthenticated: false
     }
   },
   {
     path: '/agreement',
     name: 'Agreement',
-    component:()=>import('../views/Agreement/Index.vue'),
+    component: () => import('../views/Agreement/Index.vue'),
     meta: {
-      isAuthenticated:false
+      isAuthenticated: false
     }
   },
   {
     path: '/learn_center',
     name: 'LearnCenter',
-    component:()=>import('../views/LearnCenter/Index.vue'),
+    component: () => import('../views/LearnCenter/Index.vue'),
     meta: {
-      isAuthenticated:true
+      isAuthenticated: true
     }
+  },
+  {
+    path: '/product_center',
+    name: 'ProductCenter',
+    component: () => import('../views/ProductCenter/ProductCenter.vue'),
+    meta: {
+      isAuthenticated: false
+    }
+    ,
   }
 ]
 

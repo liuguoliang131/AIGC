@@ -18,7 +18,7 @@
     <div class="banner" :style="{ backgroundColor: `rgba(255, 255, 255, ${opacity})` }">
       <div class="banner_left">
         <img src="@/assets/logo.png" class="logo" @click="goHome" />
-        <span class="banner_text">产品</span>
+        <span class="banner_text" @click="goProduct">产品</span>
         <span class="banner_text">学习中心</span>
       </div>
       <div class="banner_right">
@@ -79,6 +79,12 @@ function goHome() {
   router.push({
     path: "/",
   });
+};
+
+function goProduct() {
+  router.push({
+    path: "/product_center"
+  })
 };
 
 function goLogin() {
