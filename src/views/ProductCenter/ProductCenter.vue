@@ -60,6 +60,9 @@ export default {
         });
       }
     },
+    handGoICP() {
+      window.open(`https://beian.miit.gov.cn/`);
+    },
 
   },
 

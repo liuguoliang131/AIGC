@@ -34,6 +34,9 @@ function onScroll(event) {
   }
   useRouterConfig.titleBarOpacity = scrollTop / 70;
 }
+function handGoICP() {
+  window.open(`https://beian.miit.gov.cn/`);
+}
 
 </script>
 
