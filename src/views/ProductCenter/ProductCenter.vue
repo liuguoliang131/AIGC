@@ -146,7 +146,8 @@ export default {
 
 .item-image {
   width: 431px;
-  height: 570px
+  height: 570px;
+  cursor: pointer;
 }
 
 .size-box {
@@ -154,7 +155,7 @@ export default {
 }
 
 .footer {
-  color: #666;
+  color: #666666;
   text-align: center;
   font-family: PingFang SC;
   font-size: 18px;
@@ -162,12 +163,12 @@ export default {
   font-weight: 400;
   line-height: normal;
   position: absolute;
-  bottom: 76px;
+  bottom: 32px;
   width: 100%;
 }
 
 .footer-record {
-  margin-top: 16px;
+  margin-top: 4px;
   cursor: pointer;
 }
 </style>

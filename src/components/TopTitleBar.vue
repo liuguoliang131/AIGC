@@ -1,62 +1,36 @@
 <template>
-  <div
-    class="banner"
-    :style="{
-      backgroundColor: `rgba(255, 255, 255, ${useRouterConfig.titleBarOpacity})`,
-      display: useRouterConfig.titleBar ? 'flex' : 'none',
-    }"
-  >
+  <div class="banner" :style="{
+    backgroundColor: `rgba(255, 255, 255, ${useRouterConfig.titleBarOpacity})`,
+    display: useRouterConfig.titleBar ? 'flex' : 'none',
+  }">
     <div class="banner_left">
       <img src="@/assets/logo.png" class="logo" @click="goHome" />
-      <span
-        :class="[
-          'banner_text',
-          useRouterConfig.currentPath == '/product_center'
-            ? 'banner_text_selected'
-            : '',
-        ]"
-        @click="goProduct"
-        >产品</span
-      >
-      <span
-        :class="[
-          'banner_text',
-          useRouterConfig.currentPath == '/learn_center'
-            ? 'banner_text_selected'
-            : '',
-        ]"
-        @click="goLearnCenter"
-        >学习中心</span
-      >
+      <span :class="[
+        'banner_text',
+        useRouterConfig.currentPath == '/product_center'
+          ? 'banner_text_selected'
+          : '',
+      ]" @click="goProduct">产品</span>
+      <span :class="[
+        'banner_text',
+        useRouterConfig.currentPath == '/learn_center'
+          ? 'banner_text_selected'
+          : '',
+      ]" @click="goLearnCenter">学习中心</span>
     </div>
     <div class="banner_right">
-      <el-button
-        type="primary"
-        plain
-        v-if="!userStore.userInfo"
-        @click="goLogin"
-        class="login"
-        >登录/注册</el-button
-      >
+      <el-button type="primary" plain v-if="!userStore.userInfo" @click="goLogin" class="login">登录/注册</el-button>
       <div v-else>
         <span style="font-size: 15px; color: #1e1e1e; margin-right: 20px">{{
           userStore.userInfo.tel
         }}</span>
-        <el-button type="primary" class="logout" @click="handExit"
-          >退出登录</el-button
-        >
+        <el-button type="primary" class="logout" @click="handExit">退出登录</el-button>
       </div>
     </div>
 
     <!-- 退出提醒 -->
-    <el-dialog
-      align-center
-      v-model="exitVisible"
-      width="3.1777rem"
-      :show-close="false"
-      :close-on-click-modal="false"
-      @close="dialogClose"
-    >
+    <el-dialog align-center v-model="exitVisible" width="3.1777rem" :show-close="false" :close-on-click-modal="false"
+      @close="dialogClose">
       <div class="dia_title">退出提醒</div>
       <div class="dia_content">是否要退出登录</div>
       <div class="dia_footer_2">
@@ -113,7 +87,7 @@ function goLogin() {
 }
 
 // 弹层关闭事件
-const dialogClose = () => {};
+const dialogClose = () => { };
 
 // 退出登录弹窗
 const exitVisible = ref(false);
@@ -167,7 +141,7 @@ const confirmExit = () => {
     .banner_text {
       position: relative;
       color: #1e1e1e;
-      font-size: 28px;
+      font-size: 22px;
       margin-right: 40px;
       font-weight: normal;
       line-height: 39px;
@@ -175,7 +149,7 @@ const confirmExit = () => {
 
       &::after {
         position: absolute;
-        bottom: -6px;
+        bottom: -1px;
         left: 50%;
         transform: translate(-50%, 0);
         content: "";
@@ -222,6 +196,7 @@ const confirmExit = () => {
 /deep/.el-dialog {
   border-radius: 16px;
 }
+
 /deep/.el-dialog__header {
   height: 0;
 }
@@ -231,13 +206,16 @@ const confirmExit = () => {
     width: 60px;
     height: 60px;
   }
+
   .el-dialog__close {
     font-size: 30.5px;
   }
 }
+
 /deep/.el-dialog__body {
   padding: 60px 73px;
 }
+
 .dia_title {
   color: #000;
   text-align: center;
@@ -247,6 +225,7 @@ const confirmExit = () => {
   font-weight: 500;
   line-height: 42px;
 }
+
 .dia_content {
   margin-top: 40px;
   color: #000;
@@ -263,6 +242,7 @@ const confirmExit = () => {
   align-items: center;
   justify-content: center;
   margin-top: 58px;
+
   .confirm {
     display: flex;
     align-items: center;
@@ -285,11 +265,13 @@ const confirmExit = () => {
     }
   }
 }
+
 .dia_footer_2 {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-top: 58px;
+
   .cancel {
     display: flex;
     align-items: center;
@@ -306,10 +288,12 @@ const confirmExit = () => {
     font-weight: 500;
     line-height: normal;
     cursor: pointer;
+
     &:active {
       opacity: 0.8;
     }
   }
+
   .confirm {
     display: flex;
     align-items: center;
@@ -335,6 +319,7 @@ const confirmExit = () => {
     }
   }
 }
+
 .service {
   display: flex;
   flex-direction: column;
