@@ -2,12 +2,12 @@
   <div class="data-tab">
     <div class="title">历史绘画</div>
     <div class="views">
-      <div class="empty">
+      <!-- <div class="empty">
         <div class="text">暂无记录</div>
-      </div>
-      <!-- <div class="scroll_client">
-        <div class="scroll_page">卷轴</div>
       </div> -->
+      <div class="scroll_client">
+        <div class="scroll_page">卷轴</div>
+      </div>
     </div>
   </div>
 </template>
@@ -77,6 +77,13 @@ const emit = defineEmits(["close"]);
       text-align: center;
       .text {
         transform: translate(0, -100px);
+      }
+    }
+
+    .scroll_client {
+      height: 100%;
+      overflow-y: scroll;
+      .scroll_page {
       }
     }
   }
