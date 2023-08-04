@@ -48,7 +48,7 @@ utils.goLogin = function () {
   query.origin = current.path
   
   router.push({
-    path: '/login',
+    path: '/',
     query,
     replace:true,
   })
@@ -56,14 +56,15 @@ utils.goLogin = function () {
 
 // 登录+跳回
 utils.loginAfter = function (data) {
+  console.log(router)
   utils.setToken(data.token);
   utils.setUserInfo(data);
 
   const current = router.currentRoute.value
   const query = JSON.parse(JSON.stringify(current.query))
-  const path = query.origin
+  const path = query.origin || '/'
   delete query.origin
-  
+  console.log('current',current,'query',query,'path',path)
   router.push({
     path,
     query

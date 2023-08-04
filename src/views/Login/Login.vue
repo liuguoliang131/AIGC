@@ -62,7 +62,8 @@
 import { ElMessage } from "element-plus";
 import api, { sendVerifyCode, userLogin } from "./api";
 import utils from "@/common/utils";
-
+import { mapStores } from "pinia";
+import { useUserStore } from "@/store/user";
 export default {
   data() {
     return {
@@ -73,6 +74,9 @@ export default {
       loading: false,
       getCodeLoading: false,
     };
+  },
+  computed: {
+    ...mapStores(useUserStore),
   },
 
   methods: {
@@ -141,11 +145,12 @@ export default {
           type: "warning",
         });
       }
+
       this.loading = true;
       userLogin(this.phone, this.code).then((res) => {
         if (res.code == 200) {
           this.loading = false;
-          utils.loginAfter(res.data);
+          this.userStore.loginBackPage(res.data);
         } else {
           this.loading = false;
           ElMessage({
