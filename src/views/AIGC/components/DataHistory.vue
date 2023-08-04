@@ -3,7 +3,7 @@
     <div class="title">历史绘画</div>
     <div class="views">
       <div class="empty">
-        <div>暂无记录</div>
+        <div class="text">暂无记录</div>
       </div>
       <!-- <div class="scroll_client">
         <div class="scroll_page">卷轴</div>
@@ -59,7 +59,26 @@ const emit = defineEmits(["close"]);
     font-weight: 400;
   }
   .views {
-    // height: calc( 100% );
+    width: 100%;
+    height: calc(100% - 40px);
+    overflow: hidden;
+    .empty {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      color: #999;
+      text-align: center;
+      font-family: PingFang SC;
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: normal;
+      text-align: center;
+      .text {
+        transform: translate(0, -100px);
+      }
+    }
   }
 }
 </style>
