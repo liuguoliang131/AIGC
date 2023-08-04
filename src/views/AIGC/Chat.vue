@@ -2,12 +2,7 @@
   <div class="container">
     <div class="container-side">
       <div class="title">
-        <img
-          class="logo"
-          src="https://quanres.hanhoukeji.com/hanhou-ai-pc/hanhou-monkey-icon.png"
-          alt=""
-        />
-        HANHOU·AIGC
+        <img src="@/assets/logo.png" class="logo" @click="goHome" />
       </div>
 
       <div v-if="sendLoading" class="newchat_disabled">
@@ -814,6 +809,12 @@ const handleCopy = (text) => {
   copy_text.value.click();
 };
 
+const goHome = () => {
+  router.push({
+    path: "/",
+  });
+};
+
 // 设置复制板
 const initCopyClipboard = () => {
   const clipboard = new Clipboard(".clipboard_text");
@@ -1101,9 +1102,10 @@ onMounted(() => {
       font-weight: 600;
       line-height: 68px;
       .logo {
-        width: 40px;
-        height: 30px;
-        margin-right: 14px;
+        width: 239px;
+        height: 40px;
+        margin-left: 20px;
+        cursor: pointer;
       }
     }
     .newchat {
