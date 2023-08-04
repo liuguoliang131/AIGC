@@ -160,7 +160,6 @@ body {
   font-family: PingFang SC;
   font-size: 19px;
   font-weight: 500;
-  line-height: 44px;
   text-align: left;
   color: #333333;
 }

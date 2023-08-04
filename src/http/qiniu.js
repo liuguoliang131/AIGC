@@ -10,7 +10,8 @@ let subscription = null
 // 获取七牛token方法
 const getQiniuToken = () => {
 	return new Promise(resolve => {
-    http.get('/other/getUploadToken', {}).then(res => {
+    http.get('/other/getUploadToken', {
+    }).then(res => {
       if (res.code !== 200) {
         return resolve(false)
       }
