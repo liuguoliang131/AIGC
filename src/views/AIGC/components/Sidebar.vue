@@ -6,6 +6,9 @@ import { ElMessage, ElDialog } from "element-plus";
 import request from "@/http/index";
 import api from "../api";
 import utils from "@/common/utils";
+import { useUserStore } from "@/store/user";
+
+const userStore = useUserStore(); //用户信息
 
 const router = useRouter();
 const route = useRoute();
@@ -24,10 +27,9 @@ const confirmExit = () => {
   exitVisible.value = false;
   request.get(api.user_logout, {}).then((res) => {
     if (res.code == 200) {
-      utils.setToken("");
-      utils.setUserInfo("");
+      userStore.clearLog();
       router.push({
-        path: "/login",
+        path: "/",
         replace: true,
       });
     } else {

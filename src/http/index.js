@@ -59,7 +59,13 @@ instance.interceptors.response.use(function (response) {
   // 对响应数据做点什么
   // console.log('响应拦截器', response.data)
   if (response.data.code === 1000) {
-    utils.goLogin()
+    utils.setToken('')
+    utils.setUserInfo('')
+    router.push({
+      path: '/',
+      replace:true
+    })
+    window.history.go(0)
   }
   return response.data
 }, function (error) {

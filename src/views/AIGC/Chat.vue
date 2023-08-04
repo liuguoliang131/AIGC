@@ -404,7 +404,10 @@ const confirmExit = () => {
   request.get(api.user_logout, {}).then((res) => {
     if (res.code == 200) {
       userStore.clearLog();
-      userStore.goLoginPage();
+      router.push({
+        path: "/",
+        replace: true,
+      });
     } else {
       ElMessage({
         type: "error",
