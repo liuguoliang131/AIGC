@@ -17,9 +17,7 @@ const agreementText = ref("");
 const getAgreement = (type) => {
   http
     .get(api.user_agreement, {
-      params: {
-        type: Number(type),
-      },
+      type: Number(type),
     })
     .then((res) => {
       if (res.code !== 200) {

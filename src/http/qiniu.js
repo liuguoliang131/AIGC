@@ -10,9 +10,7 @@ let subscription = null
 // 获取七牛token方法
 const getQiniuToken = () => {
 	return new Promise(resolve => {
-    http.get('/other/getUploadToken', {
-      params:{}
-    }).then(res => {
+    http.get('/other/getUploadToken', {}).then(res => {
       if (res.code !== 200) {
         return resolve(false)
       }
@@ -47,7 +45,7 @@ export const qiniuUpload = (file) => {
       }
 			const key = setFileKey(file.name)
       console.log('key', key)
-      
+
 
       // 默认配置
       const config = {
@@ -58,10 +56,10 @@ export const qiniuUpload = (file) => {
         retryCount: 1, //上传自动重试次数（整体重试次数，而不是某个分片的重试次数）；默认 3 次（即上传失败后最多重试两次）
         debugLogLevel: 'info' //INFO | WARN | ERROR | OFF，允许程序在控制台输出日志，默认为 OFF，不输出任何日志，本功能仅仅用于本地调试，不建议在线上环境开启。
       };
-      
+
       // 指定所传文件的文件名、文件类型等 非必选
       const putExtra = {};
-        
+
 
 
 			const observable = qiniu.upload(file, key, data.token, putExtra, config)
