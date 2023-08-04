@@ -1,5 +1,5 @@
 <template>
-  <div class="data-tab">1223</div>
+  <div class="data-tab"></div>
 </template>
 
 <script setup>
@@ -29,6 +29,10 @@ const emit = defineEmits(["close"]);
 
 <style scoped lang="less">
 .data-tab {
+  box-sizing: border-box;
   width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 1);
+  border-radius: 5px;
 }
 </style>

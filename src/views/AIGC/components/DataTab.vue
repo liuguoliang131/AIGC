@@ -133,7 +133,7 @@
       <div class="quality-item">高清</div>
       <div class="quality-item">超高清</div>
     </div>
-    <div class="title2 mt18">
+    <div class="title2">
       <span class="title2-n">图片比例</span>
     </div>
     <div class="scale">
@@ -158,6 +158,23 @@
         <div class="t2">适用电脑壁纸</div>
       </div>
     </div>
+
+    <div class="title2">
+      <span class="title2-n">图片风格</span>
+    </div>
+
+    <div class="drawstyle">
+      <div
+        class="drawstyle-item"
+        v-for="(item, index) in drawStyle"
+        :key="index"
+        @click="cardData.pictureStyle = item.id"
+      >
+        <img :src="item.path" alt="" />
+        <div class="mask" v-if="item.id === cardData.pictureStyle"></div>
+      </div>
+    </div>
+    <div class="action-btn">立即生成</div>
   </div>
 </template>
 
@@ -191,7 +208,52 @@ const ipt = ref("");
 const cardData = reactive({
   bgImageUrl:
     "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg", //参考图(背景图cdn地址)
+  pictureStyle: 1, //绘画风格
 });
+
+// 绘画风格列表
+const drawStyle = ref([
+  {
+    name: "默认风格",
+    id: 1,
+    path: "https://quanres.hanhoukeji.com/hanhou-ai-pc/drawstyle_mr.png",
+  },
+  {
+    name: "等距动画",
+    id: 2,
+    path: "https://quanres.hanhoukeji.com/hanhou-ai-pc/drawstyle_dj.png",
+  },
+  {
+    name: "赛博朋克",
+    id: 3,
+    path: "https://quanres.hanhoukeji.com/hanhou-ai-pc/drawstyle_sbpk.png",
+  },
+  {
+    name: "二次元",
+    id: 4,
+    path: "https://quanres.hanhoukeji.com/hanhou-ai-pc/drawstyle_ecy.png",
+  },
+  {
+    name: "插画风格",
+    id: 5,
+    path: "https://quanres.hanhoukeji.com/hanhou-ai-pc/drawstyle_ch.png",
+  },
+  {
+    name: "水墨风格",
+    id: 6,
+    path: "https://quanres.hanhoukeji.com/hanhou-ai-pc/drawstyle_sm.png",
+  },
+  {
+    name: "写实主义",
+    id: 7,
+    path: "https://quanres.hanhoukeji.com/hanhou-ai-pc/drawstyle_xs.png",
+  },
+  {
+    name: "工业风格",
+    id: 8,
+    path: "https://quanres.hanhoukeji.com/hanhou-ai-pc/drawstyle_gy.png",
+  },
+]);
 </script>
 <style lang="less">
 .is-dark {
@@ -205,6 +267,7 @@ const cardData = reactive({
 </style>
 <style scoped lang="less">
 .data-tab {
+  box-sizing: border-box;
   height: 100%;
   padding: 17px;
   overflow-y: scroll;
@@ -228,8 +291,9 @@ const cardData = reactive({
   }
   .ipt {
     position: relative;
-    width: calc(100% - 5px);
-    height: 129.3px;
+    box-sizing: border-box;
+    width: 100%;
+    height: 166px;
     padding: 7.7px 5px 26px 0;
     border-radius: 5px;
     border: 1px solid #e3e3e3;
@@ -471,8 +535,55 @@ const cardData = reactive({
       }
     }
   }
-  // .mt18 {
-  //   margin-top: 18px;
-  // }
+  .drawstyle {
+    display: grid;
+    grid-template-rows: 80px;
+    grid-template-columns: 80px 80px 80px 80px;
+    grid-row-gap: 12.67px;
+    grid-column-gap: 9px;
+    width: 100%;
+    .drawstyle-item {
+      position: relative;
+      width: 80px;
+      height: 80px;
+      border-radius: 5px;
+      img {
+        width: 100%;
+        height: 100%;
+        cursor: pointer;
+      }
+      .mask {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        box-sizing: border-box;
+        border: 1px solid rgba(18, 108, 254, 1);
+        border-radius: 5px;
+        background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.3));
+      }
+    }
+  }
+  .action-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 46px;
+    margin-top: 48px;
+    margin-bottom: 30px;
+    border-radius: 5px;
+    background-color: rgba(18, 108, 254, 1);
+    color: rgba(243, 243, 250, 1);
+    font-family: PingFang SC;
+    font-size: 19px;
+    font-weight: 600;
+    cursor: pointer;
+    user-select: none;
+    &:active {
+      opacity: 0.7;
+    }
+  }
 }
 </style>
