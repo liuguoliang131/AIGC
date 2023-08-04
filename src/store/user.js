@@ -15,12 +15,8 @@ export const useUserStore = defineStore({
       utils.setToken('')
       utils.setUserInfo('')
     },
-    // 清空数据 跳转登录页
+    // 跳转登录页 记录当前路由
     goLoginPage() {
-      this.userInfo = ''
-      this.token = ''
-      utils.setToken('')
-      utils.setUserInfo('')
       utils.goLogin()
     },
     // 登陆成功 返回上一级
