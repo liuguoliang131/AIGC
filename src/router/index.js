@@ -83,9 +83,18 @@ router.beforeEach((to, from, next) => {
   if (utils.getToken()) {
     return next()
   }
-
-  if (to.name !== 'Login' && to.meta.isAuthenticated) next({ name: 'Login' })
-  else next()
+  
+  if (to.name !== 'Login' && to.meta.isAuthenticated) { 
+    const query = JSON.parse(JSON.stringify(from.query))
+    query.origin = from.path
+    next({
+      name: 'Login',
+      query
+    })
+  } 
+  else {
+    next()
+  }
 })
 
 document.title = 'HANHOU·AIGC'
