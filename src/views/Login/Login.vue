@@ -2,8 +2,7 @@
   <div class="container" v-loading="loading">
     <div class="background"></div>
     <div class="logo-view">
-      <div class="logo"></div>
-      <div class="logo-name">HANHOU·AIGC</div>
+      <img src="@/assets/logo.png" class="logo" @click="goHome" />
     </div>
     <div></div>
     <div class="login-box">
@@ -61,6 +60,11 @@ export default {
   },
 
   methods: {
+    goHome() {
+      this.$router.push({
+        path: "/",
+      });
+    },
     sendCode() {
       if (this.phone.length == 0) {
         return ElMessage({
@@ -196,16 +200,15 @@ export default {
   display: flex;
   align-items: center;
   position: absolute;
-  top: 13px;
-  left: 22px;
+  top: 0;
+  height: 70px;
 }
 
 .logo {
-  width: 40px;
-  height: 30.025px;
-  background-image: url("https://quanres.hanhoukeji.com/hanhou-ai-pc/login_logo.png");
-  background-size: contain;
-  background-repeat: no-repeat;
+  width: 239px;
+  height: 40px;
+  margin-left: 22px;
+  cursor: pointer;
 }
 
 .logo-name {
