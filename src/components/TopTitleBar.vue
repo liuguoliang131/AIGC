@@ -47,23 +47,24 @@
         >
       </div>
     </div>
+
+    <!-- 退出提醒 -->
+    <el-dialog
+      align-center
+      v-model="exitVisible"
+      width="3.1777rem"
+      :show-close="false"
+      :close-on-click-modal="false"
+      @close="dialogClose"
+    >
+      <div class="dia_title">退出提醒</div>
+      <div class="dia_content">是否要退出登录</div>
+      <div class="dia_footer_2">
+        <div class="cancel" @click="exitVisible = false">取消</div>
+        <div class="confirm" @click="confirmExit">确定</div>
+      </div>
+    </el-dialog>
   </div>
-  <!-- 退出提醒 -->
-  <el-dialog
-    align-center
-    v-model="exitVisible"
-    width="3.1777rem"
-    :show-close="false"
-    :close-on-click-modal="false"
-    @close="dialogClose"
-  >
-    <div class="dia_title">退出提醒</div>
-    <div class="dia_content">是否要退出登录</div>
-    <div class="dia_footer_2">
-      <div class="cancel" @click="exitVisible = false">取消</div>
-      <div class="confirm" @click="confirmExit">确定</div>
-    </div>
-  </el-dialog>
 </template>
 
 <script setup>
@@ -220,7 +221,6 @@ const confirmExit = () => {
 /deep/.el-dialog {
   border-radius: 16px;
 }
-
 /deep/.el-dialog__header {
   height: 0;
 }
@@ -230,16 +230,13 @@ const confirmExit = () => {
     width: 60px;
     height: 60px;
   }
-
   .el-dialog__close {
     font-size: 30.5px;
   }
 }
-
 /deep/.el-dialog__body {
   padding: 60px 73px;
 }
-
 .dia_title {
   color: #000;
   text-align: center;
@@ -249,7 +246,6 @@ const confirmExit = () => {
   font-weight: 500;
   line-height: 42px;
 }
-
 .dia_content {
   margin-top: 40px;
   color: #000;
@@ -266,7 +262,6 @@ const confirmExit = () => {
   align-items: center;
   justify-content: center;
   margin-top: 58px;
-
   .confirm {
     display: flex;
     align-items: center;
@@ -289,13 +284,11 @@ const confirmExit = () => {
     }
   }
 }
-
 .dia_footer_2 {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-top: 58px;
-
   .cancel {
     display: flex;
     align-items: center;
@@ -312,12 +305,10 @@ const confirmExit = () => {
     font-weight: 500;
     line-height: normal;
     cursor: pointer;
-
     &:active {
       opacity: 0.8;
     }
   }
-
   .confirm {
     display: flex;
     align-items: center;
@@ -343,7 +334,6 @@ const confirmExit = () => {
     }
   }
 }
-
 .service {
   display: flex;
   flex-direction: column;
