@@ -1,168 +1,127 @@
 <template>
   <div class="container">
-    <div class="container-side">
-      <div class="title">
-        <img
-          class="logo"
-          src="https://quanres.hanhoukeji.com/hanhou-ai-pc/hanhou-monkey-icon.png"
-          alt=""
-        />
-        HANHOU·AIGC
-      </div>
-
-      <div v-if="sendLoading" class="newchat_disabled">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="14"
-          height="14"
-          viewBox="0 0 14 14"
-          fill="none"
-        >
-          <rect y="6" width="14" height="2" fill="white" />
-          <rect
-            x="6"
-            y="14"
+    <sidebar>
+      <div class="side-content">
+        <div v-if="sendLoading" class="newchat_disabled">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
             width="14"
-            height="2"
-            transform="rotate(-90 6 14)"
-            fill="white"
-          />
-        </svg>
-        <span>新建聊天</span>
-      </div>
-      <div v-else class="newchat" @click="handNewChat">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="14"
-          height="14"
-          viewBox="0 0 14 14"
-          fill="none"
-        >
-          <rect y="6" width="14" height="2" fill="white" />
-          <rect
-            x="6"
-            y="14"
+            height="14"
+            viewBox="0 0 14 14"
+            fill="none"
+          >
+            <rect y="6" width="14" height="2" fill="white" />
+            <rect
+              x="6"
+              y="14"
+              width="14"
+              height="2"
+              transform="rotate(-90 6 14)"
+              fill="white"
+            />
+          </svg>
+          <span>新建聊天</span>
+        </div>
+        <div v-else class="newchat" @click="handNewChat">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
             width="14"
-            height="2"
-            transform="rotate(-90 6 14)"
-            fill="white"
-          />
-        </svg>
-        <span>新建聊天</span>
-      </div>
+            height="14"
+            viewBox="0 0 14 14"
+            fill="none"
+          >
+            <rect y="6" width="14" height="2" fill="white" />
+            <rect
+              x="6"
+              y="14"
+              width="14"
+              height="2"
+              transform="rotate(-90 6 14)"
+              fill="white"
+            />
+          </svg>
+          <span>新建聊天</span>
+        </div>
 
-      <div class="log_list" v-loading="tagList.loading">
-        <div
-          class="scroll_view"
-          ref="tagListScroll"
-          @scroll="handTagListScroll"
-        >
-          <div v-if="tagList.isNull" class="scroll_page"></div>
-          <div v-else ref="tagListPage" class="scroll_page">
-            <div
-              v-for="(item, index) in tagList.list"
-              :key="index"
-              :class="[
-                'log_item',
-                item.id === activeTag ? 'log_item_active' : '',
-              ]"
-              @click="handActiveTag(item, index)"
-            >
-              <img
-                class="bubble_icon"
-                src="https://quanres.hanhoukeji.com/hanhou-ai-pc/bubble-icon.svg"
-                alt=""
-              />
-              <span class="log_name nowrap">{{ item.title }}</span>
-              <img
-                v-if="item.id === activeTag"
-                @click.self="handDeleteTag(item, index)"
-                class="delete_icon"
-                src="https://quanres.hanhoukeji.com/hanhou-ai-pc/delete-icon.svg"
-                alt=""
-              />
+        <div class="log_list" v-loading="tagList.loading">
+          <div
+            class="scroll_view"
+            ref="tagListScroll"
+            @scroll="handTagListScroll"
+          >
+            <div v-if="tagList.isNull" class="scroll_page"></div>
+            <div v-else ref="tagListPage" class="scroll_page">
+              <div
+                v-for="(item, index) in tagList.list"
+                :key="index"
+                :class="[
+                  'log_item',
+                  item.id === activeTag ? 'log_item_active' : '',
+                ]"
+                @click="handActiveTag(item, index)"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 20 20"
+                  fill="none"
+                >
+                  <g clip-path="url(#clip0_58_1653)">
+                    <path
+                      d="M3.75 8.5C3.75 8.73206 3.84219 8.95462 4.00628 9.11872C4.17038 9.28281 4.39294 9.375 4.625 9.375C4.85706 9.375 5.07962 9.28281 5.24372 9.11872C5.40781 8.95462 5.5 8.73206 5.5 8.5C5.5 8.26794 5.40781 8.04538 5.24372 7.88128C5.07962 7.71719 4.85706 7.625 4.625 7.625C4.39294 7.625 4.17038 7.71719 4.00628 7.88128C3.84219 8.04538 3.75 8.26794 3.75 8.5Z"
+                      fill="white"
+                      fill-opacity="0.8"
+                    />
+                    <path
+                      d="M19.25 0.75H0.75C0.375 0.75 0 1.125 0 1.5V15.375C0 15.75 0.375 16.125 0.75 16.125H7.625C8 16.125 8.375 15.75 8.375 15.375C8.375 15 8.125 14.625 7.625 14.625H1.5V2.25H18.375V14.5H12.25C12 14.5 11.875 14.625 11.75 14.75L8 18.5C7.75 18.625 7.625 18.875 7.625 19.125C7.625 19.5 8 19.875 8.375 19.875C8.625 19.875 8.75 19.75 8.875 19.625L12.5 16H19.125C19.5 16 19.875 15.625 19.875 15.25V1.5C20 1.125 19.625 0.75 19.25 0.75Z"
+                      fill="white"
+                      fill-opacity="0.8"
+                    />
+                    <path
+                      d="M9.125 8.5C9.125 8.61491 9.14763 8.72869 9.19161 8.83485C9.23558 8.94101 9.30003 9.03747 9.38128 9.11872C9.46253 9.19997 9.55899 9.26442 9.66515 9.30839C9.77131 9.35237 9.88509 9.375 10 9.375C10.1149 9.375 10.2287 9.35237 10.3348 9.30839C10.441 9.26442 10.5375 9.19997 10.6187 9.11872C10.7 9.03747 10.7644 8.94101 10.8084 8.83485C10.8524 8.72869 10.875 8.61491 10.875 8.5C10.875 8.26794 10.7828 8.04538 10.6187 7.88128C10.4546 7.71719 10.2321 7.625 10 7.625C9.76794 7.625 9.54538 7.71719 9.38128 7.88128C9.21719 8.04538 9.125 8.26794 9.125 8.5Z"
+                      fill="white"
+                      fill-opacity="0.8"
+                    />
+                    <path
+                      d="M14.5 8.5C14.5 8.73206 14.5922 8.95462 14.7563 9.11872C14.9204 9.28281 15.1429 9.375 15.375 9.375C15.6071 9.375 15.8296 9.28281 15.9937 9.11872C16.1578 8.95462 16.25 8.73206 16.25 8.5C16.25 8.26794 16.1578 8.04538 15.9937 7.88128C15.8296 7.71719 15.6071 7.625 15.375 7.625C15.1429 7.625 14.9204 7.71719 14.7563 7.88128C14.5922 8.04538 14.5 8.26794 14.5 8.5Z"
+                      fill="white"
+                      fill-opacity="0.8"
+                    />
+                  </g>
+                  <defs>
+                    <clipPath id="clip0_58_1653">
+                      <rect width="20" height="20" fill="white" />
+                    </clipPath>
+                  </defs>
+                </svg>
+                <span class="log_name nowrap">{{ item.title }}</span>
+
+                <svg
+                  v-if="item.id === activeTag"
+                  @click.self="handDeleteTag(item, index)"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="20"
+                  viewBox="0 0 18 20"
+                  fill="none"
+                >
+                  <path
+                    d="M2.39449 5.48451C2.59157 5.48451 2.78059 5.56484 2.91995 5.70784C3.05931 5.85083 3.13761 6.04478 3.13761 6.24701V16.9784C3.13761 17.1749 3.17535 17.3696 3.24867 17.5512C3.322 17.7328 3.42947 17.8978 3.56496 18.0368C3.70044 18.1758 3.86129 18.286 4.0383 18.3612C4.21531 18.4364 4.40502 18.475 4.5966 18.475H13.4038C13.7906 18.475 14.1616 18.3173 14.4352 18.0366C14.7087 17.756 14.8624 17.3753 14.8624 16.9784V6.24701C14.8624 6.04478 14.9407 5.85083 15.08 5.70784C15.2194 5.56484 15.4084 5.48451 15.6055 5.48451C15.8026 5.48451 15.9916 5.56484 16.131 5.70784C16.2703 5.85083 16.3486 6.04478 16.3486 6.24701V16.9784C16.3486 17.7798 16.0384 18.5483 15.4861 19.115C14.9338 19.6817 14.1848 20 13.4038 20H4.59618C3.81517 20 3.06614 19.6817 2.51388 19.115C1.96162 18.5483 1.65137 17.7798 1.65137 16.9784V6.24701C1.65137 6.04478 1.72966 5.85083 1.86902 5.70784C2.00838 5.56484 2.1974 5.48451 2.39449 5.48451ZM6.24797 3.78413C6.44506 3.78413 6.63408 3.70379 6.77344 3.5608C6.9128 3.4178 6.99109 3.22385 6.99109 3.02163C6.99104 2.82505 7.02873 2.63039 7.102 2.44876C7.17528 2.26714 7.28271 2.1021 7.41815 1.96308C7.5536 1.82406 7.71441 1.71378 7.8914 1.63854C8.06839 1.56331 8.25809 1.52458 8.44967 1.52458H9.55031C9.74192 1.52452 9.93167 1.56321 10.1087 1.63842C10.2857 1.71364 10.4466 1.82391 10.5821 1.96293C10.7176 2.10195 10.8251 2.26701 10.8984 2.44866C10.9717 2.63032 11.0094 2.82502 11.0093 3.02163C11.0093 3.22385 11.0876 3.4178 11.227 3.5608C11.3663 3.70379 11.5553 3.78413 11.7524 3.78413C11.9495 3.78413 12.1385 3.70379 12.2779 3.5608C12.4172 3.4178 12.4955 3.22385 12.4955 3.02163C12.4956 2.22702 12.1906 1.46437 11.6466 0.898822C11.1027 0.333277 10.3635 0.0103601 9.58912 0H8.41128C7.63697 0.0104696 6.89783 0.333421 6.35387 0.898943C5.80991 1.46446 5.50489 2.22705 5.50485 3.02163C5.50485 3.22385 5.58315 3.4178 5.72251 3.5608C5.86187 3.70379 6.05089 3.78413 6.24797 3.78413Z"
+                    fill="#C9E1FF"
+                  />
+                  <path
+                    d="M0 3.70537C0 3.50314 0.0782929 3.3092 0.217655 3.1662C0.357017 3.02321 0.546032 2.94287 0.743119 2.94287H17.2569C17.454 2.94287 17.643 3.02321 17.7823 3.1662C17.9217 3.3092 18 3.50314 18 3.70537C18 3.9076 17.9217 4.10155 17.7823 4.24454C17.643 4.38754 17.454 4.46787 17.2569 4.46787H0.743119C0.546032 4.46787 0.357017 4.38754 0.217655 4.24454C0.0782929 4.10155 0 3.9076 0 3.70537ZM6.7983 6.47283C6.99539 6.47283 7.18441 6.55317 7.32377 6.69616C7.46313 6.83916 7.54142 7.0331 7.54142 7.23533V15.7076C7.54142 15.9098 7.46313 16.1037 7.32377 16.2467C7.18441 16.3897 6.99539 16.4701 6.7983 16.4701C6.60122 16.4701 6.4122 16.3897 6.27284 16.2467C6.13348 16.1037 6.05518 15.9098 6.05518 15.7076V7.23533C6.05518 7.0331 6.13348 6.83916 6.27284 6.69616C6.4122 6.55317 6.60122 6.47283 6.7983 6.47283ZM11.2021 6.47283C11.3992 6.47283 11.5882 6.55317 11.7276 6.69616C11.8669 6.83916 11.9452 7.0331 11.9452 7.23533V15.7076C11.9452 15.9098 11.8669 16.1037 11.7276 16.2467C11.5882 16.3897 11.3992 16.4701 11.2021 16.4701C11.005 16.4701 10.816 16.3897 10.6766 16.2467C10.5373 16.1037 10.459 15.9098 10.459 15.7076V7.23533C10.459 7.0331 10.5373 6.83916 10.6766 6.69616C10.816 6.55317 11.005 6.47283 11.2021 6.47283Z"
+                    fill="#C9E1FF"
+                  />
+                </svg>
+              </div>
             </div>
           </div>
         </div>
       </div>
+    </sidebar>
 
-      <div class="side-fo">
-        <div class="menu-item mt20" @click="serviceVisible = true">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 19 21"
-            fill="none"
-          >
-            <path
-              d="M1.4674 20.5124C1.05215 20.5124 0.717529 20.1777 0.717529 19.7625C0.717529 18.1337 2.64059 16.9565 6.02309 16.4848V16.259C3.72912 14.5013 3.72912 11.2437 3.72912 9.26021C3.72912 5.98657 5.65622 4.03125 8.88148 4.03125H9.05484C12.2801 4.03125 14.2072 5.98657 14.2072 9.26021C14.2072 9.50211 14.2032 9.744 14.1991 9.99396C14.187 10.4092 13.8484 10.7358 13.4291 10.7237C13.0139 10.7116 12.6873 10.3689 12.6994 9.95364C12.7075 9.71981 12.7075 9.49001 12.7075 9.26021C12.7075 6.78482 11.4778 5.531 9.05484 5.531H8.88148C6.4585 5.531 5.22887 6.78482 5.22887 9.26021C5.22887 11.655 5.37804 14.0941 7.17612 15.239C7.39383 15.3761 7.52284 15.614 7.52284 15.872V17.15C7.52284 17.533 7.23256 17.8555 6.8536 17.8959C3.842 18.2144 2.21728 19.0973 2.21728 19.7625C2.21728 20.1737 1.87862 20.5124 1.4674 20.5124Z"
-              fill="#126CFE"
-            />
-            <path
-              d="M16.5416 20.5124C16.1264 20.5124 15.7918 20.1778 15.7918 19.7625C15.7918 19.0933 14.167 18.2144 11.1555 17.8959C10.7725 17.8556 10.4822 17.5331 10.4822 17.1501V15.868C10.4822 15.4528 10.8168 15.1182 11.2321 15.1182C11.6473 15.1182 11.9819 15.4528 11.9819 15.868V16.4849C15.3644 16.9525 17.2875 18.1338 17.2875 19.7625C17.2915 20.1738 16.9569 20.5124 16.5416 20.5124Z"
-              fill="#126CFE"
-            />
-            <path
-              d="M11.3488 13.7836C10.3168 13.7836 9.54672 13.6788 9.52657 13.6748C9.15566 13.5619 8.93392 13.187 9.01456 12.804C9.09116 12.425 9.44594 12.175 9.83297 12.2113C11.7036 12.4169 14.558 12.2395 15.0579 11.1994C15.2353 10.8285 15.6828 10.6672 16.0577 10.8486C16.4327 11.026 16.5899 11.4776 16.4085 11.8485C15.6263 13.4772 13.1106 13.7836 11.3488 13.7836Z"
-              fill="#126CFE"
-            />
-            <path
-              d="M18.001 12.9976C17.5858 12.9976 17.2511 12.663 17.2511 12.2477V9.62722L16.2473 9.26841C15.9489 9.16359 15.7474 8.87735 15.7474 8.56288C15.7474 4.80142 12.7196 1.73742 8.99849 1.73742C5.27734 1.73742 2.24962 4.80142 2.24962 8.56288C2.24962 8.80478 2.13271 9.03054 1.93516 9.17165L1.49975 9.48208V12.2477C1.49975 12.663 1.16513 12.9976 0.749874 12.9976C0.334621 12.9976 0 12.663 0 12.2477V9.09908C0 8.85719 0.116916 8.63142 0.314463 8.49031L0.757937 8.17182C0.963548 3.7653 4.57988 0.241699 8.99849 0.241699C13.3687 0.241699 16.9568 3.6887 17.231 8.03071L18.251 8.39355C18.5493 8.49838 18.7509 8.78462 18.7509 9.09908V12.2477C18.7509 12.663 18.4163 12.9976 18.001 12.9976Z"
-              fill="#126CFE"
-            />
-          </svg>
-          <span>联系客服</span>
-          <svg
-            class="gt"
-            xmlns="http://www.w3.org/2000/svg"
-            width="10"
-            height="18"
-            viewBox="0 0 10 18"
-            fill="none"
-          >
-            <path
-              d="M1.50049 1.5L9.00049 9L2.00049 16.5"
-              stroke="#333333"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-          </svg>
-        </div>
-        <div class="menu-item mt30" @click="handExit">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-          >
-            <path
-              d="M15.857 3.28498C15.857 2.85898 15.55 2.51398 15.172 2.51398H6.21201C4.73601 2.51398 3.51501 3.76398 3.51501 5.34298V17.685C3.51501 19.265 4.73501 20.514 6.21201 20.514H15.172C15.55 20.514 15.857 20.169 15.857 19.743C15.857 19.317 15.55 18.971 15.172 18.971H6.21201C5.46601 18.971 4.88601 18.378 4.88601 17.685V5.34298C4.88601 4.64998 5.46601 4.05698 6.21201 4.05698H15.172C15.55 4.05698 15.857 3.71098 15.857 3.28498ZM20.335 11.106L20.26 11.02L16.146 6.90598C16.0089 6.76632 15.8237 6.68407 15.6281 6.6759C15.4326 6.66773 15.2412 6.73425 15.0929 6.86197C14.9445 6.9897 14.8503 7.16906 14.8294 7.36368C14.8084 7.5583 14.8623 7.7536 14.98 7.90998L15.055 7.99698L17.851 10.794H10.149C9.91601 10.794 9.72401 11.079 9.69101 11.451L9.68601 11.565C9.68601 11.953 9.85701 12.273 10.08 12.328L10.149 12.337H17.852L15.055 15.134C14.9242 15.2647 14.8447 15.4381 14.8309 15.6226C14.8171 15.807 14.8701 15.9903 14.98 16.139L15.055 16.225C15.1857 16.3555 15.3589 16.4349 15.5431 16.4487C15.7273 16.4624 15.9104 16.4097 16.059 16.3L16.146 16.225L20.26 12.111C20.3908 11.9802 20.4704 11.8068 20.4841 11.6224C20.4979 11.438 20.445 11.2547 20.335 11.106Z"
-              fill="#333333"
-            />
-          </svg>
-          <span>退出登录</span>
-          <svg
-            class="gt"
-            xmlns="http://www.w3.org/2000/svg"
-            width="10"
-            height="18"
-            viewBox="0 0 10 18"
-            fill="none"
-          >
-            <path
-              d="M1.50049 1.5L9.00049 9L2.00049 16.5"
-              stroke="#333333"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-          </svg>
-        </div>
-      </div>
-    </div>
     <div class="container-body">
       <div class="body-top">
         <span>您的免费问答次数：{{ residueQAQuantity }}次</span>
@@ -249,6 +208,7 @@
               class="textarea"
               v-model="question"
               resize="none"
+              @keydown="sendByKey"
               :autosize="{ minRows: 1, maxRows: 6 }"
               type="textarea"
               placeholder="请输入您需要提问的信息..."
@@ -369,7 +329,7 @@ import {
   nextTick,
 } from "vue";
 import { useRouter } from "vue-router";
-import http from "../../http/index";
+import request from "@/http/index";
 import { ElMessage, ElDialog, ElInput, ElIcon } from "element-plus";
 import { Loading as LoadingIcon } from "@element-plus/icons-vue";
 import { EventSourcePolyfill } from "event-source-polyfill";
@@ -377,6 +337,7 @@ import api from "./api";
 import Clipboard from "clipboard";
 import { _getSign } from "@/http/sign";
 import utils from "@/common/utils";
+import Sidebar from "./components/Sidebar.vue";
 
 // 上下文
 // const instance = getCurrentInstance();
@@ -403,25 +364,21 @@ const handExit = () => {
 // 确认退出登录
 const confirmExit = () => {
   exitVisible.value = false;
-  http
-    .get(api.user_logout, {
-      params: {},
-    })
-    .then((res) => {
-      if (res.code == 200) {
-        utils.setToken("");
-        utils.setUserInfo("");
-        router.push({
-          path: "/login",
-          replace: true,
-        });
-      } else {
-        ElMessage({
-          type: "error",
-          message: res.msg,
-        });
-      }
-    });
+  request.get(api.user_logout, {}).then((res) => {
+    if (res.code == 200) {
+      utils.setToken("");
+      utils.setUserInfo("");
+      router.push({
+        path: "/login",
+        replace: true,
+      });
+    } else {
+      ElMessage({
+        type: "error",
+        message: res.msg,
+      });
+    }
+  });
 };
 
 // 客服二维码弹窗
@@ -490,12 +447,10 @@ const getHistory = () => {
   const lastId = tagList.list.length
     ? tagList.list[tagList.list.length - 1].id
     : 0;
-  http
+  request
     .get(api.chat_tagList, {
-      params: {
-        lastId,
-        pageSize,
-      },
+      lastId,
+      pageSize,
     })
     .then((res) => {
       console.log("gethistory", res);
@@ -593,13 +548,11 @@ const getAnswerList = () => {
   if (chatList.loading) return false;
   chatList.loading = true;
   const pageSize = 10;
-  http
+  request
     .get(api.chat_answerList, {
-      params: {
-        tagId: activeTag.value,
-        lastId: chatList.lastId,
-        pageSize,
-      },
+      tagId: activeTag.value,
+      lastId: chatList.lastId,
+      pageSize,
     })
     .then((res) => {
       if (res.code == 200) {
@@ -869,7 +822,7 @@ const handConfirmDeleteTag = () => {
   const tagId = activeTag.value;
   activeTag.value = 0;
   removeVisible.value = false;
-  http
+  request
     .post(api.ai_delTag, {
       tagId,
     })
@@ -974,6 +927,12 @@ const handSend = () => {
   _getResult(question1, activeTag.value);
 };
 
+const sendByKey = (event) => {
+  if (event.ctrlKey && event.code === "Enter") {
+    handSend();
+  }
+};
+
 let slideTimer = null;
 // 滑动动画 length:number 滑动距离
 const slideAnimation = (length, time = 800) => {
@@ -1047,7 +1006,7 @@ watch(
 // 删除信息确认
 const handConfirmRemoveMsg = () => {
   removeMsgVisible.value = false;
-  http
+  request
     .post(api.chat_delAnswer, {
       answerId: delMsgId.value,
     })
@@ -1081,32 +1040,8 @@ onMounted(() => {
   display: flex;
   height: 100%;
 
-  .container-side {
-    width: 310px;
+  .side-content {
     height: 100%;
-    border-right: 1px solid #dae0f5;
-    background-color: #f2f3f7;
-    text-align: center;
-    .title {
-      display: flex;
-      align-items: center;
-      width: 270px;
-      height: 67px;
-      border-bottom: #dae0f5 1px solid;
-      margin: auto;
-      color: #000;
-      text-align: center;
-      font-family: PingFang SC;
-      font-size: 28px;
-      font-style: normal;
-      font-weight: 600;
-      line-height: 68px;
-      .logo {
-        width: 40px;
-        height: 30px;
-        margin-right: 14px;
-      }
-    }
     .newchat {
       display: flex;
       align-items: center;
@@ -1121,7 +1056,7 @@ onMounted(() => {
       line-height: normal;
       border-radius: 5px;
       background: #126cfe;
-      margin: 28px auto 0 auto;
+      margin: auto;
       cursor: pointer;
       span {
         margin-left: 11px;
@@ -1144,7 +1079,7 @@ onMounted(() => {
       line-height: normal;
       border-radius: 5px;
       background: #126cfe;
-      margin: 28px auto 0 auto;
+      margin: auto;
       cursor: auto;
       opacity: 0.5;
       span {
@@ -1155,14 +1090,15 @@ onMounted(() => {
     // 历史列表
     .log_list {
       width: 310px;
-      height: calc(100% - 331px);
+      height: calc(100% - 90px);
       margin: auto;
       padding: 22px 0;
       .scroll_view {
-        width: 310px;
+        width: 301px;
         height: 100%;
         overflow-y: scroll;
         .scroll_page {
+          margin-left: 22px;
           .log_item {
             position: relative;
             box-sizing: border-box;
@@ -1174,7 +1110,7 @@ onMounted(() => {
             padding: 0 13px;
             border: 1px solid #dae0f5;
             border-radius: 5px;
-            margin: 22px auto;
+            margin: 22px 0;
             font-family: PingFang SC;
             font-size: 19px;
             font-weight: 400;
@@ -1190,7 +1126,7 @@ onMounted(() => {
               min-width: 0;
               padding-right: 30px;
               text-indent: 10px;
-              color: #333;
+              color: #c9e1ff;
               font-family: PingFang SC;
               font-size: 19px;
               font-style: normal;
@@ -1207,10 +1143,10 @@ onMounted(() => {
               height: 20px;
               border-radius: 5px;
               &:hover {
-                background-color: rgba(0, 0, 0, 0.06);
+                background-color: rgba(0, 0, 0, 0.4);
               }
               &:active {
-                background-color: rgba(0, 0, 0, 0.1);
+                background-color: rgba(0, 0, 0, 0.5);
               }
             }
           }
@@ -1221,49 +1157,9 @@ onMounted(() => {
             margin-bottom: 0;
           }
           .log_item_active {
-            background-color: #dae0f5;
+            background-color: rgba(0, 0, 0, 0.3);
           }
         }
-      }
-    }
-
-    .side-fo {
-      width: 270px;
-      height: 144px;
-      border-top: 1px solid #dae0f5;
-      margin: auto;
-      .menu-item {
-        position: relative;
-        margin: auto;
-        display: flex;
-        align-items: center;
-        cursor: pointer;
-
-        span {
-          margin-left: 16.25px;
-          color: #333;
-          font-family: PingFang SC;
-          font-size: 19px;
-          font-style: normal;
-          font-weight: 400;
-          line-height: normal;
-          text-align: left;
-          &:active {
-            color: #126cfe;
-          }
-        }
-        .gt {
-          position: absolute;
-          right: 10px;
-          top: 50%;
-          transform: translate(0, -50%);
-        }
-      }
-      .mt20 {
-        margin-top: 20px;
-      }
-      .mt30 {
-        margin-top: 30px;
       }
     }
   }
@@ -1292,14 +1188,14 @@ onMounted(() => {
       .chat_box {
         position: relative;
         height: 100%;
-        &::-webkit-scrollbar {
-          display: none;
-        }
 
         .chat_scroll_view {
           position: relative;
           height: 100%;
           overflow-y: scroll;
+          &::-webkit-scrollbar {
+            display: none;
+          }
 
           .list_content {
             padding: 0 30px;
