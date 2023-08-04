@@ -1,10 +1,10 @@
 <template>
   <div class="container">
     <el-scrollbar style="{font-size: 0;}" @scroll="onScroll">
-      <img src="https://quanres.hanhoukeji.com/hanhou-ai-pc/ai_home1.png" class="itemImage" />
+      <img src="https://quanres.hanhoukeji.com/hanhou-ai-pc/ai-index-bg1.png" class="itemImage" />
       <img src="https://quanres.hanhoukeji.com/hanhou-ai-pc/ai_home2.png" class="itemImage" />
       <div class="wrapperFooter">
-        <img src="https://quanres.hanhoukeji.com/hanhou-ai-pc/ai_home3.png" class="itemImage" />
+        <img src="https://quanres.hanhoukeji.com/hanhou-ai-pc/ai-index-bg3.png" class="itemImage" />
         <div class="footer">
           <div class="footer-record">
             <a @click="handGoICP">京ICP备19041918号-1京公网安备11010502039881号</a>
@@ -65,7 +65,7 @@ function handGoICP() {
     font-weight: 400;
     line-height: normal;
     position: absolute;
-    bottom: 76px;
+    bottom: 32px;
     width: 100%;
   }
 

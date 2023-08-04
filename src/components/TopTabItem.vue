@@ -75,7 +75,7 @@ export default {
 
   .banner_text {
     color: black;
-    font-size: 28px;
+    font-size: 62px;
     margin-right: 40px;
     font-weight: normal;
     cursor: pointer;
