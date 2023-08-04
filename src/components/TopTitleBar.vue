@@ -128,6 +128,7 @@ const confirmExit = () => {
   request.get(api.user_logout, {}).then((res) => {
     if (res.code == 200) {
       userStore.clearLog();
+      userStore.goLoginPage();
     } else {
       ElMessage({
         type: "error",

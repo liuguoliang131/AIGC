@@ -19,6 +19,8 @@ export const useUserStore = defineStore({
     goLoginPage() {
       this.userInfo = ''
       this.token = ''
+      utils.setToken('')
+      utils.setUserInfo('')
       utils.goLogin()
     },
     // 登陆成功 返回上一级

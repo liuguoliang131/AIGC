@@ -373,7 +373,9 @@ import Clipboard from "clipboard";
 import { _getSign } from "@/http/sign";
 import utils from "@/common/utils";
 import Sidebar from "./components/Sidebar.vue";
+import { useUserStore } from "@/store/user";
 
+const userStore = useUserStore(); //用户信息
 // 上下文
 // const instance = getCurrentInstance();
 // console.log("app", instance.appContext);
@@ -401,12 +403,8 @@ const confirmExit = () => {
   exitVisible.value = false;
   request.get(api.user_logout, {}).then((res) => {
     if (res.code == 200) {
-      utils.setToken("");
-      utils.setUserInfo("");
-      router.push({
-        path: "/login",
-        replace: true,
-      });
+      userStore.clearLog();
+      userStore.goLoginPage();
     } else {
       ElMessage({
         type: "error",

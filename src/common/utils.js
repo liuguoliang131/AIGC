@@ -38,17 +38,15 @@ utils.setUserInfo = function (param) {
 }
 
 
-// 退出登录
+// 去登录页
 utils.goLogin = function () {
-  utils.setToken('')
-  utils.setUserInfo('')
 
   const current = router.currentRoute.value
   const query = JSON.parse(JSON.stringify(current.query))
   query.origin = current.path
   
   router.push({
-    path: '/',
+    path: '/login',
     query,
     replace:true,
   })
@@ -64,7 +62,7 @@ utils.loginAfter = function (data) {
   const query = JSON.parse(JSON.stringify(current.query))
   const path = query.origin || '/'
   delete query.origin
-  console.log('current',current,'query',query,'path',path)
+
   router.push({
     path,
     query
