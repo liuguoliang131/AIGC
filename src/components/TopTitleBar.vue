@@ -106,10 +106,9 @@ function goLearnCenter() {
   // });
 }
 
+// 去往登录页 记录当前路由
 function goLogin() {
-  router.push({
-    path: "/login",
-  });
+  userStore.goLoginPage();
 }
 
 // 弹层关闭事件

@@ -86,7 +86,7 @@ router.beforeEach((to, from, next) => {
   
   if (to.name !== 'Login' && to.meta.isAuthenticated) { 
     const query = JSON.parse(JSON.stringify(from.query))
-    query.origin = from.path
+    query.origin = to.path
     next({
       name: 'Login',
       query
