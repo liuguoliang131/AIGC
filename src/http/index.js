@@ -19,7 +19,8 @@ const instance = axios.create({
     token:'',
     version:'',
     timestamp:'',
-    sign: ''
+    sign: '',
+    'x-token':''
   }
 })
 

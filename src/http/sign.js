@@ -25,7 +25,8 @@ export const _getSign = function(config={}) {
       token,
       version,
       timestamp,
-      sign: md5.md5(md5Origin)
+      sign: md5.md5(md5Origin),
+      'x-token':token
     })
   })
 }
