@@ -10,12 +10,26 @@
       <div class="login-title">一起探索AIGC的无限可能</div>
       <div class="input-box">
         <div class="input-group">
-          <input type="tel" id="phone" maxlength="11" v-model="phone" placeholder="请输入手机号" class="input-phone"
-            @input="handlePhoneInput" />
+          <input
+            type="tel"
+            id="phone"
+            maxlength="11"
+            v-model="phone"
+            placeholder="请输入手机号"
+            class="input-phone"
+            @input="handlePhoneInput"
+          />
         </div>
         <div class="input-group">
-          <input type="tel" id="code" maxlength="4" v-model="code" placeholder="请输入验证码" class="input-verCode"
-            @input="handleCodeInput" />
+          <input
+            type="tel"
+            id="code"
+            maxlength="4"
+            v-model="code"
+            placeholder="请输入验证码"
+            class="input-verCode"
+            @input="handleCodeInput"
+          />
           <button class="code-btn" @click="sendCode" :disabled="timer !== null">
             {{ timer ? countDown : "获取验证码" }}
           </button>
@@ -27,7 +41,9 @@
         <!-- <input v-model="agree" type="checkbox" class="checkbox"> -->
         <!-- <label for="agree">我同意相关协议</label> -->
         登录即代表您已同意
-        <span class="policy" @click="handGoAgree(1)">《服务协议和隐私政策》</span>
+        <span class="policy" @click="handGoAgree(1)"
+          >《服务协议和隐私政策》</span
+        >
         和
         <span class="policy" @click="handGoAgree(2)">《安全协议》</span>
       </div>
@@ -122,23 +138,18 @@ export default {
         });
       }
       this.loading = true;
-      userLogin(this.phone, this.code)
-        .then((res) => {
-          if (res.code == 200) {
-            utils.setToken(res.data.token);
-            utils.setUserInfo(res.data);
-            this.loading = false;
-            this.$router.push({
-              path: "/",
-            });
-          } else {
-            this.loading = false;
-            ElMessage({
-              message: res.message,
-              type: "error",
-            });
-          }
-        });
+      userLogin(this.phone, this.code).then((res) => {
+        if (res.code == 200) {
+          this.loading = false;
+          utils.loginAfter(res.data);
+        } else {
+          this.loading = false;
+          ElMessage({
+            message: res.message,
+            type: "error",
+          });
+        }
+      });
     },
 
     // 去往工信部网站
