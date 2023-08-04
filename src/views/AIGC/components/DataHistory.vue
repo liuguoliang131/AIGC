@@ -1,5 +1,15 @@
 <template>
-  <div class="data-tab"></div>
+  <div class="data-tab">
+    <div class="title">历史绘画</div>
+    <div class="views">
+      <div class="empty">
+        <div>暂无记录</div>
+      </div>
+      <!-- <div class="scroll_client">
+        <div class="scroll_page">卷轴</div>
+      </div> -->
+    </div>
+  </div>
 </template>
 
 <script setup>
@@ -34,5 +44,22 @@ const emit = defineEmits(["close"]);
   height: 100%;
   background: rgba(255, 255, 255, 1);
   border-radius: 5px;
+  .title {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 39px;
+    border-bottom: 1px solid #e6e6e6;
+    text-align: left;
+    text-indent: 20px;
+    color: #414141;
+    font-family: PingFang SC;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+  }
+  .views {
+    // height: calc( 100% );
+  }
 }
 </style>

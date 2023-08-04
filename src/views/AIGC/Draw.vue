@@ -148,6 +148,7 @@ const visible = ref(false);
     flex: 1;
     height: 100%;
     overflow: hidden;
+    background: #f1f2f6;
     .left {
       position: absolute;
       top: 0;
@@ -155,14 +156,12 @@ const visible = ref(false);
       width: 381px;
       height: calc(100% - 32px);
       padding: 16px 0 16px 16px;
-      background-color: skyblue;
     }
     .center {
       width: calc(100% - 180px - 397px);
       height: 100%;
       padding-left: 397px;
       overflow: hidden;
-      background-color: pink;
       .count {
         width: 100%;
         height: 56px;
@@ -192,7 +191,6 @@ const visible = ref(false);
       width: 180px;
       height: calc(100% - 32px);
       padding: 16px 0;
-      background-color: skyblue;
     }
   }
 }
