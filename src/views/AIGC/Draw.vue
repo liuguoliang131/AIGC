@@ -1,17 +1,132 @@
 <script setup>
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import { ElMessage, ElTooltip } from "element-plus";
 import Sidebar from "./components/Sidebar.vue";
 import MyDialog from "@/components/MyDialog.vue";
 import DataTab from "./components/DataTab.vue";
 import DataHistory from "./components/DataHistory.vue";
+import { useUserStore } from "@/store/user";
+import request from "@/http/index";
+import api from "./api";
 
+const userStore = useUserStore(); //用户信息
+
+const loading = ref(false);
 const removeVisible = ref(false);
-const drawingVisible = ref(true);
+const drawingVisible = ref(false);
+const dataHistoryRef = ref(); // 右侧组件ref
+const dataTabRef = ref(); //左侧组件ref
+// 选中的图片的id
+const activeHistoryItem = ref({
+  pictureId: null,
+  createdAt: "",
+});
 
-const handConfirmRemove = () => {
-  removeVisible.value = false;
+// 图片详情信息
+const detailData = ref({
+  pictureId: null,
+  pictureIdea: null,
+  pictureUrl: null,
+  bgImageUrl: null,
+  pictureRatio: null,
+  picturePx: null,
+  pictureStyle: null,
+  pictureType: null,
+  isFail: null,
+});
+
+// 清空选中图片信息
+const clearActive = () => {
+  console.log("clearActive");
+  activeHistoryItem.value = {
+    pictureId: null,
+  };
+  detailData.value = {
+    pictureId: null,
+    pictureIdea: null,
+    pictureUrl: null,
+    bgImageUrl: null,
+    pictureRatio: null,
+    picturePx: null,
+    pictureStyle: null,
+    pictureType: null,
+    isFail: null,
+  };
 };
+
+// 获取图片详情
+const getDetail = async () => {
+  try {
+    const res = await request.get(api.picture_pictureDetail, {
+      pictureId: activeHistoryItem.value.pictureId,
+    });
+    if (res.code !== 200) {
+      return ElMessage({
+        message: res.msg,
+        type: "error",
+      });
+    }
+    detailData.value = res.data;
+  } catch (error) {
+    ElMessage({
+      message: error.message,
+      type: "error",
+    });
+    throw error;
+  }
+};
+
+// 创建四格图片成功 data:{图片id}
+const createSuccess = (data) => {
+  console.log(data);
+  activeHistoryItem.value = data;
+  dataHistoryRef.value.handPutItem(activeHistoryItem); //向列表新增一个项
+};
+
+// 确认删除图片
+const handConfirmRemove = async () => {
+  removeVisible.value = false;
+  loading.value = true;
+  await dataHistoryRef.value.handRemoveItem(); //删除当前选中
+  clearActive();
+  loading.value = false;
+};
+
+// 生成单张大图
+const madePicture1 = async (position) => {
+  try {
+    loading.value = true;
+    const res = await request.post(api.picture_onePicture, {
+      parentPictureId: activeHistoryItem.value.pictureId,
+      pictureArea: position,
+    });
+
+    if (res.code !== 200) {
+      return ElMessage({
+        message: res.msg || res.message,
+        type: "error",
+      });
+    }
+
+    const newUserInfo = {
+      ...userStore.userInfo,
+      residuePictureQuantity: res.data.residuePictureQuantity,
+    };
+    userStore.saveUserInfo(newUserInfo);
+    activeHistoryItem.value = {
+      pictureId: res.data.pictureId,
+      createdAt: res.data.createdAt,
+    };
+    loading.value = false;
+    getDetail();
+  } catch (error) {
+    loading.value = false;
+    ElMessage(error.message);
+    throw error;
+  }
+};
+
+//
 </script>
 
 <template>
@@ -19,7 +134,7 @@ const handConfirmRemove = () => {
     <sidebar>
       <div class="draw-side">
         <div class="draw-title">AI绘画</div>
-        <div class="draw-start">
+        <div class="draw-start" @click="clearActive">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="16"
@@ -84,12 +199,20 @@ const handConfirmRemove = () => {
         </div>
       </div>
     </sidebar>
-    <div class="container-body">
+    <div class="container-body" v-loading="loading">
       <div class="left">
-        <data-tab></data-tab>
+        <data-tab
+          ref="dataTabRef"
+          @create-success="createSuccess"
+          :detailData="detailData"
+        ></data-tab>
       </div>
       <div class="center">
-        <div class="count">您的剩余绘画总次数：50次</div>
+        <div class="count">
+          您的剩余绘画总次数：{{
+            userStore.userInfo ? userStore.userInfo.residuePictureQuantity : 0
+          }}次
+        </div>
         <div class="center-view">
           <!-- <div class="reloading">
             <img
@@ -98,14 +221,10 @@ const handConfirmRemove = () => {
               class="drawing-img"
             />
           </div> -->
-          <div class="show_image">
-            <img
-              class="show_image-a"
-              src="https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg"
-              alt=""
-            />
+          <div class="show_image" v-if="detailData.pictureId">
+            <img class="show_image-a" :src="detailData.pictureUrl" alt="" />
             <div class="show_image-b">
-              <div class="show_image-b-1">
+              <div class="show_image-b-1" v-if="detailData.pictureType === 1">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="21"
@@ -208,7 +327,7 @@ const handConfirmRemove = () => {
                 content="升级左侧上方图为单张大图"
                 placement="right"
               >
-                <div class="u-btn">U1</div>
+                <div class="u-btn" @click="madePicture1(1)">U1</div>
               </el-tooltip>
               <el-tooltip
                 class="box-item"
@@ -216,7 +335,7 @@ const handConfirmRemove = () => {
                 content="升级右侧上方图为单张大图"
                 placement="right"
               >
-                <div class="u-btn">U2</div>
+                <div class="u-btn" @click="madePicture1(2)">U2</div>
               </el-tooltip>
               <el-tooltip
                 class="box-item"
@@ -224,7 +343,7 @@ const handConfirmRemove = () => {
                 content="升级左侧下方图为单张大图"
                 placement="right"
               >
-                <div class="u-btn">U3</div>
+                <div class="u-btn" @click="madePicture1(3)">U3</div>
               </el-tooltip>
               <el-tooltip
                 class="box-item"
@@ -232,14 +351,18 @@ const handConfirmRemove = () => {
                 content="升级右侧下方图为单张大图"
                 placement="right"
               >
-                <div class="u-btn">U4</div>
+                <div class="u-btn" @click="madePicture1(4)">U4</div>
               </el-tooltip>
             </div>
           </div>
         </div>
       </div>
       <div class="right">
-        <data-history></data-history>
+        <data-history
+          ref="dataHistoryRef"
+          v-model:active="activeHistoryItem"
+          @change="getDetail"
+        ></data-history>
       </div>
     </div>
 

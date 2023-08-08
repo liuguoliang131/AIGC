@@ -1,20 +1,225 @@
+<script setup>
+import { ref, reactive, watch } from "vue";
+import request from "@/http/index";
+import api from "../api";
+import { ElMessage, ElDialog, ElInput, ElTooltip, ElImage } from "element-plus";
+import MyUpload from "@/components/MyUpload.vue";
+import { useUserStore } from "@/store/user";
+
+const props = defineProps({
+  detailData: {
+    type: Object,
+    description: "图片详情信息",
+  },
+});
+
+const emit = defineEmits(["create-success"]);
+
+const userStore = useUserStore();
+
+const loading = ref(false);
+
+// 交互数据
+const baseData = ref({
+  pictureIdea: "", //文本
+  bgImageUrl: "", // 参考图
+  pictureRatio: 1, // 图片比例
+  picturePx: 1, // 图片品质
+  pictureStyle: 1, // 绘画风格
+});
+
+// 绘画风格列表
+const drawStyle = ref([
+  {
+    name: "默认风格",
+    id: 1,
+    path: "https://quanres.hanhoukeji.com/hanhou-ai-pc/drawstyle_mr.png",
+  },
+  {
+    name: "等距动画",
+    id: 2,
+    path: "https://quanres.hanhoukeji.com/hanhou-ai-pc/drawstyle_dj.png",
+  },
+  {
+    name: "赛博朋克",
+    id: 3,
+    path: "https://quanres.hanhoukeji.com/hanhou-ai-pc/drawstyle_sbpk.png",
+  },
+  {
+    name: "二次元",
+    id: 4,
+    path: "https://quanres.hanhoukeji.com/hanhou-ai-pc/drawstyle_ecy.png",
+  },
+  {
+    name: "插画风格",
+    id: 5,
+    path: "https://quanres.hanhoukeji.com/hanhou-ai-pc/drawstyle_ch.png",
+  },
+  {
+    name: "水墨风格",
+    id: 6,
+    path: "https://quanres.hanhoukeji.com/hanhou-ai-pc/drawstyle_sm.png",
+  },
+  {
+    name: "写实主义",
+    id: 7,
+    path: "https://quanres.hanhoukeji.com/hanhou-ai-pc/drawstyle_xs.png",
+  },
+  {
+    name: "工业风格",
+    id: 8,
+    path: "https://quanres.hanhoukeji.com/hanhou-ai-pc/drawstyle_gy.png",
+  },
+]);
+
+// 图片品质
+const pxOptions = ref([
+  {
+    id: 1,
+    name: "普通",
+  },
+  {
+    id: 2,
+    name: "高清",
+  },
+  {
+    id: 3,
+    name: "超高清",
+  },
+]);
+
+// 图片比例选项
+const ratioOptions = ref([
+  {
+    id: 1,
+    name: "1:1",
+    desc: "适用头像",
+  },
+  {
+    id: 2,
+    name: "3:2",
+    desc: "适用文章配文",
+  },
+  {
+    id: 3,
+    name: "4:3",
+    desc: "适用文章配文",
+  },
+  {
+    id: 4,
+    name: "9:16",
+    desc: "适用海报",
+  },
+  {
+    id: 5,
+    name: "16:9",
+    desc: "适用电脑壁纸",
+  },
+]);
+
+// 还原数据
+const initBaseData = () => {
+  baseData.value = {
+    pictureIdea: "", //文本
+    bgImageUrl: "", // 参考图
+    pictureRatio: 1, // 图片比例
+    picturePx: 1, // 图片品质
+    pictureStyle: 1, // 绘画风格
+  };
+};
+
+// 详情数据更新 填充给本组件baseData
+watch(
+  props,
+  (newVal) => {
+    console.log("watch detailData", newVal.detailData);
+    baseData.value = {
+      pictureIdea: newVal.detailData.pictureIdea || "", //文本
+      bgImageUrl: newVal.detailData.bgImageUrl || "", // 参考图
+      pictureRatio: newVal.detailData.pictureRatio || 1, // 图片比例
+      picturePx: newVal.detailData.picturePx || 1, // 图片品质
+      pictureStyle: newVal.detailData.pictureStyle || 1, // 绘画风格
+    };
+  },
+  {
+    deep: true,
+  }
+);
+
+// 随便试试
+const handRange = () => {
+  const arr = [
+    "欢快的小猫咪在追逐彩色气球",
+    "魔幻森林和仙境般的奇幻世界",
+    "充满活力和动感的音乐舞台",
+    "具有象征意义的文化符号和传统元素",
+    "赛博朋克风格的猫耳形状头戴式耳机",
+    "Vibrant abstract patterns and shapes",
+    "Harmonious color schemes and gradients",
+    "Futuristic cityscape with advanced technology",
+    "Bold and dynamic typography compositions",
+    "Serene natural landscapes and breathtaking views",
+  ];
+  const idx = Math.floor(Math.random() * 10);
+
+  baseData.value.pictureIdea = arr[idx];
+};
+
+// 点击开始生成 生成4图
+const madePicture4 = async () => {
+  try {
+    if (!baseData.value.pictureIdea) {
+      return ElMessage({
+        message: "绘画描述不可为空。",
+        type: "warning",
+      });
+    }
+    if (userStore.userInfo && userStore.userInfo.residuePictureQuantity == 0) {
+      return ElMessage({
+        message: "绘画描述您的绘画次数已用尽，请联系客服购买不可为空。",
+        type: "warning",
+      });
+    }
+    loading.value = true;
+    const res = await request.post(api.picture_fourPalaceGrid, baseData.value);
+    if (res.code !== 200) {
+      return ElMessage({
+        message: res.msg || res.message,
+        type: "error",
+      });
+    }
+    const newUserInfo = {
+      ...userStore.userInfo,
+      residuePictureQuantity: res.data.residuePictureQuantity,
+    };
+
+    userStore.saveUserInfo(newUserInfo);
+    emit("create-success", res.data);
+    loading.value = false;
+  } catch (error) {
+    loading.value = false;
+    ElMessage(error.message);
+    throw error;
+  }
+};
+</script>
+
 <template>
-  <div class="data-tab">
+  <div class="data-tab" v-loading="loading">
     <div class="title">AI绘画</div>
     <div class="ipt">
       <textarea
         class="textarea"
-        v-model="ipt"
+        v-model="baseData.pictureIdea"
         resize="none"
         maxlength="500"
-        @keydown="sendByKey"
         :autosize="false"
         placeholder="请描述您想要的画面（目前仅支持中文、英文）。暂不支持Midjourney的参数填写。"
       ></textarea>
-      <div class="limit">{{ ipt.length }}/500</div>
+      <div class="limit">{{ baseData.pictureIdea.length }}/500</div>
     </div>
     <div class="taketry">
-      <span>随便试试</span>
+      <span @click="handRange">随便试试</span>
     </div>
     <div class="title2">
       <span class="title2-n">参考图</span>
@@ -56,12 +261,12 @@
       </el-tooltip>
     </div>
     <div>
-      <my-upload v-model:value="cardData.bgImageUrl">
+      <my-upload v-model:value="baseData.bgImageUrl">
         <div class="upload">
-          <div class="cover" v-if="cardData.bgImageUrl">
+          <div class="cover" v-if="baseData.bgImageUrl">
             <el-image
               style="width: 100%; height: 100%; border-radius: inherit"
-              :src="cardData.bgImageUrl"
+              :src="baseData.bgImageUrl"
               fit="cover"
             />
           </div>
@@ -129,33 +334,35 @@
     </div>
 
     <div class="quality">
-      <div class="quality-item_active">普通</div>
-      <div class="quality-item">高清</div>
-      <div class="quality-item">超高清</div>
+      <div
+        v-for="item in pxOptions"
+        :key="item.id"
+        :class="[
+          baseData.picturePx === item.id
+            ? 'quality-item_active'
+            : 'quality-item',
+        ]"
+        @click="baseData.picturePx = item.id"
+      >
+        {{ item.name }}
+      </div>
     </div>
     <div class="title2">
       <span class="title2-n">图片比例</span>
     </div>
     <div class="scale">
-      <div class="scale-item_active">
-        <div class="t1">1:1</div>
-        <div class="t2">适用头像</div>
-      </div>
-      <div class="scale-item">
-        <div class="t1">3:2</div>
-        <div class="t2">适用文章配文</div>
-      </div>
-      <div class="scale-item">
-        <div class="t1">4:3</div>
-        <div class="t2">适用文章配文</div>
-      </div>
-      <div class="scale-item">
-        <div class="t1">9:16</div>
-        <div class="t2">适用海报</div>
-      </div>
-      <div class="scale-item">
-        <div class="t1">16:9</div>
-        <div class="t2">适用电脑壁纸</div>
+      <div
+        v-for="item in ratioOptions"
+        :key="item.id"
+        :class="[
+          baseData.pictureRatio === item.id
+            ? 'scale-item_active'
+            : 'scale-item',
+        ]"
+        @click="baseData.pictureRatio = item.id"
+      >
+        <div class="t1">{{ item.name }}</div>
+        <div class="t2">{{ item.desc }}</div>
       </div>
     </div>
 
@@ -168,93 +375,16 @@
         class="drawstyle-item"
         v-for="(item, index) in drawStyle"
         :key="index"
-        @click="cardData.pictureStyle = item.id"
+        @click="baseData.pictureStyle = item.id"
       >
         <img :src="item.path" alt="" />
-        <div class="mask" v-if="item.id === cardData.pictureStyle"></div>
+        <div class="mask" v-if="item.id === baseData.pictureStyle"></div>
       </div>
     </div>
-    <div class="action-btn">立即生成</div>
+    <div class="action-btn" @click="madePicture4">立即生成</div>
   </div>
 </template>
 
-<script setup>
-import { ref, reactive } from "vue";
-import { ElDialog, ElInput, ElTooltip, ElImage } from "element-plus";
-import MyUpload from "@/components/MyUpload.vue";
-
-const { showClose, closeOnClickModal, visible } = defineProps({
-  showClose: {
-    default: false,
-    type: Boolean,
-    description: "是否显示关闭按钮",
-  },
-  closeOnClickModal: {
-    default: false,
-    type: Boolean,
-    description: "点击遮罩层是否关闭弹窗",
-  },
-  visible: {
-    default: false,
-    type: Boolean,
-    description: "打开/关闭",
-  },
-});
-
-const emit = defineEmits(["close"]);
-
-const ipt = ref("");
-
-const cardData = reactive({
-  bgImageUrl:
-    "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg", //参考图(背景图cdn地址)
-  pictureStyle: 1, //绘画风格
-});
-
-// 绘画风格列表
-const drawStyle = ref([
-  {
-    name: "默认风格",
-    id: 1,
-    path: "https://quanres.hanhoukeji.com/hanhou-ai-pc/drawstyle_mr.png",
-  },
-  {
-    name: "等距动画",
-    id: 2,
-    path: "https://quanres.hanhoukeji.com/hanhou-ai-pc/drawstyle_dj.png",
-  },
-  {
-    name: "赛博朋克",
-    id: 3,
-    path: "https://quanres.hanhoukeji.com/hanhou-ai-pc/drawstyle_sbpk.png",
-  },
-  {
-    name: "二次元",
-    id: 4,
-    path: "https://quanres.hanhoukeji.com/hanhou-ai-pc/drawstyle_ecy.png",
-  },
-  {
-    name: "插画风格",
-    id: 5,
-    path: "https://quanres.hanhoukeji.com/hanhou-ai-pc/drawstyle_ch.png",
-  },
-  {
-    name: "水墨风格",
-    id: 6,
-    path: "https://quanres.hanhoukeji.com/hanhou-ai-pc/drawstyle_sm.png",
-  },
-  {
-    name: "写实主义",
-    id: 7,
-    path: "https://quanres.hanhoukeji.com/hanhou-ai-pc/drawstyle_xs.png",
-  },
-  {
-    name: "工业风格",
-    id: 8,
-    path: "https://quanres.hanhoukeji.com/hanhou-ai-pc/drawstyle_gy.png",
-  },
-]);
-</script>
 <style lang="less">
 .is-dark {
   background-color: #666666 !important;
@@ -448,6 +578,8 @@ const drawStyle = ref([
       font-style: normal;
       font-weight: 400;
       line-height: normal;
+      user-select: none;
+      cursor: pointer;
     }
     .quality-item_active {
       display: flex;
@@ -463,6 +595,7 @@ const drawStyle = ref([
       font-style: normal;
       font-weight: 600;
       line-height: normal;
+      user-select: none;
     }
   }
   .scale {
@@ -482,6 +615,8 @@ const drawStyle = ref([
       border: 0.7px dashed #848484;
       color: #848484;
       text-align: center;
+      user-select: none;
+      cursor: pointer;
 
       .t1 {
         margin-top: 1.5px;
@@ -509,11 +644,11 @@ const drawStyle = ref([
       align-items: center;
       width: 89px;
       height: 29px;
-      margin-bottom: 12.67px;
       border-radius: 5px;
       border: 0.7px solid #126cfe;
       color: #126cfe;
       text-align: center;
+      user-select: none;
       .t1 {
         margin-top: 1.5px;
         font-family: PingFang SC;
