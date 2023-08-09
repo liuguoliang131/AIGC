@@ -26,7 +26,7 @@ const setFileKey = (fileName) => {
 	try {
 		let type = fileName.split('.')
 		type = type[type.length - 1]
-		let token = getToken() || 'null'
+		let token = 'null'
 		let time = new Date().getTime()
 		return token + '-' + time + '.' + type
 	} catch (e) {
@@ -46,12 +46,12 @@ export const qiniuUpload = (file) => {
       }
 			const key = setFileKey(file.name)
       console.log('key', key)
-
+      const uphost = data.uploadUrl.includes('https://')?data.uploadUrl.replace('https://',''):data.uploadUrl
 
       // 默认配置
       const config = {
         useCdnDomain: true, //是否使用cdn加速
-        uphost: data.uploadUrl, //上传域名
+        uphost: uphost, //上传域名
         region:data.region, // 上传区域
         upprotocol: 'https', //上传协议
         retryCount: 1, //上传自动重试次数（整体重试次数，而不是某个分片的重试次数）；默认 3 次（即上传失败后最多重试两次）

@@ -15,9 +15,16 @@
       </div>
     </div> -->
     <div class="item-box">
-      <img src="https://quanres.hanhoukeji.com/hanhou-ai-pc/ai-chat-card.png" class="item-image" @click="navToItem(1)" />
-      <img src="https://quanres.hanhoukeji.com/hanhou-ai-pc/ai-draw-card.png" class="item-image size-box"
-        @click="navToItem(2)" />
+      <img
+        src="https://quanres.hanhoukeji.com/hanhou-ai-pc/ai-chat-card.png"
+        class="item-image"
+        @click="navToItem(1)"
+      />
+      <img
+        src="https://quanres.hanhoukeji.com/hanhou-ai-pc/ai-draw-card.png"
+        class="item-image size-box"
+        @click="navToItem(2)"
+      />
     </div>
     <div class="footer">
       <div class="footer-record">
@@ -36,8 +43,7 @@ import { ElMessage } from "element-plus";
 
 export default {
   data() {
-    return {
-    };
+    return {};
   },
   methods: {
     userInfo() {
@@ -52,28 +58,28 @@ export default {
         this.$router.push({
           path: "aigc/chat",
         });
-
       } else if (value == 2) {
-        return ElMessage({
-          message: "AI绘画功能正在开发中，敬请期待~",
-          type: "warning",
+        // return ElMessage({
+        //   message: "AI绘画功能正在开发中，敬请期待~",
+        //   type: "warning",
+        // });
+        this.$router.push({
+          path: "/aigc/draw",
         });
       }
     },
     handGoICP() {
       window.open(`https://beian.miit.gov.cn/`);
     },
-
   },
-
-}
+};
 </script>
 
 <style>
 .container {
   height: 100%;
   background-color: #fff;
-  background-image: url('https://quanres.hanhoukeji.com/hanhou-ai-pc/index-background1.png');
+  background-image: url("https://quanres.hanhoukeji.com/hanhou-ai-pc/index-background1.png");
   background-size: cover;
   display: flex;
   justify-content: space-between;
@@ -119,15 +125,15 @@ export default {
 
     .login.el-button {
       background-color: transparent;
-      color: #126CFE;
-      border-color: #126CFE;
+      color: #126cfe;
+      border-color: #126cfe;
       font-size: 20px;
       width: 120px;
       height: 42px;
     }
 
     .login.el-button:hover {
-      background-color: #126CFE19;
+      background-color: #126cfe19;
     }
 
     .logout.el-button {
@@ -141,7 +147,6 @@ export default {
 .item-box {
   text-align: center;
   width: 100%;
-
 }
 
 .item-image {

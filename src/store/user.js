@@ -32,7 +32,7 @@ export const useUserStore = defineStore({
     // 修改userInfo
     saveUserInfo(data){
       this.userInfo = data
-      this.setUserInfo(data)
+      utils.setUserInfo(data)
     }
   },
 });

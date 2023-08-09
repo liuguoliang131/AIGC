@@ -1,41 +1,6 @@
-<template>
-  <div class="data-tab">
-    <div class="title">历史绘画</div>
-    <div class="views">
-      <div class="empty" v-if="history.empty">
-        <div class="text">暂无记录</div>
-      </div>
-      <div class="scroll_client" v-else ref="client" @scroll="onScroll">
-        <div class="scroll_page" ref="page">
-          <div
-            :class="[
-              'history_item',
-              active.pictureId === item.pictureId ? 'history_item-active' : '',
-            ]"
-            v-for="(item, index) in history.list"
-            :key="index"
-            @click="handActive(item)"
-          >
-            <el-image
-              style="width: 100%; height: 100%"
-              :src="item.pictureUrl"
-              fit="fill"
-            ></el-image>
-            <div class="mask">
-              <div class="text">{{ item.createdAt }}</div>
-            </div>
-          </div>
-          <div v-if="history.loading" class="reloading">加载中</div>
-          <!-- <div v-if="history.finish" class="reloading">没有更多了</div> -->
-        </div>
-      </div>
-    </div>
-  </div>
-</template>
-
 <script setup>
-import { ElDialog, ElMessage, ElImage } from "element-plus";
-import { ref, reactive, watch, nextTick, onMounted } from "vue";
+import { ElDialog, ElMessage, ElImage, dayjs } from "element-plus";
+import { ref, reactive, watch, nextTick, onMounted, onUnmounted } from "vue";
 import request from "@/http/index";
 import api from "../api";
 
@@ -46,7 +11,7 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(["input", "change"]);
+const emit = defineEmits(["update:active", "post-detail"]);
 
 const client = ref(); // 卷轴dom
 const page = ref(); // 卷轴内容dom
@@ -62,11 +27,98 @@ const history = reactive({
 
 // 选择图片
 const handActive = (item) => {
-  if (item.pictureId !== props.active.pictureId) {
+  if (item.pictureId === props.active.pictureId) {
     return false;
   }
-  emit("input", item);
-  emit("change", item);
+  emit("update:active", item);
+};
+
+let timer = null;
+// 开始轮询详情
+const openTimer = () => {
+  const sideFn = () => {
+    getDetail().then((result) => {
+      if (result === null) {
+        clearInterval(timer);
+      } else {
+        if (result.isFail) {
+          return clearInterval(timer);
+        }
+        if (result.pictureUrl) {
+          return clearInterval(timer);
+        }
+      }
+    });
+  };
+  clearInterval(timer);
+  timer = setInterval(() => {
+    sideFn();
+  }, 10000);
+  sideFn();
+};
+
+// 停止轮询详情
+const stopTimer = () => {
+  clearInterval(timer);
+};
+
+// 获取详情
+const getDetail = async () => {
+  return new Promise(async (resolve) => {
+    try {
+      const res = await request.get(api.picture_pictureDetail, {
+        pictureId: props.active.pictureId,
+      });
+      if (res.code !== 200) {
+        resolve(null);
+        return ElMessage({
+          message: res.msg,
+          type: "error",
+        });
+      }
+
+      emit("post-detail", res.data);
+      resolve(res.data);
+    } catch (error) {
+      resolve(null);
+      ElMessage({
+        message: error.message,
+        type: "error",
+      });
+      throw error;
+    }
+  });
+};
+
+// 侦听active变化
+watch(
+  props,
+  (newVal) => {
+    if (newVal.active.pictureId) {
+      openTimer();
+    } else {
+      stopTimer();
+    }
+  },
+  { deep: true }
+);
+
+//时间日期 转换
+const timeFormat = (time) => {
+  const date = time ? new Date(time) : new Date();
+  let obj = {
+    yyyy: date.getFullYear(),
+    MM: date.getMonth() + 1,
+    dd: date.getDate(),
+    HH: date.getHours(),
+    mm: date.getMinutes(),
+    ss: date.getSeconds(),
+  };
+
+  Object.keys(obj).forEach((k) => {
+    obj[k] = obj[k] < 10 ? "0" + obj[k] : obj[k];
+  });
+  return `${obj.yyyy}-${obj.MM}-${obj.dd} ${obj.HH}:${obj.mm}`;
 };
 
 // 获取图片列表
@@ -87,6 +139,9 @@ const getHistory = async () => {
       });
     } else {
       if (res.data.list && res.data.list.length) {
+        res.data.list.forEach((item) => {
+          item.createdAt = timeFormat(item.createdAt);
+        });
         history.list = [...history.list, ...res.data.list];
         history.lastId = res.data.list[res.data.list.length - 1].pictureId;
         if (res.data.list.length < history.pageSize) {
@@ -119,6 +174,7 @@ const onScroll = async (e) => {
 
 // 向列表顶端新增一个项
 const handPutItem = (item) => {
+  item.createdAt = timeFormat(item.createdAt);
   history.list = [item, ...history.list];
 };
 
@@ -126,7 +182,7 @@ const handPutItem = (item) => {
 const handRemoveItem = () => {
   return new Promise((resolve) => {
     request
-      .post(api.picture_delPicture, { pictureId: active.pictureId })
+      .post(api.picture_delPicture, { pictureId: props.active.pictureId })
       .then((res) => {
         if (res.code !== 200) {
           resolve(false);
@@ -137,7 +193,7 @@ const handRemoveItem = () => {
         }
         // 先查找 后删除
         const idx = history.list.findIndex(
-          (item) => item.pictureId == active.pictureId
+          (item) => item.pictureId == props.active.pictureId
         );
         history.list.splice(idx, 1);
         resolve(true);
@@ -145,10 +201,91 @@ const handRemoveItem = () => {
   });
 };
 
+// 重新生成图片
+const reloadDraw = () => {
+  return new Promise(async (resolve) => {
+    const res = await request.post(api.picture_resetting, {
+      pictureId: props.active.pictureId,
+    });
+    if (res.code !== 200) {
+      return ElMessage({
+        type: "error",
+        message: res.msg || res.message,
+      });
+    }
+    emit("update:active", res.data);
+    openTimer();
+    resolve(true);
+  });
+};
+
 onMounted(() => {
   getHistory();
 });
+
+onUnmounted(() => {
+  stopTimer();
+});
+
+// 暴露
+defineExpose({
+  handRemoveItem,
+  handPutItem,
+  reloadDraw,
+});
 </script>
+
+<template>
+  <div class="data-tab">
+    <div class="title">历史绘画</div>
+    <div class="views">
+      <div class="empty" v-if="history.empty">
+        <div class="text">暂无记录</div>
+      </div>
+      <div class="scroll_client" v-else ref="client" @scroll="onScroll">
+        <div class="scroll_page" ref="page">
+          <div
+            :class="[
+              'history_item',
+              active.pictureId === item.pictureId ? 'history_item-active' : '',
+            ]"
+            v-for="(item, index) in history.list"
+            :key="index"
+            @click="handActive(item)"
+          >
+            <template v-if="item.isFail">
+              <div class="fail-img">
+                <img
+                  src="https://quanres.hanhoukeji.com/hanhou-ai-pc/draw-fail-status.png"
+                  alt=""
+                />
+              </div>
+            </template>
+            <template v-else>
+              <el-image
+                v-if="item.pictureUrl"
+                style="width: 100%; height: 100%"
+                :src="item.pictureUrl"
+                fit="fill"
+              ></el-image>
+              <div class="making-img" v-else>
+                <img
+                  src="https://quanres.hanhoukeji.com/hanhou-ai-pc/drawing-status.png"
+                  alt=""
+                />
+              </div>
+            </template>
+            <div class="mask">
+              <div class="text">{{ item.createdAt }}</div>
+            </div>
+          </div>
+          <div v-if="history.loading" class="reloading">加载中</div>
+          <!-- <div v-if="history.finish" class="reloading">没有更多了</div> -->
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
 
 <style scoped lang="less">
 .data-tab {
@@ -222,8 +359,33 @@ onMounted(() => {
           height: 140px;
           margin: 9.66px 0;
           border-radius: 5px;
+          background-color: #f1f2f6;
           .el-image {
             border-radius: 5px;
+          }
+
+          .fail-img {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            img {
+              width: 25px;
+              height: 23.9px;
+            }
+          }
+
+          .making-img {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            img {
+              width: 70px;
+              height: 70px;
+            }
           }
           .mask {
             position: absolute;
@@ -257,6 +419,7 @@ onMounted(() => {
           }
         }
         .history_item-active {
+          background-color: #f1f2f6;
           .mask {
             border: 2px solid rgba(104, 162, 255, 1);
           }

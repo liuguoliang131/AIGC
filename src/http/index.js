@@ -15,11 +15,11 @@ const instance = axios.create({
   baseURL: process.env.VUE_APP_BASE_URL,
   timeout: 20000,
   headers: {
-    sys:'',
-    token:'',
-    version:'',
-    timestamp:'',
-    sign: '',
+    // sys:'',
+    // token:'',
+    // version:'',
+    // timestamp:'',
+    // sign: '',
     'x-token':''
   }
 })

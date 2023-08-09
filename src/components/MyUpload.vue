@@ -28,7 +28,7 @@ const { value, limit, type, size } = defineProps({
   },
 });
 
-const emit = defineEmits([]);
+const emit = defineEmits(["update:value"]);
 
 const loading = ref(false);
 
@@ -53,7 +53,7 @@ const imgChose = (e) => {
     e.target.value = "";
     return ElMessage({
       type: "warning",
-      message: `文件大小不能超过10M`,
+      message: `上传失败,图片大于10M`,
     });
   }
   loading.value = true;
@@ -66,7 +66,7 @@ const imgChose = (e) => {
         message: `上传失败`,
       });
     }
-    emit("input", res.path);
+    emit("update:value", res.path);
     emit("success", res);
   });
 };

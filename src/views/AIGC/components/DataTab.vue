@@ -133,13 +133,15 @@ watch(
   props,
   (newVal) => {
     console.log("watch detailData", newVal.detailData);
-    baseData.value = {
-      pictureIdea: newVal.detailData.pictureIdea || "", //文本
-      bgImageUrl: newVal.detailData.bgImageUrl || "", // 参考图
-      pictureRatio: newVal.detailData.pictureRatio || 1, // 图片比例
-      picturePx: newVal.detailData.picturePx || 1, // 图片品质
-      pictureStyle: newVal.detailData.pictureStyle || 1, // 绘画风格
-    };
+    if (newVal.detailData.pictureId !== baseData.value.pictureId) {
+      baseData.value = {
+        pictureIdea: newVal.detailData.pictureIdea || "", //文本
+        bgImageUrl: newVal.detailData.bgImageUrl || "", // 参考图
+        pictureRatio: newVal.detailData.pictureRatio || 1, // 图片比例
+        picturePx: newVal.detailData.picturePx || 1, // 图片品质
+        pictureStyle: newVal.detailData.pictureStyle || 1, // 绘画风格
+      };
+    }
   },
   {
     deep: true,
