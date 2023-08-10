@@ -1,6 +1,6 @@
 import { TOKEN, USER_INFO } from './keys'
 import router from '../router/index'
-
+console.log('utils')
 
 
 
@@ -47,8 +47,7 @@ utils.goLogin = function () {
   
   router.push({
     path: '/login',
-    query,
-    replace:true,
+    query
   })
 }
 

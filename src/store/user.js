@@ -1,5 +1,6 @@
 import utils from '../common/utils'
 import { defineStore } from "pinia";
+console.log('user store.js')
 
 export const useUserStore = defineStore({
   id: "user",

@@ -100,7 +100,7 @@ const handGoHome = () => {
       </div>
       <div v-else class="menu-item" @click="handGoDraw">
         <img
-          src="https://quanres.hanhoukeji.com/hanhou-ai-pc/menu-chat.png"
+          src="https://quanres.hanhoukeji.com/hanhou-ai-pc/menu-draw.png"
           alt=""
         />
       </div>

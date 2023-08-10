@@ -42,24 +42,27 @@ const imgChose = (e) => {
   console.log(e.target.files);
   if (type.length) {
     if (!type.includes(e.target.files[0].type)) {
-      e.target.value = "";
-      return ElMessage({
+      ElMessage({
         type: "warning",
         message: `不可上传${e.target.files[0].type}类型文件`,
       });
+      e.target.value = "";
+      return false;
     }
   }
   if (e.target.files[0].size > size * 1024 * 1024) {
-    e.target.value = "";
-    return ElMessage({
+    ElMessage({
       type: "warning",
       message: `上传失败,图片大于10M`,
     });
+    e.target.value = "";
+    return false;
   }
   loading.value = true;
   qiniuUpload(e.target.files[0]).then((res) => {
     console.log("七牛 res", res);
     loading.value = false;
+    e.target.value = "";
     if (!res) {
       return ElMessage({
         type: "error",
@@ -74,7 +77,7 @@ const imgChose = (e) => {
 
 
 <template>
-  <div v-loading="loading" class="file_upload" @click="handChoose">
+  <div class="file_upload" @click="handChoose">
     <input
       ref="fileRef"
       type="file"
@@ -82,7 +85,7 @@ const imgChose = (e) => {
       :accept="type.join(',')"
       @change="imgChose"
     />
-    <slot></slot>
+    <slot :loading="loading"></slot>
   </div>
 </template>
 

@@ -36,6 +36,7 @@ const handActive = (item) => {
 let timer = null;
 // 开始轮询详情
 const openTimer = () => {
+  // return console.log("openTimer");
   const sideFn = () => {
     getDetail().then((result) => {
       if (result === null) {
@@ -45,6 +46,15 @@ const openTimer = () => {
           return clearInterval(timer);
         }
         if (result.pictureUrl) {
+          emit("update:active", {
+            ...props.active,
+            pictureUrl: result.pictureUrl,
+          });
+          const listActive = history.list.find(
+            (item) => item.pictureId === props.active.pictureId
+          );
+          listActive.pictureUrl = result.pictureUrl;
+          console.log("if (result.pictureUrl) 关闭定时器");
           return clearInterval(timer);
         }
       }
@@ -53,7 +63,7 @@ const openTimer = () => {
   clearInterval(timer);
   timer = setInterval(() => {
     sideFn();
-  }, 10000);
+  }, 20000); //20秒查询一次
   sideFn();
 };
 
@@ -90,17 +100,21 @@ const getDetail = async () => {
   });
 };
 
-// 侦听active变化
+// 侦听active变化  reactive类型数据newVal=oldVal, 解决方法为改为监听reactive数据里的某一属性
 watch(
-  props,
-  (newVal) => {
-    if (newVal.active.pictureId) {
-      openTimer();
+  () => props.active,
+  (newVal, oldVal) => {
+    console.log("newVal, oldVal", newVal, oldVal);
+    if (newVal.pictureId) {
+      if (newVal.pictureId !== oldVal.pictureId) {
+        console.log("watch openTimer");
+        openTimer();
+      }
     } else {
       stopTimer();
     }
   },
-  { deep: true }
+  { deep: false }
 );
 
 //时间日期 转换
@@ -214,7 +228,6 @@ const reloadDraw = () => {
       });
     }
     emit("update:active", res.data);
-    openTimer();
     resolve(true);
   });
 };
@@ -266,7 +279,7 @@ defineExpose({
                 v-if="item.pictureUrl"
                 style="width: 100%; height: 100%"
                 :src="item.pictureUrl"
-                fit="fill"
+                fit="cover"
               ></el-image>
               <div class="making-img" v-else>
                 <img

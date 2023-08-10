@@ -1,15 +1,17 @@
-import axios from 'axios'
+import axios from 'axios';
+
 // 环境变量
 // console.log('环境变量', process.env.VUE_APP_SELF_ENV) // dev test prod
 import {
   _getSign
-} from './sign.js'
+} from './sign.js';
 
-import utils from '../common/utils'
-import router from '../router/index'
-import {ElMessage} from 'element-plus'
+import utils from '../common/utils';
+
+import { ElMessage } from 'element-plus';
 
 
+console.log('axios')
 
 const instance = axios.create({
   baseURL: process.env.VUE_APP_BASE_URL,
@@ -59,13 +61,9 @@ instance.interceptors.response.use(function (response) {
   // 对响应数据做点什么
   // console.log('响应拦截器', response.data)
   if (response.data.code === 1000) {
-    utils.setToken('')
-    utils.setUserInfo('')
-    router.push({
-      path: '/',
-      replace:true
-    })
-    window.history.go(0)
+    utils.setToken('');
+    utils.setUserInfo('');
+    utils.goLogin();
   }
   return response.data
 }, function (error) {

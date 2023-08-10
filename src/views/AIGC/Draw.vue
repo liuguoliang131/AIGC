@@ -17,11 +17,13 @@ const removeVisible = ref(false);
 const drawingVisible = ref(false);
 const dataHistoryRef = ref(); // 右侧组件ref
 const dataTabRef = ref(); //左侧组件ref
+const madeDisabled = ref(1); // 控制左侧组件立即生成按钮 0生成中不可点击 1已生成可以点击 2生成失败不可点击
 // 选中的图片的id
 const activeHistoryItem = reactive({
   active: {
     pictureId: null,
     createdAt: "",
+    pictureUrl: "",
   },
 });
 
@@ -44,6 +46,7 @@ const clearActive = () => {
   activeHistoryItem.active = {
     pictureId: null,
     createdAt: "",
+    pictureUrl: "",
   };
   detailData.value = {
     pictureId: null,
@@ -56,6 +59,7 @@ const clearActive = () => {
     pictureType: null,
     isFail: null,
   };
+  madeDisabled.value = 1;
 };
 
 // 获取图片详情
@@ -84,6 +88,7 @@ const getDetail = async () => {
 const createSuccess = (data) => {
   console.log(data);
   activeHistoryItem.active = data;
+  madeDisabled.value = 0;
   dataHistoryRef.value.handPutItem(activeHistoryItem.active); //向列表新增一个项
 };
 
@@ -120,6 +125,7 @@ const madePicture1 = async (position) => {
     activeHistoryItem.active = {
       pictureId: res.data.pictureId,
       createdAt: res.data.createdAt,
+      pictureUrl: res.data.pictureUrl,
     };
     dataHistoryRef.value.handPutItem(activeHistoryItem.active); //向列表新增一个项
     loading.value = false;
@@ -143,6 +149,12 @@ const handDownload = () => {
 // 接收详情信息
 const onPostDetail = (data) => {
   detailData.value = data;
+  console.log("接收详情信息", data);
+  if (data.isFail) {
+    madeDisabled.value = 2;
+  } else {
+    madeDisabled.value = data.pictureUrl ? 1 : 0;
+  }
 };
 
 //重新生成绘画
@@ -229,6 +241,7 @@ const reloadDraw = async () => {
           ref="dataTabRef"
           @create-success="createSuccess"
           :detailData="detailData"
+          :madeDisabled="madeDisabled"
         ></data-tab>
       </div>
       <div class="center">
@@ -367,36 +380,68 @@ const reloadDraw = async () => {
                       v-if="detailData.pictureType === 1"
                     >
                       <el-tooltip
-                        class="box-item"
+                        popper-class="popper_style2"
                         effect="dark"
                         content="升级左侧上方图为单张大图"
                         placement="right"
                       >
-                        <div class="u-btn" @click="madePicture1(1)">U1</div>
+                        <div
+                          :class="[
+                            'u-btn',
+                            detailData.giao === 1 ? 'u-btn_disabled' : '',
+                          ]"
+                          @click="madePicture1(1)"
+                        >
+                          U1
+                        </div>
                       </el-tooltip>
                       <el-tooltip
-                        class="box-item"
+                        popper-class="popper_style2"
                         effect="dark"
                         content="升级右侧上方图为单张大图"
                         placement="right"
                       >
-                        <div class="u-btn" @click="madePicture1(2)">U2</div>
+                        <div
+                          :class="[
+                            'u-btn',
+                            detailData.giao === 2 ? 'u-btn_disabled' : '',
+                          ]"
+                          @click="madePicture1(2)"
+                        >
+                          U2
+                        </div>
                       </el-tooltip>
                       <el-tooltip
-                        class="box-item"
+                        popper-class="popper_style2"
                         effect="dark"
                         content="升级左侧下方图为单张大图"
                         placement="right"
                       >
-                        <div class="u-btn" @click="madePicture1(3)">U3</div>
+                        <div
+                          :class="[
+                            'u-btn',
+                            detailData.giao === 3 ? 'u-btn_disabled' : '',
+                          ]"
+                          @click="madePicture1(3)"
+                        >
+                          U3
+                        </div>
                       </el-tooltip>
                       <el-tooltip
-                        class="box-item"
+                        popper-class="popper_style2"
                         effect="dark"
                         content="升级右侧下方图为单张大图"
                         placement="right"
                       >
-                        <div class="u-btn" @click="madePicture1(4)">U4</div>
+                        <div
+                          :class="[
+                            'u-btn',
+                            detailData.giao === 4 ? 'u-btn_disabled' : '',
+                          ]"
+                          @click="madePicture1(4)"
+                        >
+                          U4
+                        </div>
                       </el-tooltip>
                     </div>
                   </template>
@@ -422,6 +467,7 @@ const reloadDraw = async () => {
                 src="https://quanres.hanhoukeji.com/hanhou-ai-pc/draw-default-static.png"
                 alt=""
               />
+              <!-- <div class="none-desc">快来创建你的AI绘画作品吧~</div> -->
             </div>
           </template>
         </div>
@@ -464,7 +510,7 @@ const reloadDraw = async () => {
 </template>
 
 <style lang="less">
-.is-dark {
+.popper_style2 {
   background-color: rgba(0, 0, 0, 0.6) !important;
   border: none !important;
   .el-popper__arrow::before {
@@ -569,16 +615,26 @@ const reloadDraw = async () => {
           display: flex;
           align-items: center;
           justify-content: center;
-          width: 700px;
-          height: 700px;
+          flex-direction: column;
+          width: 850px;
+          height: 850px;
           border: 1px dashed rgba(170, 170, 170, 1);
           border-radius: 5px;
-          margin: 141px auto 172px auto;
+          margin: 80px auto 80px auto;
           text-align: center;
           .none-img {
             width: 320px;
             height: 320px;
           }
+          // .none-desc {
+          //   color: #999;
+          //   text-align: center;
+          //   font-family: PingFang SC;
+          //   font-size: 18px;
+          //   font-style: normal;
+          //   font-weight: 400;
+          //   line-height: normal;
+          // }
         }
 
         // 生成失败
@@ -587,10 +643,10 @@ const reloadDraw = async () => {
           align-items: center;
           justify-content: center;
           flex-direction: column;
-          width: 700px;
-          height: 700px;
+          width: 850px;
+          height: 850px;
           border-radius: 5px;
-          margin: 141px auto 172px auto;
+          margin: 60px auto 60px auto;
           text-align: center;
           .fail-img {
             width: 150px;
@@ -617,11 +673,11 @@ const reloadDraw = async () => {
           display: flex;
           align-items: center;
           justify-content: center;
-          width: 700px;
-          height: 700px;
+          width: 850px;
+          height: 850px;
           border: 1px dashed rgba(170, 170, 170, 1);
           border-radius: 5px;
-          margin: 141px auto 172px auto;
+          margin: 60px auto 60px auto;
           text-align: center;
           .drawing-img {
             width: 320px;
@@ -630,12 +686,12 @@ const reloadDraw = async () => {
         }
 
         .show_image {
-          width: 700px;
-          height: 700px;
-          margin: 141px auto 172px auto;
+          width: 850px;
+          height: 850px;
+          margin: 60px auto 60px auto;
           text-align: center;
           .show_image-a {
-            width: 700px;
+            width: 850px;
             height: auto;
             margin: auto;
           }
@@ -646,6 +702,7 @@ const reloadDraw = async () => {
             flex-wrap: wrap;
             margin-top: 15.57px;
             .show_image-b-1 {
+              flex: 1;
               display: flex;
               align-items: center;
               color: #126cfe;
@@ -654,11 +711,13 @@ const reloadDraw = async () => {
               font-style: normal;
               font-weight: 600;
               line-height: normal;
+              text-align: left;
               svg {
                 margin-right: 8.5px;
               }
             }
             .show_image-b-2 {
+              flex: 1;
               display: flex;
               align-items: center;
               justify-content: flex-end;
@@ -686,6 +745,7 @@ const reloadDraw = async () => {
           .show-image-c {
             display: flex;
             flex-wrap: wrap;
+            padding-bottom: 60px;
             .u-btn {
               display: flex;
               align-items: center;
@@ -707,6 +767,9 @@ const reloadDraw = async () => {
               &:active {
                 opacity: 0.7;
               }
+            }
+            .u-btn_disabled {
+              background-color: rgba(0, 34, 89, 1);
             }
           }
         }

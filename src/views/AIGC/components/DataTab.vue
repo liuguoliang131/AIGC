@@ -11,6 +11,10 @@ const props = defineProps({
     type: Object,
     description: "图片详情信息",
   },
+  madeDisabled: {
+    type: Number,
+    description: "0生成中不可点击 1已生成可以点击 2生成失败不可点击",
+  },
 });
 
 const emit = defineEmits(["create-success"]);
@@ -117,17 +121,6 @@ const ratioOptions = ref([
   },
 ]);
 
-// 还原数据
-const initBaseData = () => {
-  baseData.value = {
-    pictureIdea: "", //文本
-    bgImageUrl: "", // 参考图
-    pictureRatio: 1, // 图片比例
-    picturePx: 1, // 图片品质
-    pictureStyle: 1, // 绘画风格
-  };
-};
-
 // 详情数据更新 填充给本组件baseData
 watch(
   props,
@@ -170,6 +163,9 @@ const handRange = () => {
 // 点击开始生成 生成4图
 const madePicture4 = async () => {
   try {
+    if (props.madeDisabled !== 1) {
+      return false;
+    }
     if (!baseData.value.pictureIdea) {
       return ElMessage({
         message: "绘画描述不可为空。",
@@ -178,7 +174,7 @@ const madePicture4 = async () => {
     }
     if (userStore.userInfo && userStore.userInfo.residuePictureQuantity == 0) {
       return ElMessage({
-        message: "绘画描述您的绘画次数已用尽，请联系客服购买不可为空。",
+        message: "您的绘画次数已用尽，请联系客服购买。",
         type: "warning",
       });
     }
@@ -218,7 +214,17 @@ const madePicture4 = async () => {
         :autosize="false"
         placeholder="请描述您想要的画面（目前仅支持中文、英文）。暂不支持Midjourney的参数填写。"
       ></textarea>
-      <div class="limit">{{ baseData.pictureIdea.length }}/500</div>
+      <div class="ipt_ass" v-if="baseData.pictureIdea.length">
+        <div class="limit">
+          <span class="weight">{{ baseData.pictureIdea.length }}</span
+          >/500
+        </div>
+        <div class="vertical"></div>
+        <div class="clear_input" @click="baseData.pictureIdea = ''">清空</div>
+      </div>
+      <div class="ipt_ass" v-else>
+        <div class="limit">{{ baseData.pictureIdea.length }}/500</div>
+      </div>
     </div>
     <div class="taketry">
       <span @click="handRange">随便试试</span>
@@ -226,7 +232,7 @@ const madePicture4 = async () => {
     <div class="title2">
       <span class="title2-n">参考图</span>
       <el-tooltip
-        class="box-item"
+        popper-class="popper_style"
         effect="dark"
         content="基于参考图生成作品"
         placement="right"
@@ -263,43 +269,82 @@ const madePicture4 = async () => {
       </el-tooltip>
     </div>
     <div>
-      <my-upload v-model:value="baseData.bgImageUrl">
-        <div class="upload">
-          <div class="cover" v-if="baseData.bgImageUrl">
-            <el-image
-              style="width: 100%; height: 100%; border-radius: inherit"
-              :src="baseData.bgImageUrl"
-              fit="cover"
-            />
+      <my-upload
+        :type="['image/png', 'image/jpeg']"
+        v-model:value="baseData.bgImageUrl"
+        v-slot="slotProps"
+      >
+        <temlate>
+          <div class="upload">
+            <template v-if="slotProps.loading">
+              <div class="upload-loading">
+                <img
+                  class="loading-img"
+                  src="https://quanres.hanhoukeji.com/hanhou-ai-pc/draw-default-static.png"
+                  alt=""
+                />
+                <div class="loading-text">上传中</div>
+              </div>
+            </template>
+            <template v-else>
+              <div class="cover" v-if="baseData.bgImageUrl">
+                <el-image
+                  style="width: 100%; height: 100%; border-radius: inherit"
+                  :src="baseData.bgImageUrl"
+                  fit="cover"
+                />
+                <div class="clear_img" @click.stop="baseData.bgImageUrl = ''">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="5"
+                    height="5"
+                    viewBox="0 0 5 5"
+                    fill="none"
+                  >
+                    <g clip-path="url(#clip0_556_551)">
+                      <path
+                        d="M3.08163 2.48573L4.87667 0.710313C5.03979 0.549295 5.04109 0.286444 4.88007 0.123318C4.71905 -0.0398084 4.45588 -0.0411056 4.29308 0.119913L2.49561 1.8976L0.725541 0.122021C0.563225 -0.0402948 0.300861 -0.0411056 0.138546 0.12121C-0.0237698 0.283201 -0.0242562 0.54589 0.137735 0.708205L1.90521 2.48119L0.123141 4.24412C-0.0399851 4.40563 -0.0412824 4.66799 0.119736 4.83112C0.201137 4.91333 0.307834 4.95435 0.414855 4.95435C0.520255 4.95435 0.625655 4.91414 0.706731 4.83452L2.49139 3.06948L4.29048 4.87425C4.3714 4.95565 4.47777 4.99619 4.58447 4.99619C4.69068 4.99619 4.79656 4.95549 4.87748 4.87506C5.03979 4.71323 5.04028 4.45087 4.87829 4.28807L3.08163 2.48573Z"
+                        fill="white"
+                      />
+                    </g>
+                    <defs>
+                      <clipPath id="clip0_556_551">
+                        <rect width="5" height="4.99643" fill="white" />
+                      </clipPath>
+                    </defs>
+                  </svg>
+                </div>
+              </div>
+              <div class="upload-none" v-else>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="15"
+                  height="15"
+                  viewBox="0 0 15 15"
+                  fill="none"
+                >
+                  <path
+                    d="M1 7.59937H13.56"
+                    stroke="#AFAFAF"
+                    stroke-linecap="round"
+                  />
+                  <path
+                    d="M7.20996 14.021L7.20996 1.461"
+                    stroke="#AFAFAF"
+                    stroke-linecap="round"
+                  />
+                </svg>
+                <div class="none-text">支持JPG、PNG 10M以内</div>
+              </div>
+            </template>
           </div>
-          <div class="upload-none" v-else>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="15"
-              height="15"
-              viewBox="0 0 15 15"
-              fill="none"
-            >
-              <path
-                d="M1 7.59937H13.56"
-                stroke="#AFAFAF"
-                stroke-linecap="round"
-              />
-              <path
-                d="M7.20996 14.021L7.20996 1.461"
-                stroke="#AFAFAF"
-                stroke-linecap="round"
-              />
-            </svg>
-            <div class="none-text">支持JPG、PNG 10M以内</div>
-          </div>
-        </div>
+        </temlate>
       </my-upload>
     </div>
     <div class="title2">
       <span class="title2-n">图片品质</span>
       <el-tooltip
-        class="box-item"
+        popper-class="popper_style"
         effect="dark"
         content="品质越高，绘制时间越长"
         placement="right"
@@ -383,12 +428,30 @@ const madePicture4 = async () => {
         <div class="mask" v-if="item.id === baseData.pictureStyle"></div>
       </div>
     </div>
-    <div class="action-btn" @click="madePicture4">立即生成</div>
+    <div
+      v-if="props.madeDisabled === 0"
+      :class="['action-btn', 'action-btn_disabled']"
+    >
+      生成中
+    </div>
+    <div
+      v-else-if="props.madeDisabled === 1"
+      :class="['action-btn']"
+      @click="madePicture4"
+    >
+      立即生成
+    </div>
+    <div
+      v-else-if="props.madeDisabled === 2"
+      :class="['action-btn', 'action-btn_disabled']"
+    >
+      立即生成
+    </div>
   </div>
 </template>
 
 <style lang="less">
-.is-dark {
+.popper_style {
   background-color: #666666 !important;
   border: none !important;
   .el-popper__arrow::before {
@@ -430,11 +493,13 @@ const madePicture4 = async () => {
     border-radius: 5px;
     border: 1px solid #e3e3e3;
     background: #fafafa;
-    .limit {
+    .ipt_ass {
       position: absolute;
       right: 6px;
       bottom: 0;
       height: 26px;
+      display: flex;
+      justify-content: flex-end;
       text-align: right;
       color: rgba(0, 0, 0, 0.3);
       font-family: PingFang SC;
@@ -442,7 +507,27 @@ const madePicture4 = async () => {
       font-style: normal;
       font-weight: 400;
       line-height: 20px;
+      .limit {
+        color: rgba(0, 0, 0, 0.3);
+        .weight {
+          color: rgba(0, 0, 0, 0.7);
+        }
+      }
+      .vertical {
+        width: 1px;
+        height: 7.2px;
+        margin: 6.88px 8.27px;
+        background: rgba(0, 0, 0, 0.3);
+      }
+      .clear_input {
+        cursor: pointer;
+        color: rgba(0, 0, 0, 0.7);
+        &:active {
+          opacity: 0.7;
+        }
+      }
     }
+
     .textarea {
       box-sizing: border-box;
       width: 100%;
@@ -509,6 +594,10 @@ const madePicture4 = async () => {
     .title2-t {
       display: flex;
       align-items: center;
+      svg {
+        width: 12px;
+        height: 12px;
+      }
       .tip_ {
         margin-left: 7.3px;
         color: rgba(0, 0, 0, 0.3);
@@ -530,8 +619,37 @@ const madePicture4 = async () => {
     border-radius: 5px;
     user-select: none;
     cursor: pointer;
+    overflow: hidden;
     &:active {
       border: 1px dashed #5e9dfe;
+    }
+
+    .upload-loading {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+      border-radius: 5px;
+      .loading-img {
+        width: 59px;
+        height: 59px;
+      }
+      .loading-text {
+        position: absolute;
+        top: 53.5px;
+        left: 50%;
+        width: calc(100% / 0.56);
+        color: rgba(0, 0, 0, 0.3);
+        text-align: center;
+        font-family: PingFang SC;
+        font-size: 18px;
+        font-style: normal;
+        font-weight: 400;
+        transform: translate(-50%, 0) scale(0.56);
+      }
     }
     .upload-none {
       display: flex;
@@ -556,9 +674,28 @@ const madePicture4 = async () => {
       }
     }
     .cover {
+      position: relative;
       width: 100%;
       height: 100%;
       border-radius: 5px;
+      .clear_img {
+        position: absolute;
+        top: -14.15px;
+        right: -14.15px;
+        display: flex;
+        align-items: center;
+        width: 28.3px;
+        height: 28.3px;
+        background-color: #464646;
+        transform-origin: center;
+        transform: rotate(-45deg);
+        svg {
+          width: 5px;
+          height: 5px;
+          transform-origin: center;
+          transform: rotate(45deg) translate(50%, -50%);
+        }
+      }
     }
   }
 
@@ -721,6 +858,10 @@ const madePicture4 = async () => {
     &:active {
       opacity: 0.7;
     }
+  }
+  .action-btn_disabled {
+    opacity: 0.7;
+    cursor: auto;
   }
 }
 </style>
