@@ -28,6 +28,7 @@
             placeholder="请输入验证码"
             class="input-verCode"
             @input="handleCodeInput"
+            @keyup.enter="login"
           />
           <button class="code-btn" @click="sendCode" :disabled="timer !== null">
             {{ timer ? countDown : "获取验证码" }}

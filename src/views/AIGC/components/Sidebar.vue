@@ -57,15 +57,26 @@ const handGoDraw = () => {
 
 // 去往学习中心
 const handGoLearn = () => {
+  return ElMessage({
+    type: "warning",
+    message: "学习中心功能正在开发中，敬请期待~",
+  });
   router.push({
     path: "/learn_center",
+  });
+};
+
+// 去首页
+const handGoHome = () => {
+  router.push({
+    path: "/",
   });
 };
 </script>
 
 <template>
   <div class="sidebar">
-    <div class="title">
+    <div class="title" @click="handGoHome">
       <img
         src="https://quanres.hanhoukeji.com/hanhou-ai-pc/hanhou-logo.png"
         alt=""
@@ -89,7 +100,7 @@ const handGoLearn = () => {
       </div>
       <div v-else class="menu-item" @click="handGoDraw">
         <img
-          src="https://quanres.hanhoukeji.com/hanhou-ai-pc/menu-chat.png"
+          src="https://quanres.hanhoukeji.com/hanhou-ai-pc/menu-draw.png"
           alt=""
         />
       </div>
@@ -169,6 +180,7 @@ const handGoLearn = () => {
     font-weight: 600;
     text-align: center;
     color: rgba(243, 243, 250, 1);
+    cursor: pointer;
 
     img {
       width: 40px;

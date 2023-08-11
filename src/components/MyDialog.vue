@@ -3,7 +3,7 @@
     <el-dialog
       align-center
       v-model="visible"
-      width="3.1777rem"
+      width="2.76rem"
       :show-close="showClose"
       :close-on-click-modal="closeOnClickModal"
       @close="dialogClose"
@@ -63,7 +63,7 @@ const dialogClose = () => {
     }
   }
   .el-dialog__body {
-    padding: 37px 33px;
+    padding: 33px;
   }
 }
 </style>

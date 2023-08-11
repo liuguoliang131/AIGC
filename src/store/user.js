@@ -1,10 +1,11 @@
 import utils from '../common/utils'
 import { defineStore } from "pinia";
+console.log('user store.js')
 
 export const useUserStore = defineStore({
   id: "user",
   state: () => ({
-    userInfo: utils.getUserInfo() || '',
+    userInfo: utils.getUserInfo() || null,
     token:utils.getToken() || '',
   }),
   actions: {
@@ -24,6 +25,11 @@ export const useUserStore = defineStore({
       this.userInfo = data
       this.token = data.token
       utils.loginAfter(data)
+    },
+    // 修改userInfo
+    saveUserInfo(data){
+      this.userInfo = data
+      utils.setUserInfo(data)
     }
   },
 });
