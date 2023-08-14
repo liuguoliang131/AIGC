@@ -57,10 +57,6 @@ const handGoDraw = () => {
 
 // 去往学习中心
 const handGoLearn = () => {
-  return ElMessage({
-    type: "warning",
-    message: "学习中心功能正在开发中，敬请期待~",
-  });
   router.push({
     path: "/learn_center",
   });

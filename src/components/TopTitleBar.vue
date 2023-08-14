@@ -96,14 +96,9 @@ function goProduct() {
 }
 
 function goLearnCenter() {
-  return ElMessage({
-    message: "学习中心功能正在开发中，敬请期待~",
-    type: "warning",
+  router.push({
+    path: "/learn_center",
   });
-  // router.push({
-  //   path: "/learn_center",
-  //   replace: true,
-  // });
 }
 
 // 去往登录页 记录当前路由
