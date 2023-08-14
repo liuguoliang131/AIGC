@@ -1,13 +1,31 @@
 <template>
   <div class="container">
-    <el-scrollbar style="{font-size: 0;}" @scroll="onScroll">
-      <img src="https://quanres.hanhoukeji.com/hanhou-ai-pc/ai_home1.png" class="itemImage" />
-      <img src="https://quanres.hanhoukeji.com/hanhou-ai-pc/ai_home2.png" class="itemImage" />
+    <el-scrollbar
+      style="
+         {
+          font-size: 0;
+        }
+      "
+      @scroll="onScroll"
+    >
+      <img
+        src="https://quanres.hanhoukeji.com/hanhou-ai-pc/ai_home1.png"
+        class="itemImage"
+      />
+      <img
+        src="https://quanres.hanhoukeji.com/hanhou-ai-pc/ai_home2.png"
+        class="itemImage"
+      />
       <div class="wrapperFooter">
-        <img src="https://quanres.hanhoukeji.com/hanhou-ai-pc/ai_home3.png" class="itemImage" />
+        <img
+          src="https://quanres.hanhoukeji.com/hanhou-ai-pc/ai_home3.png"
+          class="itemImage"
+        />
         <div class="footer">
           <div class="footer-record">
-            <a @click="handGoICP">京ICP备19041918号-1京公网安备11010502039881号</a>
+            <a @click="handGoICP"
+              >京ICP备19041918号-1京公网安备11010502039881号</a
+            >
           </div>
           <div class="footer-record">
             <a @click="handGoICP">网络经营许可证京网文[2020]4683-870号</a>
@@ -15,25 +33,44 @@
         </div>
       </div>
     </el-scrollbar>
-    <div class="banner" :style="{ backgroundColor: `rgba(255, 255, 255, ${opacity})` }">
+    <div
+      class="banner"
+      :style="{ backgroundColor: `rgba(255, 255, 255, ${opacity})` }"
+    >
       <div class="banner_left">
         <img src="@/assets/logo.png" class="logo" @click="goHome" />
         <span class="banner_text" @click="goProduct">产品</span>
         <span class="banner_text">学习中心</span>
       </div>
       <div class="banner_right">
-        <el-button type="primary" plain v-if="!isLogged()" @click="goLogin" class="login">登录/注册</el-button>
+        <el-button
+          type="primary"
+          plain
+          v-if="!isLogged()"
+          @click="goLogin"
+          class="login"
+          >登录/注册</el-button
+        >
         <div v-else>
-          <span style="font-size: 15px;color: #1E1E1E; margin-right: 20px;">{{ userInfo().tel }}</span>
-          <el-button type="primary" class="logout" @click="handExit">退出登录</el-button>
+          <span style="font-size: 15px; color: #1e1e1e; margin-right: 20px">{{
+            userInfo().tel
+          }}</span>
+          <el-button type="primary" class="logout" @click="handExit"
+            >退出登录</el-button
+          >
         </div>
       </div>
     </div>
-    <!-- 顶部切换 -->
-    <!-- <TopTabItem productTitle="产品" studyTitle="学习中心" @active="goHome"></TopTabItem> -->
+
     <!-- 退出提醒 -->
-    <el-dialog align-center v-model="exitVisible" width="3.1777rem" :show-close="false" :close-on-click-modal="false"
-      @close="dialogClose">
+    <el-dialog
+      align-center
+      v-model="exitVisible"
+      width="3.1777rem"
+      :show-close="false"
+      :close-on-click-modal="false"
+      @close="dialogClose"
+    >
       <div class="dia_title">退出提醒</div>
       <div class="dia_content">是否要退出登录</div>
       <div class="dia_footer_2">
@@ -48,11 +85,8 @@
 import utils from "@/common/utils";
 import request from "@/http/index";
 import api from "./api";
-import TopTabItem from "../../components/TopTabItem.vue";
 import { ElButton, ElDialog, ElScrollbar, ElMessage } from "element-plus";
-import {
-  ref
-} from "vue";
+import { ref } from "vue";
 import { useRouter } from "vue-router";
 const router = useRouter();
 const opacity = ref(0);
@@ -79,22 +113,21 @@ function goHome() {
   router.push({
     path: "/",
   });
-};
+}
 
 function goProduct() {
   router.push({
-    path: "/product_center"
-  })
-};
+    path: "/product_center",
+  });
+}
 
 function goLogin() {
   router.push({
     path: "/login",
   });
-};
+}
 // 弹层关闭事件
-const dialogClose = () => { };
-
+const dialogClose = () => {};
 
 // 退出登录弹窗
 const exitVisible = ref(false);
@@ -106,23 +139,22 @@ const handExit = () => {
 // 确认退出登录
 const confirmExit = () => {
   exitVisible.value = false;
-  request.get(api.user_logout, {})
-    .then((res) => {
-      if (res.code == 200) {
-        utils.setToken("");
-        utils.setUserInfo("");
-        router.push({
-          path: "/",
-          replace: true,
-          force: true,
-        });
-      } else {
-        ElMessage({
-          type: "error",
-          message: res.msg,
-        });
-      }
-    });
+  request.get(api.user_logout, {}).then((res) => {
+    if (res.code == 200) {
+      utils.setToken("");
+      utils.setUserInfo("");
+      router.push({
+        path: "/",
+        replace: true,
+        force: true,
+      });
+    } else {
+      ElMessage({
+        type: "error",
+        message: res.msg,
+      });
+    }
+  });
 };
 </script>
 
@@ -169,15 +201,15 @@ const confirmExit = () => {
 
       .login.el-button {
         background-color: transparent;
-        color: #126CFE;
-        border-color: #126CFE;
+        color: #126cfe;
+        border-color: #126cfe;
         font-size: 20px;
         width: 120px;
         height: 42px;
       }
 
       .login.el-button:hover {
-        background-color: #126CFE19;
+        background-color: #126cfe19;
       }
 
       .logout.el-button {
