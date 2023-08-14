@@ -12,19 +12,18 @@ const props = defineProps({
     description: "图片详情信息",
   },
   madeDisabled: {
-    type: Number,
-    description: "0生成中不可点击 1已生成可以点击 2生成失败不可点击",
+    type: Boolean,
+    description: "立即生成禁止点击",
   },
 });
 
-const emit = defineEmits(["create-success"]);
+const emit = defineEmits(["create-success", "update:madeDisabled"]);
 
 const userStore = useUserStore();
 
-const loading = ref(false);
-
 // 交互数据
 const baseData = ref({
+  pictureId: null,
   pictureIdea: "", //文本
   bgImageUrl: "", // 参考图
   pictureRatio: 1, // 图片比例
@@ -123,16 +122,16 @@ const ratioOptions = ref([
 
 // 详情数据更新 填充给本组件baseData
 watch(
-  props,
+  () => props.detailData,
   (newVal) => {
-    console.log("watch detailData", newVal.detailData);
-    if (newVal.detailData.pictureId !== baseData.value.pictureId) {
+    if (newVal.pictureId !== baseData.value.pictureId) {
       baseData.value = {
-        pictureIdea: newVal.detailData.pictureIdea || "", //文本
-        bgImageUrl: newVal.detailData.bgImageUrl || "", // 参考图
-        pictureRatio: newVal.detailData.pictureRatio || 1, // 图片比例
-        picturePx: newVal.detailData.picturePx || 1, // 图片品质
-        pictureStyle: newVal.detailData.pictureStyle || 1, // 绘画风格
+        pictureId: newVal.pictureId || null,
+        pictureIdea: newVal.pictureIdea || "", //文本
+        bgImageUrl: newVal.bgImageUrl || "", // 参考图
+        pictureRatio: newVal.pictureRatio || 1, // 图片比例
+        picturePx: newVal.picturePx || 1, // 图片品质
+        pictureStyle: newVal.pictureStyle || 1, // 绘画风格
       };
     }
   },
@@ -163,7 +162,7 @@ const handRange = () => {
 // 点击开始生成 生成4图
 const madePicture4 = async () => {
   try {
-    if (props.madeDisabled !== 1) {
+    if (props.madeDisabled) {
       return false;
     }
     if (!baseData.value.pictureIdea) {
@@ -172,30 +171,31 @@ const madePicture4 = async () => {
         type: "warning",
       });
     }
-    if (userStore.userInfo && userStore.userInfo.residuePictureQuantity == 0) {
+    if (userStore.residuePictureQuantity == 0) {
       return ElMessage({
         message: "您的绘画次数已用尽，请联系客服购买。",
         type: "warning",
       });
     }
-    loading.value = true;
-    const res = await request.post(api.picture_fourPalaceGrid, baseData.value);
+    emit("update:madeDisabled", true);
+    const params = {
+      ...baseData.value,
+    };
+    delete params.pictureId;
+    const res = await request.post(api.picture_fourPalaceGrid, params);
     if (res.code !== 200) {
+      emit("update:madeDisabled", false);
       return ElMessage({
         message: res.msg || res.message,
         type: "error",
       });
     }
-    const newUserInfo = {
-      ...userStore.userInfo,
-      residuePictureQuantity: res.data.residuePictureQuantity,
-    };
 
-    userStore.saveUserInfo(newUserInfo);
+    userStore.saveResiduePictureQuantity(res.data.residuePictureQuantity);
+
     emit("create-success", res.data);
-    loading.value = false;
   } catch (error) {
-    loading.value = false;
+    emit("update:madeDisabled", false);
     ElMessage(error.message);
     throw error;
   }
@@ -203,7 +203,7 @@ const madePicture4 = async () => {
 </script>
 
 <template>
-  <div class="data-tab" v-loading="loading">
+  <div class="data-tab">
     <div class="title">AI绘画</div>
     <div class="ipt">
       <textarea
@@ -274,71 +274,69 @@ const madePicture4 = async () => {
         v-model:value="baseData.bgImageUrl"
         v-slot="slotProps"
       >
-        <temlate>
-          <div class="upload">
-            <template v-if="slotProps.loading">
-              <div class="upload-loading">
-                <img
-                  class="loading-img"
-                  src="https://quanres.hanhoukeji.com/hanhou-ai-pc/draw-default-static.png"
-                  alt=""
-                />
-                <div class="loading-text">上传中</div>
-              </div>
-            </template>
-            <template v-else>
-              <div class="cover" v-if="baseData.bgImageUrl">
-                <el-image
-                  style="width: 100%; height: 100%; border-radius: inherit"
-                  :src="baseData.bgImageUrl"
-                  fit="cover"
-                />
-                <div class="clear_img" @click.stop="baseData.bgImageUrl = ''">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="5"
-                    height="5"
-                    viewBox="0 0 5 5"
-                    fill="none"
-                  >
-                    <g clip-path="url(#clip0_556_551)">
-                      <path
-                        d="M3.08163 2.48573L4.87667 0.710313C5.03979 0.549295 5.04109 0.286444 4.88007 0.123318C4.71905 -0.0398084 4.45588 -0.0411056 4.29308 0.119913L2.49561 1.8976L0.725541 0.122021C0.563225 -0.0402948 0.300861 -0.0411056 0.138546 0.12121C-0.0237698 0.283201 -0.0242562 0.54589 0.137735 0.708205L1.90521 2.48119L0.123141 4.24412C-0.0399851 4.40563 -0.0412824 4.66799 0.119736 4.83112C0.201137 4.91333 0.307834 4.95435 0.414855 4.95435C0.520255 4.95435 0.625655 4.91414 0.706731 4.83452L2.49139 3.06948L4.29048 4.87425C4.3714 4.95565 4.47777 4.99619 4.58447 4.99619C4.69068 4.99619 4.79656 4.95549 4.87748 4.87506C5.03979 4.71323 5.04028 4.45087 4.87829 4.28807L3.08163 2.48573Z"
-                        fill="white"
-                      />
-                    </g>
-                    <defs>
-                      <clipPath id="clip0_556_551">
-                        <rect width="5" height="4.99643" fill="white" />
-                      </clipPath>
-                    </defs>
-                  </svg>
-                </div>
-              </div>
-              <div class="upload-none" v-else>
+        <div class="upload">
+          <template v-if="slotProps.loading">
+            <div class="upload-loading">
+              <img
+                class="loading-img"
+                src="https://quanres.hanhoukeji.com/hanhou-ai-pc/draw-default-static.png"
+                alt=""
+              />
+              <div class="loading-text">上传中</div>
+            </div>
+          </template>
+          <template v-else>
+            <div class="cover" v-if="baseData.bgImageUrl">
+              <el-image
+                style="width: 100%; height: 100%; border-radius: inherit"
+                :src="baseData.bgImageUrl"
+                fit="cover"
+              />
+              <div class="clear_img" @click.stop="baseData.bgImageUrl = ''">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  width="15"
-                  height="15"
-                  viewBox="0 0 15 15"
+                  width="5"
+                  height="5"
+                  viewBox="0 0 5 5"
                   fill="none"
                 >
-                  <path
-                    d="M1 7.59937H13.56"
-                    stroke="#AFAFAF"
-                    stroke-linecap="round"
-                  />
-                  <path
-                    d="M7.20996 14.021L7.20996 1.461"
-                    stroke="#AFAFAF"
-                    stroke-linecap="round"
-                  />
+                  <g clip-path="url(#clip0_556_551)">
+                    <path
+                      d="M3.08163 2.48573L4.87667 0.710313C5.03979 0.549295 5.04109 0.286444 4.88007 0.123318C4.71905 -0.0398084 4.45588 -0.0411056 4.29308 0.119913L2.49561 1.8976L0.725541 0.122021C0.563225 -0.0402948 0.300861 -0.0411056 0.138546 0.12121C-0.0237698 0.283201 -0.0242562 0.54589 0.137735 0.708205L1.90521 2.48119L0.123141 4.24412C-0.0399851 4.40563 -0.0412824 4.66799 0.119736 4.83112C0.201137 4.91333 0.307834 4.95435 0.414855 4.95435C0.520255 4.95435 0.625655 4.91414 0.706731 4.83452L2.49139 3.06948L4.29048 4.87425C4.3714 4.95565 4.47777 4.99619 4.58447 4.99619C4.69068 4.99619 4.79656 4.95549 4.87748 4.87506C5.03979 4.71323 5.04028 4.45087 4.87829 4.28807L3.08163 2.48573Z"
+                      fill="white"
+                    />
+                  </g>
+                  <defs>
+                    <clipPath id="clip0_556_551">
+                      <rect width="5" height="4.99643" fill="white" />
+                    </clipPath>
+                  </defs>
                 </svg>
-                <div class="none-text">支持JPG、PNG 10M以内</div>
               </div>
-            </template>
-          </div>
-        </temlate>
+            </div>
+            <div class="upload-none" v-else>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="15"
+                height="15"
+                viewBox="0 0 15 15"
+                fill="none"
+              >
+                <path
+                  d="M1 7.59937H13.56"
+                  stroke="#AFAFAF"
+                  stroke-linecap="round"
+                />
+                <path
+                  d="M7.20996 14.021L7.20996 1.461"
+                  stroke="#AFAFAF"
+                  stroke-linecap="round"
+                />
+              </svg>
+              <div class="none-text">支持JPG、PNG 10M以内</div>
+            </div>
+          </template>
+        </div>
       </my-upload>
     </div>
     <div class="title2">
@@ -429,24 +427,12 @@ const madePicture4 = async () => {
       </div>
     </div>
     <div
-      v-if="props.madeDisabled === 0"
+      v-if="props.madeDisabled"
       :class="['action-btn', 'action-btn_disabled']"
     >
       生成中
     </div>
-    <div
-      v-else-if="props.madeDisabled === 1"
-      :class="['action-btn']"
-      @click="madePicture4"
-    >
-      立即生成
-    </div>
-    <div
-      v-else-if="props.madeDisabled === 2"
-      :class="['action-btn', 'action-btn_disabled']"
-    >
-      立即生成
-    </div>
+    <div v-else :class="['action-btn']" @click="madePicture4">立即生成</div>
   </div>
 </template>
 
@@ -663,14 +649,15 @@ const madePicture4 = async () => {
         margin-bottom: 15px;
       }
       .none-text {
+        width: calc(100% / 0.67);
         color: rgba(0, 0, 0, 0.3);
         text-align: center;
         font-family: PingFang SC;
-        font-size: 12px;
+        font-size: 18px;
         font-style: normal;
         font-weight: 400;
-        line-height: 12px; /* 120% */
-        transform: scale(0.83);
+        line-height: 18px; /* 120% */
+        transform: scale(0.67);
       }
     }
     .cover {
@@ -748,6 +735,7 @@ const madePicture4 = async () => {
       display: flex;
       flex-direction: column;
       align-items: center;
+      justify-content: center;
       width: 89px;
       height: 29px;
       border-radius: 5px;
@@ -758,16 +746,13 @@ const madePicture4 = async () => {
       cursor: pointer;
 
       .t1 {
-        margin-top: 1.5px;
         font-family: PingFang SC;
         font-size: 14px;
         font-style: normal;
         font-weight: 400;
-        line-height: 20px;
+        line-height: 14px;
       }
       .t2 {
-        position: relative;
-        top: -6px;
         width: 132px;
         font-family: PingFang SC;
         font-size: 12px;
@@ -781,6 +766,7 @@ const madePicture4 = async () => {
       display: flex;
       flex-direction: column;
       align-items: center;
+      justify-content: center;
       width: 89px;
       height: 29px;
       border-radius: 5px;
@@ -789,16 +775,13 @@ const madePicture4 = async () => {
       text-align: center;
       user-select: none;
       .t1 {
-        margin-top: 1.5px;
         font-family: PingFang SC;
         font-size: 14px;
         font-style: normal;
         font-weight: 400;
-        line-height: 20px;
+        line-height: 14px;
       }
       .t2 {
-        position: relative;
-        top: -6px;
         width: 132px;
         font-family: PingFang SC;
         font-size: 12px;

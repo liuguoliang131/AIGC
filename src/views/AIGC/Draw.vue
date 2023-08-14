@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, ref, watch } from "vue";
+import { onMounted, reactive, ref, watch } from "vue";
 import { ElMessage, ElTooltip } from "element-plus";
 import Sidebar from "./components/Sidebar.vue";
 import MyDialog from "@/components/MyDialog.vue";
@@ -17,13 +17,14 @@ const removeVisible = ref(false);
 const drawingVisible = ref(false);
 const dataHistoryRef = ref(); // 右侧组件ref
 const dataTabRef = ref(); //左侧组件ref
-const madeDisabled = ref(1); // 控制左侧组件立即生成按钮 0生成中不可点击 1已生成可以点击 2生成失败不可点击
+const madeDisabled = ref(false); // 控制左侧组件立即生成按钮是否禁止点击
 // 选中的图片的id
 const activeHistoryItem = reactive({
   active: {
     pictureId: null,
     createdAt: "",
     pictureUrl: "",
+    isFail: false,
   },
 });
 
@@ -47,6 +48,7 @@ const clearActive = () => {
     pictureId: null,
     createdAt: "",
     pictureUrl: "",
+    isFail: false,
   };
   detailData.value = {
     pictureId: null,
@@ -59,7 +61,7 @@ const clearActive = () => {
     pictureType: null,
     isFail: null,
   };
-  madeDisabled.value = 1;
+  madeDisabled.value = false;
 };
 
 // 获取图片详情
@@ -87,8 +89,12 @@ const getDetail = async () => {
 // 创建四格图片成功 data:{图片id}
 const createSuccess = (data) => {
   console.log(data);
-  activeHistoryItem.active = data;
-  madeDisabled.value = 0;
+  activeHistoryItem.active = {
+    ...data,
+    pictureUrl: "",
+    isFail: false,
+  };
+  madeDisabled.value = true;
   dataHistoryRef.value.handPutItem(activeHistoryItem.active); //向列表新增一个项
 };
 
@@ -102,8 +108,23 @@ const handConfirmRemove = async () => {
 };
 
 // 生成单张大图
-const madePicture1 = async (position) => {
+const madePicture1 = async (position, k) => {
   try {
+    if (loading.value) return;
+    const isUsed = detailData.value.PictureArea[k];
+    if (isUsed) {
+      return ElMessage({
+        type: "warning",
+        message: "此张图片已生成过单张大图",
+      });
+    }
+    if (userStore.residuePictureQuantity == 0) {
+      return ElMessage({
+        type: "warning",
+        message: "您的绘画次数已用尽，请联系客服购买。",
+      });
+    }
+
     loading.value = true;
     const res = await request.post(api.picture_onePicture, {
       parentPictureId: activeHistoryItem.active.pictureId,
@@ -111,21 +132,18 @@ const madePicture1 = async (position) => {
     });
 
     if (res.code !== 200) {
+      loading.value = false;
       return ElMessage({
         message: res.msg || res.message,
         type: "error",
       });
     }
 
-    const newUserInfo = {
-      ...userStore.userInfo,
-      residuePictureQuantity: res.data.residuePictureQuantity,
-    };
-    userStore.saveUserInfo(newUserInfo);
+    userStore.saveResiduePictureQuantity(res.data.residuePictureQuantity);
     activeHistoryItem.active = {
       pictureId: res.data.pictureId,
       createdAt: res.data.createdAt,
-      pictureUrl: res.data.pictureUrl,
+      pictureUrl: "",
     };
     dataHistoryRef.value.handPutItem(activeHistoryItem.active); //向列表新增一个项
     loading.value = false;
@@ -138,11 +156,6 @@ const madePicture1 = async (position) => {
 
 // 下载图片
 const handDownload = () => {
-  // const dom = document.createElement("a");
-  // dom.href = detailData.value.pictureUrl;
-  // dom.target = "_blank";
-  // dom.download = "download";
-  // dom.click();
   saveAs(detailData.value.pictureUrl, "picture");
 };
 
@@ -151,18 +164,60 @@ const onPostDetail = (data) => {
   detailData.value = data;
   console.log("接收详情信息", data);
   if (data.isFail) {
-    madeDisabled.value = 2;
+    madeDisabled.value = false;
+    getResidueQuantity();
   } else {
-    madeDisabled.value = data.pictureUrl ? 1 : 0;
+    madeDisabled.value = data.pictureUrl ? false : true;
   }
 };
 
 //重新生成绘画
 const reloadDraw = async () => {
+  if (loading.value) return;
   loading.value = true;
-  await dataHistoryRef.value.reloadDraw();
+
+  const res = await request.post(api.picture_resetting, {
+    pictureId: activeHistoryItem.active.pictureId,
+  });
+  if (res.code !== 200) {
+    loading.value = false;
+    return ElMessage({
+      type: "error",
+      message: res.msg || res.message,
+    });
+  }
+
+  userStore.saveResiduePictureQuantity(res.data.residuePictureQuantity);
+  detailData.value.isFail = false;
+  activeHistoryItem.active.isFail = false;
+  dataHistoryRef.value.handUpdateItem(activeHistoryItem.active); //更新列表中选中的数据
   loading.value = false;
 };
+
+// 获取剩余绘画次数
+const getResidueQuantity = () => {
+  return new Promise(async (resolve) => {
+    try {
+      const res = await request.get(api.picture_residueQuantity, {});
+      if (res.code !== 200) {
+        resolve(false);
+        return ElMessage({
+          type: "error",
+          message: res.msg,
+        });
+      }
+      userStore.saveResiduePictureQuantity(res.data.residuePictureQuantity);
+      resolve(true);
+    } catch (error) {
+      resolve(false);
+      throw error;
+    }
+  });
+};
+
+onMounted(() => {
+  getResidueQuantity();
+});
 </script>
 
 <template>
@@ -241,14 +296,12 @@ const reloadDraw = async () => {
           ref="dataTabRef"
           @create-success="createSuccess"
           :detailData="detailData"
-          :madeDisabled="madeDisabled"
+          v-model:madeDisabled="madeDisabled"
         ></data-tab>
       </div>
       <div class="center">
         <div class="count">
-          您的剩余绘画总次数：{{
-            userStore.userInfo ? userStore.userInfo.residuePictureQuantity : 0
-          }}次
+          您的剩余绘画总次数：{{ userStore.residuePictureQuantity }}次
         </div>
         <div class="center-view">
           <!-- 选中 -->
@@ -261,6 +314,7 @@ const reloadDraw = async () => {
                   alt=""
                   class="fail-img"
                 />
+                <div class="fail-friendly">绘画的人太多啦～</div>
                 <div class="regenerate-btn" @click="reloadDraw">重新生成</div>
               </div>
             </template>
@@ -388,9 +442,11 @@ const reloadDraw = async () => {
                         <div
                           :class="[
                             'u-btn',
-                            detailData.giao === 1 ? 'u-btn_disabled' : '',
+                            detailData.PictureArea.upLeft
+                              ? 'u-btn_disabled'
+                              : '',
                           ]"
-                          @click="madePicture1(1)"
+                          @click="madePicture1(1, 'upLeft')"
                         >
                           U1
                         </div>
@@ -404,9 +460,11 @@ const reloadDraw = async () => {
                         <div
                           :class="[
                             'u-btn',
-                            detailData.giao === 2 ? 'u-btn_disabled' : '',
+                            detailData.PictureArea.upRight
+                              ? 'u-btn_disabled'
+                              : '',
                           ]"
-                          @click="madePicture1(2)"
+                          @click="madePicture1(2, 'upRight')"
                         >
                           U2
                         </div>
@@ -420,9 +478,11 @@ const reloadDraw = async () => {
                         <div
                           :class="[
                             'u-btn',
-                            detailData.giao === 3 ? 'u-btn_disabled' : '',
+                            detailData.PictureArea.downLeft
+                              ? 'u-btn_disabled'
+                              : '',
                           ]"
-                          @click="madePicture1(3)"
+                          @click="madePicture1(3, 'downLeft')"
                         >
                           U3
                         </div>
@@ -436,9 +496,11 @@ const reloadDraw = async () => {
                         <div
                           :class="[
                             'u-btn',
-                            detailData.giao === 4 ? 'u-btn_disabled' : '',
+                            detailData.PictureArea.downRight
+                              ? 'u-btn_disabled'
+                              : '',
                           ]"
-                          @click="madePicture1(4)"
+                          @click="madePicture1(4, 'downRight')"
                         >
                           U4
                         </div>
@@ -462,12 +524,13 @@ const reloadDraw = async () => {
           <!-- 未选中 -->
           <template v-else>
             <div class="none-status">
-              <img
-                class="none-img"
-                src="https://quanres.hanhoukeji.com/hanhou-ai-pc/draw-default-static.png"
-                alt=""
-              />
-              <!-- <div class="none-desc">快来创建你的AI绘画作品吧~</div> -->
+              <div class="none-img">
+                <img
+                  src="https://quanres.hanhoukeji.com/hanhou-ai-pc/draw-default-static.png"
+                  alt=""
+                />
+                <div class="none-desc">快来创建你的AI绘画作品吧~</div>
+              </div>
             </div>
           </template>
         </div>
@@ -623,18 +686,28 @@ const reloadDraw = async () => {
           margin: 80px auto 80px auto;
           text-align: center;
           .none-img {
+            position: relative;
             width: 320px;
             height: 320px;
+            img {
+              width: 100%;
+              height: 100%;
+            }
+            .none-desc {
+              position: absolute;
+              bottom: 60px;
+              left: 50%;
+              transform: translate(-50%, 0);
+              width: 100%;
+              color: #999;
+              text-align: center;
+              font-family: PingFang SC;
+              font-size: 18px;
+              font-style: normal;
+              font-weight: 600;
+              line-height: normal;
+            }
           }
-          // .none-desc {
-          //   color: #999;
-          //   text-align: center;
-          //   font-family: PingFang SC;
-          //   font-size: 18px;
-          //   font-style: normal;
-          //   font-weight: 400;
-          //   line-height: normal;
-          // }
         }
 
         // 生成失败
@@ -651,13 +724,21 @@ const reloadDraw = async () => {
           .fail-img {
             width: 150px;
           }
+          .fail-friendly {
+            margin: 20.62px 0 11px 0;
+            font-family: PingFang SC;
+            font-size: 16px;
+            font-weight: 400;
+            line-height: 22px;
+            letter-spacing: 0em;
+            text-align: center;
+          }
           .regenerate-btn {
             display: flex;
             align-items: center;
             justify-content: center;
             width: 190px;
             height: 46px;
-            margin-top: 24.6px;
             background: rgba(18, 108, 254, 1);
             font-family: PingFang SC;
             font-size: 19px;

@@ -1,12 +1,14 @@
-import utils from '../common/utils'
 import { defineStore } from "pinia";
+import utils from '../common/utils'
+
 console.log('user store.js')
 
 export const useUserStore = defineStore({
   id: "user",
   state: () => ({
     userInfo: utils.getUserInfo() || null,
-    token:utils.getToken() || '',
+    token: utils.getToken() || '',
+    residuePictureQuantity: 0  //绘画剩余次数
   }),
   actions: {
     // 清空数据 
@@ -30,6 +32,11 @@ export const useUserStore = defineStore({
     saveUserInfo(data){
       this.userInfo = data
       utils.setUserInfo(data)
+    },
+
+    // 修改绘画剩余次数
+    saveResiduePictureQuantity(count) {
+      this.residuePictureQuantity = count
     }
   },
 });

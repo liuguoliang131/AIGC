@@ -14,5 +14,6 @@ export default {
   picture_delPicture: '/picture/delPicture',  // 删除绘画
   picture_fourPalaceGrid: '/picture/fourPalaceGrid', // 生成四格绘画
   picture_onePicture: '/picture/onePicture',  // 生成单张图片
-  picture_resetting:'/picture/resetting',  // 绘画重新生成
+  picture_resetting: '/picture/resetting',  // 绘画重新生成
+  picture_residueQuantity:'/picture/residueQuantity', // 获取绘画次数
 }

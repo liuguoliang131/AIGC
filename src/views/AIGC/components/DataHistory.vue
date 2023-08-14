@@ -3,6 +3,9 @@ import { ElDialog, ElMessage, ElImage, dayjs } from "element-plus";
 import { ref, reactive, watch, nextTick, onMounted, onUnmounted } from "vue";
 import request from "@/http/index";
 import api from "../api";
+import { useUserStore } from "@/store/user";
+
+const userStore = useUserStore();
 
 const props = defineProps({
   active: {
@@ -35,36 +38,37 @@ const handActive = (item) => {
 
 let timer = null;
 // 开始轮询详情
-const openTimer = () => {
+const openTimer = (active) => {
   // return console.log("openTimer");
-  const sideFn = () => {
-    getDetail().then((result) => {
+
+  const sideFn = (activeItem) => {
+    getDetail(activeItem).then((result) => {
       if (result === null) {
         clearInterval(timer);
       } else {
+        activeItem.pictureUrl = result.pictureUrl;
+        activeItem.isFail = result.isFail;
         if (result.isFail) {
           return clearInterval(timer);
         }
         if (result.pictureUrl) {
-          emit("update:active", {
-            ...props.active,
-            pictureUrl: result.pictureUrl,
-          });
-          const listActive = history.list.find(
-            (item) => item.pictureId === props.active.pictureId
-          );
-          listActive.pictureUrl = result.pictureUrl;
           console.log("if (result.pictureUrl) 关闭定时器");
           return clearInterval(timer);
         }
       }
     });
   };
+
   clearInterval(timer);
+  const activeItem = history.list.find(
+    (item) => active.pictureId === item.pictureId
+  );
+
   timer = setInterval(() => {
-    sideFn();
+    sideFn(activeItem);
   }, 20000); //20秒查询一次
-  sideFn();
+
+  sideFn(activeItem);
 };
 
 // 停止轮询详情
@@ -73,11 +77,11 @@ const stopTimer = () => {
 };
 
 // 获取详情
-const getDetail = async () => {
+const getDetail = async (activeItem) => {
   return new Promise(async (resolve) => {
     try {
       const res = await request.get(api.picture_pictureDetail, {
-        pictureId: props.active.pictureId,
+        pictureId: activeItem.pictureId,
       });
       if (res.code !== 200) {
         resolve(null);
@@ -100,6 +104,27 @@ const getDetail = async () => {
   });
 };
 
+// 获取剩余绘画次数
+const getResidueQuantity = () => {
+  return new Promise(async (resolve) => {
+    try {
+      const res = await request.get(api.picture_residueQuantity, {});
+      if (res.code !== 200) {
+        resolve(false);
+        return ElMessage({
+          type: "error",
+          message: res.msg,
+        });
+      }
+      userStore.saveResiduePictureQuantity(res.data.residuePictureQuantity);
+      resolve(true);
+    } catch (error) {
+      resolve(false);
+      throw error;
+    }
+  });
+};
+
 // 侦听active变化  reactive类型数据newVal=oldVal, 解决方法为改为监听reactive数据里的某一属性
 watch(
   () => props.active,
@@ -108,7 +133,8 @@ watch(
     if (newVal.pictureId) {
       if (newVal.pictureId !== oldVal.pictureId) {
         console.log("watch openTimer");
-        openTimer();
+        openTimer(newVal);
+        getResidueQuantity();
       }
     } else {
       stopTimer();
@@ -215,21 +241,9 @@ const handRemoveItem = () => {
   });
 };
 
-// 重新生成图片
-const reloadDraw = () => {
-  return new Promise(async (resolve) => {
-    const res = await request.post(api.picture_resetting, {
-      pictureId: props.active.pictureId,
-    });
-    if (res.code !== 200) {
-      return ElMessage({
-        type: "error",
-        message: res.msg || res.message,
-      });
-    }
-    emit("update:active", res.data);
-    resolve(true);
-  });
+// 重新开始获取当前选中的图片
+const handUpdateItem = (active) => {
+  openTimer(active);
 };
 
 onMounted(() => {
@@ -244,7 +258,7 @@ onUnmounted(() => {
 defineExpose({
   handRemoveItem,
   handPutItem,
-  reloadDraw,
+  handUpdateItem,
 });
 </script>
 

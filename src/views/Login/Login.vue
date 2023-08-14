@@ -116,7 +116,7 @@ export default {
           }, 1000);
         } else {
           ElMessage({
-            message: res.message,
+            message: res.msg || res.message,
             type: "error",
           });
         }
@@ -155,7 +155,7 @@ export default {
         } else {
           this.loading = false;
           ElMessage({
-            message: res.message,
+            message: res.msg || res.message,
             type: "error",
           });
         }

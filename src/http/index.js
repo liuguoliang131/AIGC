@@ -17,11 +17,6 @@ const instance = axios.create({
   baseURL: process.env.VUE_APP_BASE_URL,
   timeout: 20000,
   headers: {
-    // sys:'',
-    // token:'',
-    // version:'',
-    // timestamp:'',
-    // sign: '',
     'x-token':''
   }
 })
@@ -67,6 +62,7 @@ instance.interceptors.response.use(function (response) {
   }
   return response.data
 }, function (error) {
+  console.log('response-error',error)
   // 对响应错误做点什么
   if(error.response.status == 500){
     ElMessage({
