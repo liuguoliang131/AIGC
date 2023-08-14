@@ -1,23 +1,31 @@
 {
-  "name": "vue3-project",
+  "name": "hanhou-aigc",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "build--test": "vue-cli-service build --mode test",
+    "build--test": "vue-cli-service build --mode testing",
     "build--prod": "vue-cli-service build --mode production"
   },
   "dependencies": {
+    "@element-plus/icons-vue": "^2.1.0",
     "axios": "^0.27.2",
+    "clipboard": "^2.0.11",
     "core-js": "^3.8.3",
+    "element-plus": "^2.3.8",
+    "event-source-polyfill": "^1.0.31",
+    "file-saver": "^2.0.5",
     "less": "^4.1.3",
     "less-loader": "^11.1.3",
+    "pinia": "2.0.33",
     "postcss-pxtorem": "^6.0.0",
+    "qiniu-js": "^3.4.1",
+    "terser-webpack-plugin": "^5.3.9",
     "vue": "^3.2.13",
-    "vue-router": "^4.0.3",
-    "vuex": "^4.0.0"
+    "vue-core-video-player": "^0.2.0",
+    "vue-router": "^4.0.3"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",
@@ -47,9 +55,7 @@
     "not dead",
     "not ie 11"
   ],
-  "gitHooks": {
-    
-  },
+  "gitHooks": {},
   "lint-staged": {
     "*.{js,jsx,vue}": "vue-cli-service lint"
   }
