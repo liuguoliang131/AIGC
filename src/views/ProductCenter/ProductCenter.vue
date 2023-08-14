@@ -75,7 +75,7 @@ export default {
 };
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
 .container {
   height: 100%;
   background-color: #fff;
