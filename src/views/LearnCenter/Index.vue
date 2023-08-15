@@ -4,13 +4,64 @@
       <div class="content1">
         <div class="left">
           <div class="player">
-            <video class="real" width="1200" height="675" controls>
-              <source
-                src="https://quanres.hanhoukeji.com/hanhou-ai-pc/fbdd5c098e6ce3876d157b0e8c1ec013.mp4"
-                type="video/mp4"
-              />
+            <video
+              ref="videoRef"
+              class="real"
+              width="1200"
+              height="675"
+              controls
+              autoplay
+              muted
+              playsinline
+              webkit-playsinline
+              controlslist="nodownload noremoteplayback"
+              @play="onPlay"
+              @ended="onEnded"
+              @fullscreenchange="onFullScreenChange"
+            >
+              <source :src="active.path" type="video/mp4" />
               您的浏览器不支持H5视频播放。
             </video>
+            <template v-if="isFull">
+              <div class="btns_full">
+                <div class="next" v-if="nextBtnShow">
+                  下一节
+                  <img
+                    class="next_icon"
+                    src="https://quanres.hanhoukeji.com/hanhou-ai-pc/nextplay.svg"
+                    alt=""
+                  />
+                </div>
+                <div class="replay">
+                  重播
+                  <img
+                    class="replay_icon"
+                    src="https://quanres.hanhoukeji.com/hanhou-ai-pc/replay-icon.svg"
+                    alt=""
+                  />
+                </div>
+              </div>
+            </template>
+            <template v-else>
+              <div class="btns" v-if="isEnd">
+                <div class="next" v-if="nextBtnShow">
+                  下一节
+                  <img
+                    class="next_icon"
+                    src="https://quanres.hanhoukeji.com/hanhou-ai-pc/nextplay.svg"
+                    alt=""
+                  />
+                </div>
+                <div class="replay">
+                  重播
+                  <img
+                    class="replay_icon"
+                    src="https://quanres.hanhoukeji.com/hanhou-ai-pc/replay-icon.svg"
+                    alt=""
+                  />
+                </div>
+              </div>
+            </template>
           </div>
           <div class="actitle">
             数字大脑的概念数据中心中功能性人工智能的抽象信息流通过它大脑中的AI字母的概念数据中数字大脑的概念数据中心中功能性人工智能的抽象信息流通过它大脑中...
@@ -51,19 +102,18 @@
 </template>
 
 <script setup>
-import { reactive, ref } from "vue";
+import { onMounted, reactive, ref } from "vue";
 import { useRouterConfigStore } from "@/store/routerConfigStore";
 const routerConfig = useRouterConfigStore();
 
-const active = ref({
-  id: "",
-  path: "",
-});
+// video
+const videoRef = ref();
 
 const playList = ref([
   {
     id: 1,
     name: "数字大脑的概念数据中心中功能性人工智能的抽象信息流通过它大脑中的AI字母的概念数据中数字大脑的概念数据中心中功能性人工智能的抽象信息流通过它大脑中...",
+    poster: "",
     path: "https://quanres.hanhoukeji.com/hanhou-ai-pc/fbdd5c098e6ce3876d157b0e8c1ec013.mp4",
   },
   {
@@ -91,95 +141,60 @@ const playList = ref([
     name: "数字大脑的概念数据中心中功能性人工智能的抽象信息流通过它大脑中的AI字母的概念数据中数字大脑的概念数据中心中功能性人工智能的抽象信息流通过它大脑中...",
     path: "https://quanres.hanhoukeji.com/hanhou-ai-pc/f8943658b510e99ddf621837f8695005.mp4",
   },
-  {
-    id: 6,
-    name: "数字大脑的概念数据中心中功能性人工智能的抽象信息流通过它大脑中的AI字母的概念数据中数字大脑的概念数据中心中功能性人工智能的抽象信息流通过它大脑中...",
-    path: "https://quanres.hanhoukeji.com/hanhou-ai-pc/player_list_active.svg",
-  },
-  {
-    id: 22,
-    name: "数字大脑的概念数据中心中功能性人工智能的抽象信息流通过它大脑中的AI字母的概念数据中数字大脑的概念数据中心中功能性人工智能的抽象信息流通过它大脑中...",
-    path: "https://quanres.hanhoukeji.com/hanhou-ai-pc/fbdd5c098e6ce3876d157b0e8c1ec013.mp4",
-  },
-  {
-    id: 34,
-    name: "数字大脑的概念数据中心中功能性人工智能的抽象信息流通过它大脑中的AI字母的概念数据中数字大脑的概念数据中心中功能性人工智能的抽象信息流通过它大脑中...",
-    path: "https://quanres.hanhoukeji.com/hanhou-ai-pc/f4616c54582682860fe8cb7a9670480c.mp4",
-  },
-  {
-    id: 45,
-    name: "数字大脑的概念数据中心中功能性人工智能的抽象信息流通过它大脑中的AI字母的概念数据中数字大脑的概念数据中心中功能性人工智能的抽象信息流通过它大脑中...",
-    path: "https://quanres.hanhoukeji.com/hanhou-ai-pc/fcfc2e2f5133ca521419db0cdc4caca9.mp4",
-  },
-  {
-    id: 46,
-    name: "数字大脑的概念数据中心中功能性人工智能的抽象信息流通过它大脑中的AI字母的概念数据中数字大脑的概念数据中心中功能性人工智能的抽象信息流通过它大脑中...",
-    path: "https://quanres.hanhoukeji.com/hanhou-ai-pc/fd51aa58026c0310b1b384140750fc7c.mp4",
-  },
-  {
-    id: 35,
-    name: "数字大脑的概念数据中心中功能性人工智能的抽象信息流通过它大脑中的AI字母的概念数据中数字大脑的概念数据中心中功能性人工智能的抽象信息流通过它大脑中...",
-    path: "https://quanres.hanhoukeji.com/hanhou-ai-pc/f97bc7a8397a6ea5758b9b9fdfd822c3.mp4",
-  },
-  {
-    id: 55,
-    name: "数字大脑的概念数据中心中功能性人工智能的抽象信息流通过它大脑中的AI字母的概念数据中数字大脑的概念数据中心中功能性人工智能的抽象信息流通过它大脑中...",
-    path: "https://quanres.hanhoukeji.com/hanhou-ai-pc/f8943658b510e99ddf621837f8695005.mp4",
-  },
-  {
-    id: 56,
-    name: "数字大脑的概念数据中心中功能性人工智能的抽象信息流通过它大脑中的AI字母的概念数据中数字大脑的概念数据中心中功能性人工智能的抽象信息流通过它大脑中...",
-    path: "https://quanres.hanhoukeji.com/hanhou-ai-pc/player_list_active.svg",
-  },
-  {
-    id: 57,
-    name: "数字大脑的概念数据中心中功能性人工智能的抽象信息流通过它大脑中的AI字母的概念数据中数字大脑的概念数据中心中功能性人工智能的抽象信息流通过它大脑中...",
-    path: "https://quanres.hanhoukeji.com/hanhou-ai-pc/fbdd5c098e6ce3876d157b0e8c1ec013.mp4",
-  },
-  {
-    id: 58,
-    name: "数字大脑的概念数据中心中功能性人工智能的抽象信息流通过它大脑中的AI字母的概念数据中数字大脑的概念数据中心中功能性人工智能的抽象信息流通过它大脑中...",
-    path: "https://quanres.hanhoukeji.com/hanhou-ai-pc/f4616c54582682860fe8cb7a9670480c.mp4",
-  },
-  {
-    id: 59,
-    name: "数字大脑的概念数据中心中功能性人工智能的抽象信息流通过它大脑中的AI字母的概念数据中数字大脑的概念数据中心中功能性人工智能的抽象信息流通过它大脑中...",
-    path: "https://quanres.hanhoukeji.com/hanhou-ai-pc/fcfc2e2f5133ca521419db0cdc4caca9.mp4",
-  },
-  {
-    id: 60,
-    name: "数字大脑的概念数据中心中功能性人工智能的抽象信息流通过它大脑中的AI字母的概念数据中数字大脑的概念数据中心中功能性人工智能的抽象信息流通过它大脑中...",
-    path: "https://quanres.hanhoukeji.com/hanhou-ai-pc/fd51aa58026c0310b1b384140750fc7c.mp4",
-  },
-  {
-    id: 61,
-    name: "数字大脑的概念数据中心中功能性人工智能的抽象信息流通过它大脑中的AI字母的概念数据中数字大脑的概念数据中心中功能性人工智能的抽象信息流通过它大脑中...",
-    path: "https://quanres.hanhoukeji.com/hanhou-ai-pc/f97bc7a8397a6ea5758b9b9fdfd822c3.mp4",
-  },
-  {
-    id: 62,
-    name: "数字大脑的概念数据中心中功能性人工智能的抽象信息流通过它大脑中的AI字母的概念数据中数字大脑的概念数据中心中功能性人工智能的抽象信息流通过它大脑中...",
-    path: "https://quanres.hanhoukeji.com/hanhou-ai-pc/f8943658b510e99ddf621837f8695005.mp4",
-  },
-  {
-    id: 63,
-    name: "数字大脑的概念数据中心中功能性人工智能的抽象信息流通过它大脑中的AI字母的概念数据中数字大脑的概念数据中心中功能性人工智能的抽象信息流通过它大脑中...",
-    path: "https://quanres.hanhoukeji.com/hanhou-ai-pc/player_list_active.svg",
-  },
 ]);
+
+const active = ref(playList.value[0]);
+const isFull = ref(false);
+// 是否播放结束
+const isEnd = ref(false);
+// 播放下一节按钮是否显示
+const nextBtnShow = ref(playList.value.length > 1);
 
 // 页面滚动时设置tapBar组件背景颜色为白色
 const onScroll = (e) => {
   routerConfig.titleBarOpacity = Math.min(1, e.target.scrollTop / 70);
 };
 
+// 选择视频小节
 const handActive = (item) => {
+  videoRef.value.pause();
+  videoRef.value.src = item.path;
+  videoRef.value.poster = item.poster;
   active.value = item;
+};
+
+// 播放触发
+const onPlay = (e) => {
+  console.log(e, "onPlay");
+  isEnd.value = false;
+};
+
+// 播放完毕触发
+const onEnded = (e) => {
+  console.log(e, "onEnded");
+  const idx = playList.value.findIndex((item) => item.id === active.value.id);
+  if (playList.value.length === 1) return;
+  nextBtnShow.value = idx + 1 === playList.value.length;
+  isEnd.value = true;
+};
+
+// 全屏事件 进入/退出
+const onFullScreenChange = (e) => {
+  console.log(e, "全屏");
+  if (document.fullscreenElement === videoRef.value) {
+    console.log("进入");
+  } else {
+    console.log("退出");
+  }
 };
 
 const handGoICP = () => {
   window.open(`https://beian.miit.gov.cn/`);
 };
+
+onMounted(() => {
+  videoRef.value.muted = false;
+});
 </script>
 
 <style scoped lang="less">
@@ -203,13 +218,91 @@ const handGoICP = () => {
         border-radius: 10px;
 
         .player {
+          position: relative;
           width: 1200px;
           height: 675px;
-          border-radius: 10px;
-          background-color: rgba(0, 0, 0, 0.2);
           .real {
             width: 100%;
             height: 100%;
+            border-radius: 10px;
+          }
+          .btns {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            margin: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 45px;
+            font-family: PingFang SC;
+            font-size: 32px;
+            font-weight: 400;
+            line-height: 45px;
+            color: rgba(255, 255, 255, 1);
+
+            .next {
+              display: flex;
+              align-items: center;
+              margin-right: 53px;
+              .next_icon {
+                width: 51px;
+                height: 34px;
+                vertical-align: middle;
+              }
+            }
+            .replay {
+              display: flex;
+              align-items: center;
+              .replay_icon {
+                width: 21px;
+                height: 21px;
+                margin-left: 13px;
+                vertical-align: middle;
+              }
+            }
+          }
+          .btns_full {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            margin: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 45px;
+            font-family: PingFang SC;
+            font-size: 32px;
+            font-weight: 400;
+            line-height: 45px;
+            color: rgba(255, 255, 255, 1);
+
+            .next {
+              display: flex;
+              align-items: center;
+              margin-right: 53px;
+              .next_icon {
+                width: 51px;
+                height: 34px;
+                vertical-align: middle;
+              }
+            }
+            .replay {
+              display: flex;
+              align-items: center;
+              .replay_icon {
+                width: 21px;
+                height: 21px;
+                margin-left: 13px;
+                vertical-align: middle;
+              }
+            }
           }
         }
         .actitle {
