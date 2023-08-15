@@ -144,6 +144,7 @@ const playList = ref([
 ]);
 
 const active = ref(playList.value[0]);
+// 是否在全屏播放
 const isFull = ref(false);
 // 是否播放结束
 const isEnd = ref(false);
@@ -183,8 +184,10 @@ const onFullScreenChange = (e) => {
   console.log(e, "全屏");
   if (document.fullscreenElement === videoRef.value) {
     console.log("进入");
+    isFull.value = true;
   } else {
     console.log("退出");
+    isFull.value = false;
   }
 };
 
