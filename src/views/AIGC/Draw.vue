@@ -576,6 +576,10 @@ onMounted(() => {
 .popper_style2 {
   background-color: rgba(0, 0, 0, 0.6) !important;
   border: none !important;
+  font-family: PingFang SC !important;
+  span {
+    font-family: PingFang SC !important;
+  }
   .el-popper__arrow::before {
     background-color: transparent !important;
     border: none !important;
@@ -768,7 +772,6 @@ onMounted(() => {
 
         .show_image {
           width: 850px;
-          height: 850px;
           margin: 60px auto 60px auto;
           text-align: center;
           .show_image-a {

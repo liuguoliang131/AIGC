@@ -60,41 +60,18 @@
                 ]"
                 @click="handActiveTag(item, index)"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
-                  viewBox="0 0 20 20"
-                  fill="none"
-                >
-                  <g clip-path="url(#clip0_58_1653)">
-                    <path
-                      d="M3.75 8.5C3.75 8.73206 3.84219 8.95462 4.00628 9.11872C4.17038 9.28281 4.39294 9.375 4.625 9.375C4.85706 9.375 5.07962 9.28281 5.24372 9.11872C5.40781 8.95462 5.5 8.73206 5.5 8.5C5.5 8.26794 5.40781 8.04538 5.24372 7.88128C5.07962 7.71719 4.85706 7.625 4.625 7.625C4.39294 7.625 4.17038 7.71719 4.00628 7.88128C3.84219 8.04538 3.75 8.26794 3.75 8.5Z"
-                      fill="white"
-                      fill-opacity="0.8"
-                    />
-                    <path
-                      d="M19.25 0.75H0.75C0.375 0.75 0 1.125 0 1.5V15.375C0 15.75 0.375 16.125 0.75 16.125H7.625C8 16.125 8.375 15.75 8.375 15.375C8.375 15 8.125 14.625 7.625 14.625H1.5V2.25H18.375V14.5H12.25C12 14.5 11.875 14.625 11.75 14.75L8 18.5C7.75 18.625 7.625 18.875 7.625 19.125C7.625 19.5 8 19.875 8.375 19.875C8.625 19.875 8.75 19.75 8.875 19.625L12.5 16H19.125C19.5 16 19.875 15.625 19.875 15.25V1.5C20 1.125 19.625 0.75 19.25 0.75Z"
-                      fill="white"
-                      fill-opacity="0.8"
-                    />
-                    <path
-                      d="M9.125 8.5C9.125 8.61491 9.14763 8.72869 9.19161 8.83485C9.23558 8.94101 9.30003 9.03747 9.38128 9.11872C9.46253 9.19997 9.55899 9.26442 9.66515 9.30839C9.77131 9.35237 9.88509 9.375 10 9.375C10.1149 9.375 10.2287 9.35237 10.3348 9.30839C10.441 9.26442 10.5375 9.19997 10.6187 9.11872C10.7 9.03747 10.7644 8.94101 10.8084 8.83485C10.8524 8.72869 10.875 8.61491 10.875 8.5C10.875 8.26794 10.7828 8.04538 10.6187 7.88128C10.4546 7.71719 10.2321 7.625 10 7.625C9.76794 7.625 9.54538 7.71719 9.38128 7.88128C9.21719 8.04538 9.125 8.26794 9.125 8.5Z"
-                      fill="white"
-                      fill-opacity="0.8"
-                    />
-                    <path
-                      d="M14.5 8.5C14.5 8.73206 14.5922 8.95462 14.7563 9.11872C14.9204 9.28281 15.1429 9.375 15.375 9.375C15.6071 9.375 15.8296 9.28281 15.9937 9.11872C16.1578 8.95462 16.25 8.73206 16.25 8.5C16.25 8.26794 16.1578 8.04538 15.9937 7.88128C15.8296 7.71719 15.6071 7.625 15.375 7.625C15.1429 7.625 14.9204 7.71719 14.7563 7.88128C14.5922 8.04538 14.5 8.26794 14.5 8.5Z"
-                      fill="white"
-                      fill-opacity="0.8"
-                    />
-                  </g>
-                  <defs>
-                    <clipPath id="clip0_58_1653">
-                      <rect width="20" height="20" fill="white" />
-                    </clipPath>
-                  </defs>
-                </svg>
+                <img
+                  v-if="item.id === activeTag"
+                  class="bubble_icon"
+                  src="https://quanres.hanhoukeji.com/hanhou-ai-pc/bubble_icon_active.svg"
+                  alt=""
+                />
+                <img
+                  v-else
+                  class="bubble_icon"
+                  src="https://quanres.hanhoukeji.com/hanhou-ai-pc/bubble_icon_.svg"
+                  alt=""
+                />
                 <span class="log_name nowrap">{{ item.title }}</span>
 
                 <svg
@@ -227,88 +204,52 @@
       </div>
     </div>
     <!-- 敏感词提醒 -->
-    <el-dialog
-      align-center
-      v-model="dialogVisible"
-      width="3.1777rem"
+    <my-dialog
       :show-close="false"
       :close-on-click-modal="false"
-      @close="dialogClose"
+      v-model:visible="dialogVisible"
     >
-      <div class="dia_title">敏感词提醒</div>
-      <div class="dia_content">{{ tipMessage }}</div>
-      <div class="dia_footer_1">
-        <div class="confirm" @click="bowDownToTheCCP">确认</div>
-      </div>
-    </el-dialog>
-    <!-- 删除对话窗口提醒 -->
-    <el-dialog
-      align-center
-      v-model="removeVisible"
-      width="3.1777rem"
-      :show-close="false"
-      :close-on-click-modal="false"
-      @close="dialogClose"
-    >
-      <div class="dia_title">温馨提示</div>
-      <div class="dia_content">是否要删除此对话窗口？</div>
-      <div class="dia_footer_2">
-        <div class="cancel" @click="removeVisible = false">取消</div>
-        <div class="confirm" @click="handConfirmDeleteTag">删除</div>
-      </div>
-    </el-dialog>
-    <!-- 删除对话信息提醒 -->
-    <el-dialog
-      align-center
-      v-model="removeMsgVisible"
-      width="3.1777rem"
-      :show-close="false"
-      :close-on-click-modal="false"
-      @close="dialogClose"
-    >
-      <div class="dia_title">温馨提示</div>
-      <div class="dia_content">是否要删除此对话信息？</div>
-      <div class="dia_footer_2">
-        <div class="cancel" @click="removeMsgVisible = false">取消</div>
-        <div class="confirm" @click="handConfirmRemoveMsg">删除</div>
-      </div>
-    </el-dialog>
-    <!-- 退出提醒 -->
-    <el-dialog
-      align-center
-      v-model="exitVisible"
-      width="3.1777rem"
-      :show-close="false"
-      :close-on-click-modal="false"
-      @close="dialogClose"
-    >
-      <div class="dia_title">退出提醒</div>
-      <div class="dia_content">是否要退出登录</div>
-      <div class="dia_footer_2">
-        <div class="cancel" @click="exitVisible = false">取消</div>
-        <div class="confirm" @click="confirmExit">确定</div>
-      </div>
-    </el-dialog>
-    <!-- 客服二维码 -->
-    <el-dialog
-      align-center
-      v-model="serviceVisible"
-      width="3.1777rem"
-      :show-close="true"
-      :close-on-click-modal="false"
-      @close="dialogClose"
-      class="service_dia"
-    >
-      <div class="service">
-        <div class="service_title">扫描二维码添加专属客服</div>
-        <div class="service_code">
-          <img
-            src="https://quanres.hanhoukeji.com/hanhou-ai-pc/CustomerServiceCode.png"
-            alt=""
-          />
+      <div class="dialog_dia">
+        <div class="dia_title">敏感词提醒</div>
+        <div class="dia_content">{{ tipMessage }}</div>
+        <div class="dia_footer_1">
+          <div class="confirm" @click="bowDownToTheCCP">确认</div>
         </div>
       </div>
-    </el-dialog>
+    </my-dialog>
+
+    <!-- 删除对话窗口提醒 -->
+    <my-dialog
+      :show-close="false"
+      :close-on-click-modal="false"
+      v-model:visible="removeVisible"
+    >
+      <div class="dialog_dia">
+        <div class="dia_title">温馨提示</div>
+        <div class="dia_content">是否要删除此对话窗口？</div>
+        <div class="dia_footer_2">
+          <div class="cancel" @click="removeVisible = false">取消</div>
+          <div class="confirm" @click="handConfirmDeleteTag">删除</div>
+        </div>
+      </div>
+    </my-dialog>
+
+    <!-- 删除对话信息提醒 -->
+    <my-dialog
+      :show-close="false"
+      :close-on-click-modal="false"
+      v-model:visible="removeMsgVisible"
+    >
+      <div class="dialog_dia">
+        <div class="dia_title">温馨提示</div>
+        <div class="dia_content">是否要删除此对话信息？</div>
+        <div class="dia_footer_2">
+          <div class="cancel" @click="removeMsgVisible = false">取消</div>
+          <div class="confirm" @click="handConfirmRemoveMsg">删除</div>
+        </div>
+      </div>
+    </my-dialog>
+
     <div
       ref="copy_text"
       class="clipboard_text"
@@ -338,6 +279,7 @@ import Clipboard from "clipboard";
 import { _getSign } from "@/http/sign";
 import utils from "@/common/utils";
 import Sidebar from "./components/Sidebar.vue";
+import MyDialog from "@/components/MyDialog.vue";
 import { useUserStore } from "@/store/user";
 
 const userStore = useUserStore(); //用户信息
@@ -356,35 +298,6 @@ const residueQAQuantity = ref(Number(userInfo.residueQAQuantity || 0));
 
 // 弹层关闭事件
 const dialogClose = () => {};
-
-// 退出登录弹窗
-const exitVisible = ref(false);
-
-const handExit = () => {
-  exitVisible.value = true;
-};
-
-// 确认退出登录
-const confirmExit = () => {
-  exitVisible.value = false;
-  request.get(api.user_logout, {}).then((res) => {
-    if (res.code == 200) {
-      userStore.clearLog();
-      router.push({
-        path: "/",
-        replace: true,
-      });
-    } else {
-      ElMessage({
-        type: "error",
-        message: res.msg,
-      });
-    }
-  });
-};
-
-// 客服二维码弹窗
-const serviceVisible = ref(false);
 
 // 敏感词提醒弹窗
 const dialogVisible = ref(false);
@@ -1427,122 +1340,108 @@ onMounted(() => {
       }
     }
   }
-  /deep/.el-dialog {
-    border-radius: 16px;
-  }
-  /deep/.el-dialog__header {
-    height: 0;
-  }
-
-  /deep/.service_dia {
-    .el-dialog__headerbtn {
-      width: 60px;
-      height: 60px;
-    }
-    .el-dialog__close {
-      font-size: 30.5px;
-    }
-  }
-  /deep/.el-dialog__body {
-    padding: 60px 73px;
-  }
-  .dia_title {
-    color: #000;
-    text-align: center;
-    font-family: PingFang SC;
-    font-size: 30px;
-    font-style: normal;
-    font-weight: 500;
-    line-height: 42px;
-  }
-  .dia_content {
-    margin-top: 40px;
-    color: #000;
-    text-align: center;
-    font-family: PingFang SC;
-    font-size: 20px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: normal;
-  }
-
-  .dia_footer_1 {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-top: 58px;
-    .confirm {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 464px;
-      height: 52px;
-      border-radius: 6px;
-      background: #126cfe;
-      color: #fff;
+  .dialog_dia {
+    height: 229px;
+    .dia_title {
+      color: #000;
       text-align: center;
       font-family: PingFang SC;
-      font-size: 19px;
+      font-size: 30px;
       font-style: normal;
       font-weight: 500;
-      line-height: normal;
-      cursor: pointer;
-
-      &:active {
-        opacity: 0.8;
-      }
+      line-height: 42px;
+      padding-top: 23.7px;
+      padding-bottom: 12px;
     }
-  }
-  .dia_footer_2 {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-top: 58px;
-    .cancel {
+    .dia_content {
+      color: #000;
+      text-align: center;
+      font-family: PingFang SC;
+      font-size: 20px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: normal;
+    }
+
+    .dia_footer_1 {
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 220px;
-      height: 52px;
-      border-radius: 6px;
-      background: #126cfe;
-      color: #fff;
-      text-align: center;
-      font-family: PingFang SC;
-      font-size: 19px;
-      font-style: normal;
-      font-weight: 500;
-      line-height: normal;
-      cursor: pointer;
-      &:active {
-        opacity: 0.8;
+      margin-top: 67px;
+      .confirm {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 464px;
+        height: 52px;
+        border-radius: 6px;
+        background: #126cfe;
+        color: #fff;
+        text-align: center;
+        font-family: PingFang SC;
+        font-size: 19px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: normal;
+        cursor: pointer;
+
+        &:active {
+          opacity: 0.8;
+        }
       }
     }
-    .confirm {
+    .dia_footer_2 {
       display: flex;
       align-items: center;
-      justify-content: center;
-      box-sizing: border-box;
-      width: 220px;
-      height: 52px;
-      flex-shrink: 0;
-      border-radius: 6px;
-      border: 1px solid #126cfe;
-      background-color: #fff;
-      color: #126cfe;
-      text-align: center;
-      font-family: PingFang SC;
-      font-size: 19px;
-      font-style: normal;
-      font-weight: 600;
-      line-height: normal;
-      cursor: pointer;
+      justify-content: space-between;
+      margin-top: 50px;
+      .cancel {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 220px;
+        height: 52px;
+        border-radius: 6px;
+        background: #126cfe;
+        color: #fff;
+        text-align: center;
+        font-family: PingFang SC;
+        font-size: 19px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: normal;
+        cursor: pointer;
+        &:active {
+          opacity: 0.8;
+        }
+      }
+      .confirm {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-sizing: border-box;
+        width: 220px;
+        height: 52px;
+        flex-shrink: 0;
+        border-radius: 6px;
+        border: 1px solid #126cfe;
+        background-color: #fff;
+        color: #126cfe;
+        text-align: center;
+        font-family: PingFang SC;
+        font-size: 19px;
+        font-style: normal;
+        font-weight: 600;
+        line-height: normal;
+        cursor: pointer;
 
-      &:active {
-        opacity: 0.8;
+        &:active {
+          opacity: 0.8;
+        }
       }
     }
   }
+
   .service {
     display: flex;
     flex-direction: column;

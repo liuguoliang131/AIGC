@@ -423,7 +423,10 @@ const madePicture4 = async () => {
         @click="baseData.pictureStyle = item.id"
       >
         <img :src="item.path" alt="" />
-        <div class="mask" v-if="item.id === baseData.pictureStyle"></div>
+        <div
+          :class="[item.id === baseData.pictureStyle ? 'mask-active' : 'mask']"
+        ></div>
+        <div class="style_title">{{ item.name }}</div>
       </div>
     </div>
     <div
@@ -440,6 +443,10 @@ const madePicture4 = async () => {
 .popper_style {
   background-color: #666666 !important;
   border: none !important;
+  font-family: PingFang SC !important;
+  span {
+    font-family: PingFang SC !important;
+  }
   .el-popper__arrow::before {
     background-color: #666666 !important;
     border: none !important;
@@ -607,7 +614,7 @@ const madePicture4 = async () => {
     cursor: pointer;
     overflow: hidden;
     &:active {
-      border: 1px dashed #5e9dfe;
+      border: 3px dashed #5e9dfe;
     }
 
     .upload-loading {
@@ -810,15 +817,44 @@ const madePicture4 = async () => {
         cursor: pointer;
       }
       .mask {
+        z-index: 1;
         position: absolute;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
         box-sizing: border-box;
-        border: 1px solid rgba(18, 108, 254, 1);
         border-radius: 5px;
         background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.3));
+        cursor: pointer;
+        user-select: none;
+      }
+      .mask-active {
+        z-index: 1;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        box-sizing: border-box;
+        border: 3px solid rgba(18, 108, 254, 1);
+        border-radius: 5px;
+        background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.3));
+      }
+      .style_title {
+        z-index: 2;
+        position: absolute;
+        bottom: 4px;
+        left: 0;
+        width: 100%;
+        text-align: center;
+        font-family: PingFang SC;
+        font-size: 12px;
+        font-weight: 400;
+        line-height: 17px;
+        color: rgba(255, 255, 255, 1);
+        cursor: pointer;
+        user-select: none;
       }
     }
   }
