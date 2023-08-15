@@ -63,13 +63,13 @@
                 <img
                   v-if="item.id === activeTag"
                   class="bubble_icon"
-                  src="https://quanres.hanhoukeji.com/hanhou-ai-pc/bubble_icon_active.svg"
+                  src="https://quanres.hanhoukeji.com/hanhou-ai-pc/bubble_icon_active.png"
                   alt=""
                 />
                 <img
                   v-else
                   class="bubble_icon"
-                  src="https://quanres.hanhoukeji.com/hanhou-ai-pc/bubble_icon_.svg"
+                  src="https://quanres.hanhoukeji.com/hanhou-ai-pc/bubble_icon_.png"
                   alt=""
                 />
                 <span class="log_name nowrap">{{ item.title }}</span>
@@ -1042,7 +1042,7 @@ onMounted(() => {
               min-width: 0;
               padding-right: 30px;
               text-indent: 10px;
-              color: #c9e1ff;
+              color: #ffffff;
               font-family: PingFang SC;
               font-size: 19px;
               font-style: normal;
@@ -1074,6 +1074,10 @@ onMounted(() => {
           }
           .log_item_active {
             background-color: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(90, 161, 248, 1);
+            .log_name {
+              color: rgba(201, 225, 255, 1);
+            }
           }
         }
       }

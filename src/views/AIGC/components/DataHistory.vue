@@ -428,6 +428,7 @@ defineExpose({
               rgba(0, 0, 0, 0) 73.96%,
               #000000 100%
             );
+            cursor: pointer;
             .text {
               position: absolute;
               bottom: 4.41px;
@@ -448,7 +449,7 @@ defineExpose({
         .history_item-active {
           background-color: #f1f2f6;
           .mask {
-            border: 2px solid rgba(104, 162, 255, 1);
+            border: 3px solid rgba(18, 108, 254, 1);
           }
         }
 

@@ -614,7 +614,7 @@ const madePicture4 = async () => {
     cursor: pointer;
     overflow: hidden;
     &:active {
-      border: 3px dashed #5e9dfe;
+      border: 3px dotted #5e9dfe;
     }
 
     .upload-loading {
@@ -832,10 +832,10 @@ const madePicture4 = async () => {
       .mask-active {
         z-index: 1;
         position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
+        top: -1px;
+        left: -1px;
+        width: 82px;
+        height: 82px;
         box-sizing: border-box;
         border: 3px solid rgba(18, 108, 254, 1);
         border-radius: 5px;
@@ -846,13 +846,15 @@ const madePicture4 = async () => {
         position: absolute;
         bottom: 4px;
         left: 0;
-        width: 100%;
+        width: calc(100% / 0.67);
         text-align: center;
         font-family: PingFang SC;
-        font-size: 12px;
+        font-size: 18px;
         font-weight: 400;
-        line-height: 17px;
+        line-height: 25.37px;
         color: rgba(255, 255, 255, 1);
+        transform-origin: left bottom;
+        transform: scale(0.67);
         cursor: pointer;
         user-select: none;
       }
