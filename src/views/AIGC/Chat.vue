@@ -117,7 +117,7 @@
                   <div class="toright">
                     <div class="bubble">
                       <div
-                        v-html="item.description"
+                        v-text="item.description"
                         style="white-space: pre-wrap"
                       ></div>
                     </div>
@@ -147,7 +147,7 @@
                       </div>
                       <div
                         v-else
-                        v-html="item.description"
+                        v-text="item.description"
                         style="white-space: pre-wrap"
                       ></div>
                       <div
@@ -648,7 +648,7 @@ const _getResult = async (message, tagId) => {
       source.close(source);
     } else if (e.type == "message") {
       let n = e.data.replace(/\\\\/g, "\\");
-      n = n.replace(/\\n/g, "<br/>");
+      n = n.replace(/\\n/g, "\n");
       n = n.replace(/\\/g, "");
       let s = n.substring(1, n.length - 1);
 
@@ -1152,7 +1152,7 @@ onMounted(() => {
                   font-family: PingFang SC;
                   font-size: 19px;
                   font-style: normal;
-                  font-weight: 500;
+                  font-weight: 400;
                   line-height: 44px;
                 }
                 .avatar {
@@ -1186,7 +1186,7 @@ onMounted(() => {
                   font-family: PingFang SC;
                   font-size: 19px;
                   font-style: normal;
-                  font-weight: 500;
+                  font-weight: 400;
                   line-height: 44px;
 
                   .taptap {
