@@ -216,6 +216,7 @@ const onScroll = async (e) => {
 const handPutItem = (item) => {
   item.createdAt = timeFormat(item.createdAt);
   history.list = [item, ...history.list];
+  history.empty = false;
 };
 
 // 删除当前选中的
@@ -236,6 +237,9 @@ const handRemoveItem = () => {
           (item) => item.pictureId == props.active.pictureId
         );
         history.list.splice(idx, 1);
+        if (history.list.length === 0) {
+          history.empty = true;
+        }
         resolve(true);
       });
   });
