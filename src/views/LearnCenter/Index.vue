@@ -18,53 +18,57 @@
               @play="onPlay"
               @ended="onEnded"
               @fullscreenchange="onFullScreenChange"
+              @contextmenu="onContextmenu"
+              @timeupdate="onTimeupdate"
             >
               <source :src="active.path" type="video/mp4" />
               您的浏览器不支持H5视频播放。
             </video>
-            <template v-if="isFull">
-              <div class="btns_full">
-                <div class="next" v-if="nextBtnShow">
-                  下一节
-                  <img
-                    class="next_icon"
-                    src="https://quanres.hanhoukeji.com/hanhou-ai-pc/nextplay.svg"
-                    alt=""
-                  />
+            <template v-if="isEnd">
+              <template v-if="isFull">
+                <div class="btns_full">
+                  <div class="next" v-if="nextBtnShow">
+                    下一节
+                    <img
+                      class="next_icon"
+                      src="https://quanres.hanhoukeji.com/hanhou-ai-pc/nextplay.svg"
+                      alt=""
+                    />
+                  </div>
+                  <div class="replay">
+                    重播
+                    <img
+                      class="replay_icon"
+                      src="https://quanres.hanhoukeji.com/hanhou-ai-pc/replay-icon.svg"
+                      alt=""
+                    />
+                  </div>
                 </div>
-                <div class="replay">
-                  重播
-                  <img
-                    class="replay_icon"
-                    src="https://quanres.hanhoukeji.com/hanhou-ai-pc/replay-icon.svg"
-                    alt=""
-                  />
+              </template>
+              <template v-else>
+                <div class="btns">
+                  <div class="next" v-if="nextBtnShow">
+                    下一节
+                    <img
+                      class="next_icon"
+                      src="https://quanres.hanhoukeji.com/hanhou-ai-pc/nextplay.svg"
+                      alt=""
+                    />
+                  </div>
+                  <div class="replay">
+                    重播
+                    <img
+                      class="replay_icon"
+                      src="https://quanres.hanhoukeji.com/hanhou-ai-pc/replay-icon.svg"
+                      alt=""
+                    />
+                  </div>
                 </div>
-              </div>
-            </template>
-            <template v-else>
-              <div class="btns" v-if="isEnd">
-                <div class="next" v-if="nextBtnShow">
-                  下一节
-                  <img
-                    class="next_icon"
-                    src="https://quanres.hanhoukeji.com/hanhou-ai-pc/nextplay.svg"
-                    alt=""
-                  />
-                </div>
-                <div class="replay">
-                  重播
-                  <img
-                    class="replay_icon"
-                    src="https://quanres.hanhoukeji.com/hanhou-ai-pc/replay-icon.svg"
-                    alt=""
-                  />
-                </div>
-              </div>
+              </template>
             </template>
           </div>
           <div class="actitle">
-            数字大脑的概念数据中心中功能性人工智能的抽象信息流通过它大脑中的AI字母的概念数据中数字大脑的概念数据中心中功能性人工智能的抽象信息流通过它大脑中...
+            {{ active.name }}
           </div>
         </div>
         <div class="right">
@@ -102,7 +106,8 @@
 </template>
 
 <script setup>
-import { onMounted, reactive, ref } from "vue";
+import { onMounted, onUnmounted, reactive, ref } from "vue";
+import utils from "@/common/utils";
 import { useRouterConfigStore } from "@/store/routerConfigStore";
 const routerConfig = useRouterConfigStore();
 
@@ -112,34 +117,51 @@ const videoRef = ref();
 const playList = ref([
   {
     id: 1,
-    name: "数字大脑的概念数据中心中功能性人工智能的抽象信息流通过它大脑中的AI字母的概念数据中数字大脑的概念数据中心中功能性人工智能的抽象信息流通过它大脑中...",
+    name: "课程介绍和AI使用方法",
     poster: "",
-    path: "https://quanres.hanhoukeji.com/hanhou-ai-pc/fbdd5c098e6ce3876d157b0e8c1ec013.mp4",
+    path: "http://aigc-img.hanhoukeji.cn/%E5%AD%A6%E4%B9%A0%E4%B8%AD%E5%BF%83/AI%E5%AF%B9%E8%AF%9D%E8%A7%86%E9%A2%91/1%E8%AF%BE%E7%A8%8B%E4%BB%8B%E7%BB%8D%E5%92%8CAI%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95.mp4",
   },
   {
     id: 2,
-    name: "数字大脑的概念数据中心中功能性人工智能的抽象信息流通过它大脑中的AI字母的概念数据中数字大脑的概念数据中心中功能性人工智能的抽象信息流通过它大脑中...",
-    path: "https://quanres.hanhoukeji.com/hanhou-ai-pc/f4616c54582682860fe8cb7a9670480c.mp4",
+    name: "活动策划：如何用AI设计活动内容",
+    poster: "",
+    path: "http://aigc-img.hanhoukeji.cn/%E5%AD%A6%E4%B9%A0%E4%B8%AD%E5%BF%83/AI%E5%AF%B9%E8%AF%9D%E8%A7%86%E9%A2%91/2%E6%B4%BB%E5%8A%A8%E7%AD%96%E5%88%92%EF%BC%9A%E5%A6%82%E4%BD%95%E7%94%A8AI%E8%AE%BE%E8%AE%A1%E6%B4%BB%E5%8A%A8%E5%86%85%E5%AE%B9.mp4",
   },
   {
     id: 3,
-    name: "数字大脑的概念数据中心中功能性人工智能的抽象信息流通过它大脑中的AI字母的概念数据中数字大脑的概念数据中心中功能性人工智能的抽象信息流通过它大脑中...",
-    path: "https://quanres.hanhoukeji.com/hanhou-ai-pc/fcfc2e2f5133ca521419db0cdc4caca9.mp4",
+    name: "活动策划：如何用AI指定宣传计划",
+    poster: "",
+    path: "http://aigc-img.hanhoukeji.cn/%E5%AD%A6%E4%B9%A0%E4%B8%AD%E5%BF%83/AI%E5%AF%B9%E8%AF%9D%E8%A7%86%E9%A2%91/3%E6%B4%BB%E5%8A%A8%E7%AD%96%E5%88%92%EF%BC%9A%E5%A6%82%E4%BD%95%E7%94%A8AI%E5%88%B6%E5%AE%9A%E5%AE%A3%E4%BC%A0%E8%AE%A1%E5%88%92.mp4",
   },
   {
     id: 4,
-    name: "数字大脑的概念数据中心中功能性人工智能的抽象信息流通过它大脑中的AI字母的概念数据中数字大脑的概念数据中心中功能性人工智能的抽象信息流通过它大脑中...",
-    path: "https://quanres.hanhoukeji.com/hanhou-ai-pc/fd51aa58026c0310b1b384140750fc7c.mp4",
-  },
-  {
-    id: 33,
-    name: "数字大脑的概念数据中心中功能性人工智能的抽象信息流通过它大脑中的AI字母的概念数据中数字大脑的概念数据中心中功能性人工智能的抽象信息流通过它大脑中...",
-    path: "https://quanres.hanhoukeji.com/hanhou-ai-pc/f97bc7a8397a6ea5758b9b9fdfd822c3.mp4",
+    name: "市场营销：如何用AI设计广告文案",
+    poster: "",
+    path: "http://aigc-img.hanhoukeji.cn/%E5%AD%A6%E4%B9%A0%E4%B8%AD%E5%BF%83/AI%E5%AF%B9%E8%AF%9D%E8%A7%86%E9%A2%91/4%E5%B8%82%E5%9C%BA%E8%90%A5%E9%94%80%EF%BC%9A%E5%A6%82%E4%BD%95%E7%94%A8AI%E8%AE%BE%E8%AE%A1%E5%B9%BF%E5%91%8A%E6%96%87%E6%A1%88.mp4",
   },
   {
     id: 5,
-    name: "数字大脑的概念数据中心中功能性人工智能的抽象信息流通过它大脑中的AI字母的概念数据中数字大脑的概念数据中心中功能性人工智能的抽象信息流通过它大脑中...",
-    path: "https://quanres.hanhoukeji.com/hanhou-ai-pc/f8943658b510e99ddf621837f8695005.mp4",
+    name: "市场营销：如何用AI撰写宣传材料",
+    poster: "",
+    path: "http://aigc-img.hanhoukeji.cn/%E5%AD%A6%E4%B9%A0%E4%B8%AD%E5%BF%83/AI%E5%AF%B9%E8%AF%9D%E8%A7%86%E9%A2%91/5%E5%B8%82%E5%9C%BA%E8%90%A5%E9%94%80%EF%BC%9A%E5%A6%82%E4%BD%95%E7%94%A8AI%E6%92%B0%E5%86%99%E5%AE%A3%E4%BC%A0%E6%9D%90%E6%96%99.mp4",
+  },
+  {
+    id: 6,
+    name: "市场营销：如何用AI生成社交媒体推文",
+    poster: "",
+    path: "http://aigc-img.hanhoukeji.cn/%E5%AD%A6%E4%B9%A0%E4%B8%AD%E5%BF%83/AI%E5%AF%B9%E8%AF%9D%E8%A7%86%E9%A2%91/6%E5%B8%82%E5%9C%BA%E8%90%A5%E9%94%80%EF%BC%9A%E5%A6%82%E4%BD%95%E7%94%A8AI%E7%94%9F%E6%88%90%E7%A4%BE%E4%BA%A4%E5%AA%92%E4%BD%93%E6%8E%A8%E6%96%87.mp4",
+  },
+  {
+    id: 7,
+    name: "行政工作：如何用AI审阅文件内容",
+    poster: "",
+    path: "http://aigc-img.hanhoukeji.cn/%E5%AD%A6%E4%B9%A0%E4%B8%AD%E5%BF%83/AI%E5%AF%B9%E8%AF%9D%E8%A7%86%E9%A2%91/7%E8%A1%8C%E6%94%BF%E5%B7%A5%E4%BD%9C%EF%BC%9A%E5%A6%82%E4%BD%95%E7%94%A8AI%E5%AE%A1%E9%98%85%E6%96%87%E4%BB%B6%E5%86%85%E5%AE%B9.mp4",
+  },
+  {
+    id: 8,
+    name: "日常办公：如何用AI生成工作日报",
+    poster: "",
+    path: "http://aigc-img.hanhoukeji.cn/%E5%AD%A6%E4%B9%A0%E4%B8%AD%E5%BF%83/AI%E5%AF%B9%E8%AF%9D%E8%A7%86%E9%A2%91/8%E6%97%A5%E5%B8%B8%E5%8A%9E%E5%85%AC%EF%BC%9A%E5%A6%82%E4%BD%95%E7%94%A8AI%E7%94%9F%E6%88%90%E5%B7%A5%E4%BD%9C%E6%97%A5%E6%8A%A5.mp4",
   },
 ]);
 
@@ -148,7 +170,7 @@ const active = ref(playList.value[0]);
 const isFull = ref(false);
 // 是否播放结束
 const isEnd = ref(false);
-// 播放下一节按钮是否显示
+// 播放下一节按钮是否显示 boolean
 const nextBtnShow = ref(playList.value.length > 1);
 
 // 页面滚动时设置tapBar组件背景颜色为白色
@@ -167,6 +189,7 @@ const handActive = (item) => {
 // 播放触发
 const onPlay = (e) => {
   console.log(e, "onPlay");
+  setCurrentTime();
   isEnd.value = false;
 };
 
@@ -174,8 +197,8 @@ const onPlay = (e) => {
 const onEnded = (e) => {
   console.log(e, "onEnded");
   const idx = playList.value.findIndex((item) => item.id === active.value.id);
-  if (playList.value.length === 1) return;
-  nextBtnShow.value = idx + 1 === playList.value.length;
+  console.log("idx", idx);
+  nextBtnShow.value = idx + 1 !== playList.value.length;
   isEnd.value = true;
 };
 
@@ -183,11 +206,44 @@ const onEnded = (e) => {
 const onFullScreenChange = (e) => {
   console.log(e, "全屏");
   if (document.fullscreenElement === videoRef.value) {
-    console.log("进入");
+    console.log("进入", document.fullscreenElement);
     isFull.value = true;
   } else {
     console.log("退出");
     isFull.value = false;
+  }
+};
+
+// video右击菜单
+const onContextmenu = (e) => {
+  console.log(e, "onContextmenu");
+  e.preventDefault();
+};
+
+// 获取上次观看位置
+const getCurrentTime = () => {
+  const info = utils.getStorageSync("hanhou-ai-pc-learn", true);
+  if (info) {
+    active.value = playList.value.find((item) => item.id === info.id);
+    videoRef.value.src = active.value.path;
+    videoRef.value.poster = active.value.poster;
+    videoRef.value.currentTime = info.currentTime;
+  }
+};
+
+// 保存观看位置
+const setCurrentTime = () => {
+  utils.setStorageSync("hanhou-ai-pc-learn", {
+    id: active.value.id,
+    currentTime: videoRef.value.currentTime,
+  });
+};
+
+let prevTime = 0;
+const onTimeupdate = (e) => {
+  if (Math.abs(videoRef.value.currentTime - prevTime) > 3000) {
+    setCurrentTime();
+    prevTime = videoRef.value.currentTime;
   }
 };
 
@@ -196,9 +252,10 @@ const handGoICP = () => {
 };
 
 onMounted(() => {
-  videoRef.value.muted = false;
+  getCurrentTime();
 });
 </script>
+
 
 <style scoped lang="less">
 .container {
@@ -269,7 +326,8 @@ onMounted(() => {
             }
           }
           .btns_full {
-            position: absolute;
+            z-index: 9999;
+            position: fixed;
             top: 0;
             bottom: 0;
             left: 0;
