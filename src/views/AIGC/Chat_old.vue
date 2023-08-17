@@ -1103,7 +1103,7 @@ onMounted(() => {
       font-weight: 600;
       line-height: 68px;
       .logo {
-        width: 239px;
+        width: 197px;
         height: 40px;
         margin-left: 20px;
         cursor: pointer;

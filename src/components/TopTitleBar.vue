@@ -16,7 +16,7 @@
             : '',
         ]"
         @click="goProduct"
-        >产品</span
+        >AI工具</span
       >
       <span
         :class="[
@@ -160,7 +160,7 @@ const confirmExit = () => {
     align-items: center;
 
     .logo {
-      width: 239px;
+      width: 197px;
       height: 40px;
       margin-right: 107px;
       cursor: pointer;

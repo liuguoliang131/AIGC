@@ -81,7 +81,7 @@ const handGoHome = () => {
         src="https://quanres.hanhoukeji.com/hanhou-ai-pc/hanhou-logo.png"
         alt=""
       />
-      Hanhou·AIGC
+      Hanhou·AI
     </div>
     <div class="sidebar-slot">
       <slot></slot>

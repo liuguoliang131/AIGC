@@ -6,7 +6,7 @@
     </div>
     <div></div>
     <div class="login-box">
-      <div class="login-title">一起探索AIGC的无限可能</div>
+      <div class="login-title">一起探索AI的无限可能</div>
       <div class="input-box">
         <div class="input-group">
           <input
@@ -36,7 +36,7 @@
         </div>
       </div>
       <!-- <button class="login-btn" :disabled="!isValid" @click="login">登录</button> -->
-      <button class="login-btn" @click="login">登录</button>
+      <button class="login-btn" @click="login">登录并注册</button>
       <div class="agreement">
         <!-- <input v-model="agree" type="checkbox" class="checkbox"> -->
         <!-- <label for="agree">我同意相关协议</label> -->
@@ -222,7 +222,7 @@ export default {
 }
 
 .logo {
-  width: 239px;
+  width: 197px;
   height: 40px;
   margin-left: 22px;
   cursor: pointer;

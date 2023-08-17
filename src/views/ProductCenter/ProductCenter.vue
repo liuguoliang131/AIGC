@@ -105,7 +105,7 @@ export default {
     align-items: center;
 
     .logo {
-      width: 239px;
+      width: 197px;
       height: 40px;
       margin-right: 107px;
       cursor: pointer;
