@@ -27,7 +27,7 @@
             <template v-if="isEnd">
               <template v-if="isFull">
                 <div class="btns_full">
-                  <div class="next" v-if="nextBtnShow">
+                  <div class="next" v-if="nextBtnShow" @click="handNext">
                     下一节
                     <img
                       class="next_icon"
@@ -35,7 +35,7 @@
                       alt=""
                     />
                   </div>
-                  <div class="replay">
+                  <div class="replay" @click="handReplaay">
                     重播
                     <img
                       class="replay_icon"
@@ -47,7 +47,7 @@
               </template>
               <template v-else>
                 <div class="btns">
-                  <div class="next" v-if="nextBtnShow">
+                  <div class="next" v-if="nextBtnShow" @click="handNext">
                     下一节
                     <img
                       class="next_icon"
@@ -55,7 +55,7 @@
                       alt=""
                     />
                   </div>
-                  <div class="replay">
+                  <div class="replay" @click="handReplaay">
                     重播
                     <img
                       class="replay_icon"
@@ -247,6 +247,20 @@ const onTimeupdate = (e) => {
   }
 };
 
+// 切换下一节
+const handNext = () => {
+  const idx = playList.value.findIndex((item) => item.id === active.value.id);
+  active.value = playList.value[idx + 1];
+  videoRef.value.src = active.value.path;
+  videoRef.value.poster = active.value.poster;
+};
+
+// 重播
+const handReplaay = () => {
+  videoRef.value.currentTime = 0;
+  videoRef.value.play();
+};
+
 const handGoICP = () => {
   window.open(`https://beian.miit.gov.cn/`);
 };
@@ -308,6 +322,8 @@ onMounted(() => {
               display: flex;
               align-items: center;
               margin-right: 53px;
+              cursor: pointer;
+              user-select: none;
               .next_icon {
                 width: 51px;
                 height: 34px;
@@ -317,6 +333,8 @@ onMounted(() => {
             .replay {
               display: flex;
               align-items: center;
+              cursor: pointer;
+              user-select: none;
               .replay_icon {
                 width: 21px;
                 height: 21px;
@@ -348,6 +366,8 @@ onMounted(() => {
               display: flex;
               align-items: center;
               margin-right: 53px;
+              cursor: pointer;
+              user-select: none;
               .next_icon {
                 width: 51px;
                 height: 34px;
@@ -357,6 +377,8 @@ onMounted(() => {
             .replay {
               display: flex;
               align-items: center;
+              cursor: pointer;
+              user-select: none;
               .replay_icon {
                 width: 21px;
                 height: 21px;
