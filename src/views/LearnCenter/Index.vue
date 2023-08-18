@@ -81,10 +81,10 @@
                   src="https://quanres.hanhoukeji.com/hanhou-ai-pc/player_list_active.svg"
                   alt=""
                 />
-                <span class="nowrap">{{ item.name }}</span>
+                <span class="nowrap">{{ idx + 1 }}.{{ item.name }}</span>
               </div>
               <div v-else class="item nowrap" @click="handActive(item)">
-                <span class="nowrap">{{ item.name }}</span>
+                <span class="nowrap">{{ idx + 1 }}.{{ item.name }}</span>
               </div>
             </template>
           </div>
