@@ -9,7 +9,7 @@
       @scroll="onScroll"
     >
       <img
-        src="https://quanres.hanhoukeji.com/hanhou-ai-pc/ai-index-bg1.png"
+        src="https://quanres.hanhoukeji.com/hanhou-ai-pc/ai_home1.png"
         class="itemImage"
       />
       <img
@@ -18,7 +18,7 @@
       />
       <div class="wrapperFooter">
         <img
-          src="https://quanres.hanhoukeji.com/hanhou-ai-pc/ai-index-bg3.png"
+          src="https://quanres.hanhoukeji.com/hanhou-ai-pc/ai_home3.png"
           class="itemImage"
         />
         <div class="footer">
