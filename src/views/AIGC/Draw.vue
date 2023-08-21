@@ -286,7 +286,7 @@ onMounted(() => {
               </clipPath>
             </defs>
           </svg>
-          <span>开始绘画</span>
+          <span>新建绘画</span>
         </div>
       </div>
     </sidebar>
