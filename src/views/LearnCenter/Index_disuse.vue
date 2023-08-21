@@ -4,25 +4,27 @@
       <div class="content1">
         <div class="left">
           <div class="player">
-            <video
+            <video-player
               ref="videoRef"
               class="real"
               width="1200"
               height="675"
               controls
-              autoplay
-              playsinline
+              :autoplay="true"
+              :playsinline="true"
               webkit-playsinline
               controlslist="nodownload noremoteplayback"
+              :src="active.path"
+              :poster="active.poster"
+              :playbackRates="[0.5, 1, 1.5, 2]"
+              language="zh-CN"
+              @mounted="playerMounted"
               @play="onPlay"
               @ended="onEnded"
               @fullscreenchange="onFullScreenChange"
               @contextmenu="onContextmenu"
               @timeupdate="onTimeupdate"
-            >
-              <source :src="active.path" type="video/mp4" />
-              您的浏览器不支持H5视频播放。
-            </video>
+            ></video-player>
             <template v-if="isEnd">
               <template v-if="isFull">
                 <div class="btns_full">
@@ -34,7 +36,7 @@
                       alt=""
                     />
                   </div>
-                  <div class="replay" @click="handReplaay">
+                  <div class="replay" @click="handReplay">
                     重播
                     <img
                       class="replay_icon"
@@ -54,7 +56,7 @@
                       alt=""
                     />
                   </div>
-                  <div class="replay" @click="handReplaay">
+                  <div class="replay" @click="handReplay">
                     重播
                     <img
                       class="replay_icon"
@@ -106,6 +108,9 @@
 
 <script setup>
 import { onMounted, onUnmounted, reactive, ref } from "vue";
+import { VideoPlayer } from "@videojs-player/vue";
+import "video.js/dist/video-js.css";
+
 import utils from "@/common/utils";
 import { useRouterConfigStore } from "@/store/routerConfigStore";
 const routerConfig = useRouterConfigStore();
@@ -165,6 +170,32 @@ const playList = ref([
 ]);
 
 const active = ref(playList.value[0]);
+
+const options = ref({
+  playbackRates: [0.5, 1.0, 1.5, 2.0], // 可选的播放速度
+  autoplay: false, // 如果为true,浏览器准备好时开始回放
+  muted: false, // 默认情况下将会消除任何音频。
+  loop: false, // 是否视频一结束就重新开始。
+  preload: "auto", // 建议浏览器在<video>加载元素后是否应该开始下载视频数据。auto浏览器选择最佳行为,立即开始加载视频（如果浏览器支持）
+  language: "zh-CN",
+  aspectRatio: "16:9", // 将播放器置于流畅模式，并在计算播放器的动态大小时使用该值。值应该代表一个比例 - 用冒号分隔的两个数字（例如"16:9"或"4:3"）
+  fluid: true, // 当true时，Video.js player将拥有流体大小。换句话说，它将按比例缩放以适应其容器。
+  sources: [
+    {
+      type: "video/mp4", // 类型
+      src: active.value.path, // url地址
+    },
+  ],
+  poster: "", // 封面地址
+  notSupportedMessage: "此视频暂无法播放，请稍后再试", // 允许覆盖Video.js无法播放媒体源时显示的默认信息。
+  controlBar: {
+    volumeControl: true,
+    timeDivider: true, // 当前时间和持续时间的分隔符
+    durationDisplay: true, // 显示持续时间
+    remainingTimeDisplay: false, // 是否显示剩余时间功能
+    fullscreenToggle: true, // 是否显示全屏按钮
+  },
+});
 // 是否在全屏播放
 const isFull = ref(false);
 // 是否播放结束
@@ -179,16 +210,26 @@ const onScroll = (e) => {
 
 // 选择视频小节
 const handActive = (item) => {
-  videoRef.value.pause();
-  videoRef.value.src = item.path;
-  videoRef.value.poster = item.poster;
+  console.log(item.name);
   active.value = item;
+};
+
+// 播放器初始
+const playerMounted = (payload) => {
+  console.log("playerMounted", payload.player);
+  console.log(videoRef, "videoRef");
+  const info = utils.getStorageSync("hanhou-ai-pc-learn", true);
+  if (info) {
+    active.value = playList.value.find((item) => item.id === info.id);
+    payload.video.currentTime = info.currentTime;
+  }
 };
 
 // 播放触发
 const onPlay = (e) => {
   console.log(e, "onPlay");
-  setCurrentTime();
+  const current = e.target.player.currentTime();
+  setCurrentTime(current);
   isEnd.value = false;
 };
 
@@ -204,7 +245,7 @@ const onEnded = (e) => {
 // 全屏事件 进入/退出
 const onFullScreenChange = (e) => {
   console.log(e, "全屏");
-  if (document.fullscreenElement === videoRef.value) {
+  if (document.fullscreenElement === e.target) {
     console.log("进入", document.fullscreenElement);
     isFull.value = true;
   } else {
@@ -231,18 +272,20 @@ const getCurrentTime = () => {
 };
 
 // 保存观看位置
-const setCurrentTime = () => {
+const setCurrentTime = (current) => {
   utils.setStorageSync("hanhou-ai-pc-learn", {
     id: active.value.id,
-    currentTime: videoRef.value.currentTime,
+    currentTime: current,
   });
 };
 
 let prevTime = 0;
 const onTimeupdate = (e) => {
-  if (Math.abs(videoRef.value.currentTime - prevTime) > 3000) {
-    setCurrentTime();
-    prevTime = videoRef.value.currentTime;
+  if (!e.target.player.currentTime) return;
+  const current = e.target.player.currentTime();
+  if (Math.abs(current - prevTime) > 3) {
+    setCurrentTime(current);
+    prevTime = current;
   }
 };
 
@@ -250,23 +293,20 @@ const onTimeupdate = (e) => {
 const handNext = () => {
   const idx = playList.value.findIndex((item) => item.id === active.value.id);
   active.value = playList.value[idx + 1];
-  videoRef.value.src = active.value.path;
-  videoRef.value.poster = active.value.poster;
 };
 
 // 重播
-const handReplaay = () => {
-  videoRef.value.currentTime = 0;
-  videoRef.value.play();
+const handReplay = () => {
+  console.log(videoRef);
+  videoRef.value.$el.currentTime = 0;
+  videoRef.value.$el.player.play();
 };
 
 const handGoICP = () => {
   window.open(`https://beian.miit.gov.cn/`);
 };
 
-onMounted(() => {
-  getCurrentTime();
-});
+onMounted(() => {});
 </script>
 
 
@@ -298,6 +338,8 @@ onMounted(() => {
             width: 100%;
             height: 100%;
             border-radius: 10px;
+            background-color: #fff;
+            overflow: hidden;
           }
           .btns {
             position: absolute;
