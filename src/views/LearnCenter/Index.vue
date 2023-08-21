@@ -11,7 +11,6 @@
               height="675"
               controls
               autoplay
-              muted
               playsinline
               webkit-playsinline
               controlslist="nodownload noremoteplayback"
