@@ -9,16 +9,16 @@
       @scroll="onScroll"
     >
       <img
-        src="https://quanres.hanhoukeji.com/hanhou-ai-pc/ai_home_bg1.png"
+        src="https://quanres.hanhoukeji.com/hanhou-ai-pc/ai-index-bg1.png"
         class="itemImage"
       />
       <img
-        src="https://quanres.hanhoukeji.com/hanhou-ai-pc/ai_home_bg2.png"
+        src="https://quanres.hanhoukeji.com/hanhou-ai-pc/ai_home2.png"
         class="itemImage"
       />
       <div class="wrapperFooter">
         <img
-          src="https://quanres.hanhoukeji.com/hanhou-ai-pc/ai_home_bg3.png"
+          src="https://quanres.hanhoukeji.com/hanhou-ai-pc/ai-index-bg3.png"
           class="itemImage"
         />
         <div class="footer">
