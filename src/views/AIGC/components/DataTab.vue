@@ -39,7 +39,7 @@ const drawStyle = ref([
     path: "https://quanres.hanhoukeji.com/hanhou-ai-pc/drawstyle_mr.png",
   },
   {
-    name: "等距动画",
+    name: "2.5D风格",
     id: 2,
     path: "https://quanres.hanhoukeji.com/hanhou-ai-pc/drawstyle_dj.png",
   },
@@ -101,12 +101,12 @@ const ratioOptions = ref([
   {
     id: 2,
     name: "3:2",
-    desc: "适用文章配文",
+    desc: "适用文章配图",
   },
   {
     id: 3,
     name: "4:3",
-    desc: "适用文章配文",
+    desc: "适用文章配图",
   },
   {
     id: 4,

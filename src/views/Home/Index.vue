@@ -1,13 +1,31 @@
 <template>
   <div class="container">
-    <el-scrollbar style="{font-size: 0;}" @scroll="onScroll">
-      <img src="https://quanres.hanhoukeji.com/hanhou-ai-pc/ai-index-bg1.png" class="itemImage" />
-      <img src="https://quanres.hanhoukeji.com/hanhou-ai-pc/ai_home2.png" class="itemImage" />
+    <el-scrollbar
+      style="
+         {
+          font-size: 0;
+        }
+      "
+      @scroll="onScroll"
+    >
+      <img
+        src="https://quanres.hanhoukeji.com/hanhou-ai-pc/ai_home1.png"
+        class="itemImage"
+      />
+      <img
+        src="https://quanres.hanhoukeji.com/hanhou-ai-pc/ai_home2.png"
+        class="itemImage"
+      />
       <div class="wrapperFooter">
-        <img src="https://quanres.hanhoukeji.com/hanhou-ai-pc/ai-index-bg3.png" class="itemImage" />
+        <img
+          src="https://quanres.hanhoukeji.com/hanhou-ai-pc/ai_home3.png"
+          class="itemImage"
+        />
         <div class="footer">
           <div class="footer-record">
-            <a @click="handGoICP">京ICP备19041918号-1京公网安备11010502039881号</a>
+            <a @click="handGoICP"
+              >京ICP备19041918号-1京公网安备11010502039881号</a
+            >
           </div>
           <div class="footer-record">
             <a @click="handGoICP">网络经营许可证京网文[2020]4683-870号</a>
@@ -19,11 +37,10 @@
 </template>
 
 <script setup>
-import { useRouterConfigStore } from '@/store/routerConfigStore';
+import { useRouterConfigStore } from "@/store/routerConfigStore";
 import { ElScrollbar } from "element-plus";
 import { useRouter } from "vue-router";
 const useRouterConfig = useRouterConfigStore();
-
 
 function onScroll(event) {
   let { scrollTop } = event;
@@ -37,7 +54,6 @@ function onScroll(event) {
 function handGoICP() {
   window.open(`https://beian.miit.gov.cn/`);
 }
-
 </script>
 
 <style scoped lang="less">
