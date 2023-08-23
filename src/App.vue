@@ -1,9 +1,7 @@
 <template>
   <router-view />
-  <TopTitleBar />
 </template>
 <script setup>
-import TopTitleBar from "@/components/TopTitleBar.vue";
 </script>
 <style lang="less">
 * {
@@ -34,8 +32,6 @@ body {
   width: 100%;
   height: 100vh;
   font-family: PingFang SC;
-  font-size: 19px;
-  font-weight: 500;
   text-align: left;
   color: #333333;
 }

@@ -1,19 +1,6 @@
 <template>
   <div class="container">
-    <!-- <div class="banner" :style="{ backgroundColor: `rgba(255, 255, 255, ${opacity})` }">
-      <div class="banner_left">
-        <img src="@/assets/logo.png" class="logo" @click="goHome" />
-        <span class="banner_text">产品</span>
-        <span class="banner_text">学习中心</span>
-      </div>
-      <div class="banner_right">
-        <el-button type="primary" plain v-if="!isLogged()" @click="goLogin" class="login">登录/注册</el-button>
-        <div v-else>
-          <span style="font-size: 15px;color: #1E1E1E; margin-right: 20px;">{{ userInfo().tel }}</span>
-          <el-button type="primary" class="logout" @click="handExit">退出登录</el-button>
-        </div>
-      </div>
-    </div> -->
+    <TopTitleBar />
     <div class="item-box">
       <img
         src="https://quanres.hanhoukeji.com/hanhou-ai-pc/ai-chat-card.png"
@@ -40,8 +27,12 @@
 <script>
 import utils from "@/common/utils";
 import { ElMessage } from "element-plus";
+import TopTitleBar from "@/components/TopTitleBar.vue";
 
 export default {
+  components: {
+    TopTitleBar,
+  },
   data() {
     return {};
   },
