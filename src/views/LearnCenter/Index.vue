@@ -1,5 +1,6 @@
 <template>
   <div class="container">
+    <TopTitleBar />
     <div class="container-body" @scroll="onScroll">
       <div class="content1">
         <div class="left">
@@ -107,6 +108,7 @@
 <script setup>
 import { onMounted, onUnmounted, reactive, ref } from "vue";
 import utils from "@/common/utils";
+import TopTitleBar from "@/components/TopTitleBar.vue";
 import { useRouterConfigStore } from "@/store/routerConfigStore";
 const routerConfig = useRouterConfigStore();
 

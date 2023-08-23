@@ -1,5 +1,6 @@
 <template>
   <div class="container">
+    <TopTitleBar />
     <el-scrollbar
       style="
          {
@@ -37,6 +38,7 @@
 </template>
 
 <script setup>
+import TopTitleBar from "@/components/TopTitleBar.vue";
 import { useRouterConfigStore } from "@/store/routerConfigStore";
 import { ElScrollbar } from "element-plus";
 import { useRouter } from "vue-router";
