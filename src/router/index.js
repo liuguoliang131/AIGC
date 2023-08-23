@@ -1,31 +1,67 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
-import Index from '../views/AIGC/Chat.vue'
+import Home from '../views/Home/Index.vue'
 import utils from '@/common/utils'
-
+import { useRouterConfigStore } from '@/store/routerConfigStore';
+console.log('Router')
 const routes = [
   {
     path: '/',
-    name: 'Index',
-    component: Index,
+    name: 'Home',
+    component: Home,
     meta: {
-      isAuthenticated:true
+      titleBar: true,
+      isAuthenticated: false
+    }
+  },
+  {
+    path: '/aigc/chat',
+    name: 'Chat',
+    component: () => import('../views/AIGC/Chat.vue'),
+    meta: {
+      isAuthenticated: true
+    }
+  },
+  {
+    path: '/aigc/draw',
+    name: 'Draw',
+    component: () => import('../views/AIGC/Draw.vue'),
+    meta: {
+      isAuthenticated: true
     }
   },
   {
     path: '/login',
     name: 'Login',
-    component:()=>import('../views/Login/Login.vue'),
+    component: () => import('../views/Login/Login.vue'),
     meta: {
-      isAuthenticated:false
+      isAuthenticated: false
     }
   },
   {
     path: '/agreement',
     name: 'Agreement',
-    component:()=>import('../views/Agreement/Index.vue'),
+    component: () => import('../views/Agreement/Index.vue'),
     meta: {
-      isAuthenticated:false
+      isAuthenticated: false
     }
+  },
+  {
+    path: '/learn_center',
+    name: 'LearnCenter',
+    component: () => import('../views/LearnCenter/Index.vue'),
+    meta: {
+      titleBar: true,
+      isAuthenticated: true
+    }
+  },
+  {
+    path: '/product_center',
+    name: 'ProductCenter',
+    component: () => import('../views/ProductCenter/ProductCenter.vue'),
+    meta: {
+      titleBar: true,
+      isAuthenticated: false
+    },
   }
 ]
 
@@ -37,15 +73,30 @@ const router = createRouter({
 
 // 路由守卫
 router.beforeEach((to, from, next) => {
+  const useRouterConfig = useRouterConfigStore();
+  useRouterConfig.saveConfig({
+    titleBar: to.meta.titleBar || false,
+    currentPath: to.path
+  })
+
   console.log('router', to, from)
   if (utils.getToken()) {
     return next()
   }
 
-  if (to.name !== 'Login' && to.meta.isAuthenticated) next({ name: 'Login' })
-  else next()
+  if (to.name !== 'Login' && to.meta.isAuthenticated) {
+    const query = JSON.parse(JSON.stringify(from.query))
+    query.origin = to.path
+    next({
+      name: 'Login',
+      query
+    })
+  }
+  else {
+    next()
+  }
 })
 
-document.title = 'HANHOU·AIGC'
+document.title = 'HANHOU·AI'
 
 export default router

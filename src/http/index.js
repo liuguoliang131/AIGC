@@ -1,25 +1,23 @@
-import axios from 'axios'
+import axios from 'axios';
+
 // 环境变量
 // console.log('环境变量', process.env.VUE_APP_SELF_ENV) // dev test prod
 import {
   _getSign
-} from './sign.js'
+} from './sign.js';
 
-import utils from '../common/utils'
-import router from '../router/index'
-import {ElMessage} from 'element-plus'
+import utils from '../common/utils';
+
+import { ElMessage } from 'element-plus';
 
 
+console.log('axios')
 
 const instance = axios.create({
   baseURL: process.env.VUE_APP_BASE_URL,
   timeout: 20000,
   headers: {
-    sys:'',
-    token:'',
-    version:'',
-    timestamp:'',
-    sign: ''
+    'x-token':''
   }
 })
 
@@ -58,15 +56,13 @@ instance.interceptors.response.use(function (response) {
   // 对响应数据做点什么
   // console.log('响应拦截器', response.data)
   if (response.data.code === 1000) {
-    utils.setUserInfo('')
-    utils.setToken('')
-    router.push({
-      path: '/login',
-      replace:true
-    })
+    utils.setToken('');
+    utils.setUserInfo('');
+    utils.goLogin();
   }
   return response.data
 }, function (error) {
+  console.log('response-error',error)
   // 对响应错误做点什么
   if(error.response.status == 500){
     ElMessage({
@@ -76,4 +72,14 @@ instance.interceptors.response.use(function (response) {
   }
   return Promise.reject(error)
 })
-export default instance
+
+const request = {
+  get(url, params) {
+    return instance.get(url, { params });
+  },
+  post(url, data) {
+    return instance.post(url, data);
+  },
+};
+
+export default request

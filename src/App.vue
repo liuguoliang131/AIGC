@@ -1,14 +1,9 @@
 <template>
   <router-view />
+  <TopTitleBar />
 </template>
-<script>
-import { onMounted } from "vue";
-export default {
-  name: "App",
-  setup(props, { slots, emit }) {
-    onMounted(() => {});
-  },
-};
+<script setup>
+import TopTitleBar from "@/components/TopTitleBar.vue";
 </script>
 <style lang="less">
 * {
@@ -16,36 +11,35 @@ export default {
   margin: 0;
   overscroll-behavior: none; // 取消ios系统回弹动画效果
 }
+
 ::-webkit-scrollbar {
   width: 6px;
 }
+
 ::-webkit-scrollbar-thumb {
-  background-color: #bac5ea;
+  background-color: #0003;
   border-radius: 10px;
   transition: all 0.2s ease-in-out;
-  border-radius: 11px;
 }
+
 ::-webkit-scrollbar-track {
   border-radius: 10px;
-}
-::-webkit-scrollbar-track-piece {
-  background-color: #dae0f5;
-  border-radius: 11px;
 }
 
 body {
   font-size: 14px;
 }
+
 #app {
   width: 100%;
   height: 100vh;
   font-family: PingFang SC;
   font-size: 19px;
   font-weight: 500;
-  line-height: 44px;
   text-align: left;
   color: #333333;
 }
+
 /*  强制一行显示 超出显示省略号 */
 .nowrap {
   overflow: hidden;

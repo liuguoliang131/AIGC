@@ -2,12 +2,11 @@
   <div class="container" v-loading="loading">
     <div class="background"></div>
     <div class="logo-view">
-      <div class="logo"></div>
-      <div class="logo-name">HANHOU·AIGC</div>
+      <img src="@/assets/logo.png" class="logo" @click="goHome" />
     </div>
     <div></div>
     <div class="login-box">
-      <div class="login-title">一起探索AIGC的无限可能</div>
+      <div class="login-title">一起探索AI的无限可能</div>
       <div class="input-box">
         <div class="input-group">
           <input
@@ -29,6 +28,7 @@
             placeholder="请输入验证码"
             class="input-verCode"
             @input="handleCodeInput"
+            @keyup.enter="login"
           />
           <button class="code-btn" @click="sendCode" :disabled="timer !== null">
             {{ timer ? countDown : "获取验证码" }}
@@ -36,7 +36,7 @@
         </div>
       </div>
       <!-- <button class="login-btn" :disabled="!isValid" @click="login">登录</button> -->
-      <button class="login-btn" @click="login">登录</button>
+      <button class="login-btn" @click="login">登录并注册</button>
       <div class="agreement">
         <!-- <input v-model="agree" type="checkbox" class="checkbox"> -->
         <!-- <label for="agree">我同意相关协议</label> -->
@@ -61,10 +61,10 @@
 
 <script>
 import { ElMessage } from "element-plus";
-import http from "../../http/index";
-import api from "./api";
+import api, { sendVerifyCode, userLogin } from "./api";
 import utils from "@/common/utils";
-
+import { mapStores } from "pinia";
+import { useUserStore } from "@/store/user";
 export default {
   data() {
     return {
@@ -76,8 +76,16 @@ export default {
       getCodeLoading: false,
     };
   },
+  computed: {
+    ...mapStores(useUserStore),
+  },
 
   methods: {
+    goHome() {
+      this.$router.push({
+        path: "/",
+      });
+    },
     sendCode() {
       if (this.phone.length == 0) {
         return ElMessage({
@@ -94,31 +102,25 @@ export default {
       // 发送验证码的逻辑
       if (this.getCodeLoading) return;
       this.getCodeLoading = true;
-      http
-        .get(api.send_verfyCode, {
-          params: {
-            tel: this.phone,
-          },
-        })
-        .then((res) => {
-          this.getCodeLoading = false;
-          if (res.code == 200) {
-            this.timer = setInterval(() => {
-              if (this.countDown > 1) {
-                this.countDown--;
-              } else {
-                clearInterval(this.timer);
-                this.timer = null;
-                this.countDown = 60;
-              }
-            }, 1000);
-          } else {
-            ElMessage({
-              message: res.message,
-              type: "error",
-            });
-          }
-        });
+      sendVerifyCode(this.phone).then((res) => {
+        this.getCodeLoading = false;
+        if (res.code == 200) {
+          this.timer = setInterval(() => {
+            if (this.countDown > 1) {
+              this.countDown--;
+            } else {
+              clearInterval(this.timer);
+              this.timer = null;
+              this.countDown = 60;
+            }
+          }, 1000);
+        } else {
+          ElMessage({
+            message: res.msg || res.message,
+            type: "error",
+          });
+        }
+      });
     },
     login() {
       if (this.phone.length == 0) {
@@ -144,28 +146,20 @@ export default {
           type: "warning",
         });
       }
+
       this.loading = true;
-      http
-        .post(api.user_login, {
-          tel: this.phone,
-          verifyCode: this.code,
-        })
-        .then((res) => {
-          if (res.code == 200) {
-            utils.setToken(res.data.token);
-            utils.setUserInfo(res.data);
-            this.loading = false;
-            this.$router.push({
-              path: "/",
-            });
-          } else {
-            this.loading = false;
-            ElMessage({
-              message: res.message,
-              type: "error",
-            });
-          }
-        });
+      userLogin(this.phone, this.code).then((res) => {
+        if (res.code == 200) {
+          this.loading = false;
+          this.userStore.loginBackPage(res.data);
+        } else {
+          this.loading = false;
+          ElMessage({
+            message: res.msg || res.message,
+            type: "error",
+          });
+        }
+      });
     },
 
     // 去往工信部网站
@@ -223,16 +217,15 @@ export default {
   display: flex;
   align-items: center;
   position: absolute;
-  top: 13px;
-  left: 22px;
+  top: 0;
+  height: 70px;
 }
 
 .logo {
-  width: 40px;
-  height: 30.025px;
-  background-image: url("https://quanres.hanhoukeji.com/hanhou-ai-pc/login_logo.png");
-  background-size: contain;
-  background-repeat: no-repeat;
+  width: 197px;
+  height: 40px;
+  margin-left: 22px;
+  cursor: pointer;
 }
 
 .logo-name {
@@ -272,6 +265,7 @@ export default {
   justify-content: space-between;
   align-items: center;
   position: relative;
+
   input {
     width: 100%;
   }

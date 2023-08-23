@@ -1,4 +1,9 @@
-import {TOKEN,USER_INFO} from  './keys'
+import { TOKEN, USER_INFO } from './keys'
+import router from '../router/index'
+console.log('utils')
+
+
+
 const utils = {}
 
 // k:String 键名  j:Boolean 是否序列化
@@ -32,5 +37,35 @@ utils.setUserInfo = function (param) {
   utils.setStorageSync(USER_INFO,param)
 }
 
+
+// 去登录页
+utils.goLogin = function () {
+
+  const current = router.currentRoute.value
+  const query = JSON.parse(JSON.stringify(current.query))
+  query.origin = current.path
+  
+  router.push({
+    path: '/login',
+    query
+  })
+}
+
+// 登录+跳回
+utils.loginAfter = function (data) {
+  console.log(router)
+  utils.setToken(data.token);
+  utils.setUserInfo(data);
+
+  const current = router.currentRoute.value
+  const query = JSON.parse(JSON.stringify(current.query))
+  const path = query.origin || '/'
+  delete query.origin
+
+  router.push({
+    path,
+    query
+  })
+}
 
 export default utils

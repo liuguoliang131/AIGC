@@ -1,4 +1,5 @@
 import { createApp } from 'vue'
+import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
 // import store from './store'
@@ -12,8 +13,9 @@ if (process.env.VUE_APP_SELF_ENV === 'prod') {
   window.console.log = function (){};
 }
 
-
+const pinia = createPinia()
 const vueApp = createApp(App)
 vueApp.directive('loading', ElLoading)
 vueApp.directive('InfiniteScroll',ElInfiniteScroll)
+vueApp.use(pinia)
 vueApp.use(router).mount('#app')
