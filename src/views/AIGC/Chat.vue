@@ -645,7 +645,7 @@ const _getResult = async (message, tagId) => {
     console.log("onmessage", e);
     if (e.data == "[DONE]") {
       sendLoading.value = false;
-      source.close(source);
+      source.close();
     } else if (e.type == "message") {
       let n = e.data.replace(/\\\\/g, "\\");
       n = n.replace(/\\n/g, "\n");
@@ -657,14 +657,13 @@ const _getResult = async (message, tagId) => {
   };
 
   source.onerror = (e) => {
-    sendLoading.value = false;
-    source._close(source);
     try {
       console.log(e, "onerror");
-      const data = JSON.parse(e.data);
+      sendLoading.value = false;
+      e.target.close();
       ElMessage({
         type: "error",
-        message: data.code + ":" + data.error,
+        message: e.error || "异常: 对话中断",
       });
     } catch (error) {}
   };
