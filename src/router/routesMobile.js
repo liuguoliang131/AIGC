@@ -51,13 +51,13 @@ const routes = [
     }
   },
   {
-    path: '/product_center',
-    name: 'ProductCenter',
-    component: () => import('../views/ProductCenter/ProductCenter.vue'),
+    path: '/learn_center/player',
+    name: 'Player',
+    component: () => import('../views/LearnCenter/Player.vue'),
     meta: {
       titleBar: true,
-      isAuthenticated: false
-    },
+      isAuthenticated: true
+    }
   },
   {
     path: '/product_center',

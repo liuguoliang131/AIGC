@@ -51,6 +51,15 @@ const routes = [
     }
   },
   {
+    path: '/learn_center/player',
+    name: 'Player',
+    component: () => import('../views/LearnCenter/Player.vue'),
+    meta: {
+      titleBar: true,
+      isAuthenticated: true
+    }
+  },
+  {
     path: '/product_center',
     name: 'ProductCenter',
     component: () => import('../views/ProductCenter/ProductCenter.vue'),

@@ -22,7 +22,7 @@
         <span
         :class="[
           'banner_text',
-          useRouterConfig.currentPath == '/learn_center'
+          useRouterConfig.currentPath.includes('/learn_center')
             ? 'banner_text_selected'
             : '',
         ]"
