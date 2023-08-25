@@ -3,94 +3,42 @@
     <sidebar>
       <div class="side-content">
         <div v-if="sendLoading" class="newchat_disabled">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="14"
-            height="14"
-            viewBox="0 0 14 14"
-            fill="none"
-          >
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
             <rect y="6" width="14" height="2" fill="white" />
-            <rect
-              x="6"
-              y="14"
-              width="14"
-              height="2"
-              transform="rotate(-90 6 14)"
-              fill="white"
-            />
+            <rect x="6" y="14" width="14" height="2" transform="rotate(-90 6 14)" fill="white" />
           </svg>
           <span>新建聊天</span>
         </div>
         <div v-else class="newchat" @click="handNewChat">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="14"
-            height="14"
-            viewBox="0 0 14 14"
-            fill="none"
-          >
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
             <rect y="6" width="14" height="2" fill="white" />
-            <rect
-              x="6"
-              y="14"
-              width="14"
-              height="2"
-              transform="rotate(-90 6 14)"
-              fill="white"
-            />
+            <rect x="6" y="14" width="14" height="2" transform="rotate(-90 6 14)" fill="white" />
           </svg>
           <span>新建聊天</span>
         </div>
 
         <div class="log_list" v-loading="tagList.loading">
-          <div
-            class="scroll_view"
-            ref="tagListScroll"
-            @scroll="handTagListScroll"
-          >
+          <div class="scroll_view" ref="tagListScroll" @scroll="handTagListScroll">
             <div v-if="tagList.isNull" class="scroll_page"></div>
             <div v-else ref="tagListPage" class="scroll_page">
-              <div
-                v-for="(item, index) in tagList.list"
-                :key="index"
-                :class="[
-                  'log_item',
-                  item.id === activeTag ? 'log_item_active' : '',
-                ]"
-                @click="handActiveTag(item, index)"
-              >
-                <img
-                  v-if="item.id === activeTag"
-                  class="bubble_icon"
-                  src="https://quanres.hanhoukeji.com/hanhou-ai-pc/bubble_icon_active.png"
-                  alt=""
-                />
-                <img
-                  v-else
-                  class="bubble_icon"
-                  src="https://quanres.hanhoukeji.com/hanhou-ai-pc/bubble_icon_.png"
-                  alt=""
-                />
+              <div v-for="(item, index) in tagList.list" :key="index" :class="[
+                'log_item',
+                item.id === activeTag ? 'log_item_active' : '',
+              ]" @click="handActiveTag(item, index)">
+                <img v-if="item.id === activeTag" class="bubble_icon"
+                  src="https://quanres.hanhoukeji.com/hanhou-ai-pc/bubble_icon_active.png" alt="" />
+                <img v-else class="bubble_icon" src="https://quanres.hanhoukeji.com/hanhou-ai-pc/bubble_icon_.png"
+                  alt="" />
                 <span class="log_name nowrap">{{ item.title }}</span>
 
-                <svg
-                  v-if="item.id === activeTag"
-                  @click.self="handDeleteTag(item, index)"
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="18"
-                  height="20"
-                  viewBox="0 0 18 20"
-                  fill="none"
-                >
+                <svg v-if="item.id === activeTag" @click.self="handDeleteTag(item, index)"
+                  xmlns="http://www.w3.org/2000/svg" width="18" height="20" viewBox="0 0 18 20" fill="none">
                   <path
                     d="M2.39449 5.48451C2.59157 5.48451 2.78059 5.56484 2.91995 5.70784C3.05931 5.85083 3.13761 6.04478 3.13761 6.24701V16.9784C3.13761 17.1749 3.17535 17.3696 3.24867 17.5512C3.322 17.7328 3.42947 17.8978 3.56496 18.0368C3.70044 18.1758 3.86129 18.286 4.0383 18.3612C4.21531 18.4364 4.40502 18.475 4.5966 18.475H13.4038C13.7906 18.475 14.1616 18.3173 14.4352 18.0366C14.7087 17.756 14.8624 17.3753 14.8624 16.9784V6.24701C14.8624 6.04478 14.9407 5.85083 15.08 5.70784C15.2194 5.56484 15.4084 5.48451 15.6055 5.48451C15.8026 5.48451 15.9916 5.56484 16.131 5.70784C16.2703 5.85083 16.3486 6.04478 16.3486 6.24701V16.9784C16.3486 17.7798 16.0384 18.5483 15.4861 19.115C14.9338 19.6817 14.1848 20 13.4038 20H4.59618C3.81517 20 3.06614 19.6817 2.51388 19.115C1.96162 18.5483 1.65137 17.7798 1.65137 16.9784V6.24701C1.65137 6.04478 1.72966 5.85083 1.86902 5.70784C2.00838 5.56484 2.1974 5.48451 2.39449 5.48451ZM6.24797 3.78413C6.44506 3.78413 6.63408 3.70379 6.77344 3.5608C6.9128 3.4178 6.99109 3.22385 6.99109 3.02163C6.99104 2.82505 7.02873 2.63039 7.102 2.44876C7.17528 2.26714 7.28271 2.1021 7.41815 1.96308C7.5536 1.82406 7.71441 1.71378 7.8914 1.63854C8.06839 1.56331 8.25809 1.52458 8.44967 1.52458H9.55031C9.74192 1.52452 9.93167 1.56321 10.1087 1.63842C10.2857 1.71364 10.4466 1.82391 10.5821 1.96293C10.7176 2.10195 10.8251 2.26701 10.8984 2.44866C10.9717 2.63032 11.0094 2.82502 11.0093 3.02163C11.0093 3.22385 11.0876 3.4178 11.227 3.5608C11.3663 3.70379 11.5553 3.78413 11.7524 3.78413C11.9495 3.78413 12.1385 3.70379 12.2779 3.5608C12.4172 3.4178 12.4955 3.22385 12.4955 3.02163C12.4956 2.22702 12.1906 1.46437 11.6466 0.898822C11.1027 0.333277 10.3635 0.0103601 9.58912 0H8.41128C7.63697 0.0104696 6.89783 0.333421 6.35387 0.898943C5.80991 1.46446 5.50489 2.22705 5.50485 3.02163C5.50485 3.22385 5.58315 3.4178 5.72251 3.5608C5.86187 3.70379 6.05089 3.78413 6.24797 3.78413Z"
-                    fill="#C9E1FF"
-                  />
+                    fill="#C9E1FF" />
                   <path
                     d="M0 3.70537C0 3.50314 0.0782929 3.3092 0.217655 3.1662C0.357017 3.02321 0.546032 2.94287 0.743119 2.94287H17.2569C17.454 2.94287 17.643 3.02321 17.7823 3.1662C17.9217 3.3092 18 3.50314 18 3.70537C18 3.9076 17.9217 4.10155 17.7823 4.24454C17.643 4.38754 17.454 4.46787 17.2569 4.46787H0.743119C0.546032 4.46787 0.357017 4.38754 0.217655 4.24454C0.0782929 4.10155 0 3.9076 0 3.70537ZM6.7983 6.47283C6.99539 6.47283 7.18441 6.55317 7.32377 6.69616C7.46313 6.83916 7.54142 7.0331 7.54142 7.23533V15.7076C7.54142 15.9098 7.46313 16.1037 7.32377 16.2467C7.18441 16.3897 6.99539 16.4701 6.7983 16.4701C6.60122 16.4701 6.4122 16.3897 6.27284 16.2467C6.13348 16.1037 6.05518 15.9098 6.05518 15.7076V7.23533C6.05518 7.0331 6.13348 6.83916 6.27284 6.69616C6.4122 6.55317 6.60122 6.47283 6.7983 6.47283ZM11.2021 6.47283C11.3992 6.47283 11.5882 6.55317 11.7276 6.69616C11.8669 6.83916 11.9452 7.0331 11.9452 7.23533V15.7076C11.9452 15.9098 11.8669 16.1037 11.7276 16.2467C11.5882 16.3897 11.3992 16.4701 11.2021 16.4701C11.005 16.4701 10.816 16.3897 10.6766 16.2467C10.5373 16.1037 10.459 15.9098 10.459 15.7076V7.23533C10.459 7.0331 10.5373 6.83916 10.6766 6.69616C10.816 6.55317 11.005 6.47283 11.2021 6.47283Z"
-                    fill="#C9E1FF"
-                  />
+                    fill="#C9E1FF" />
                 </svg>
               </div>
             </div>
@@ -105,69 +53,37 @@
       </div>
       <div class="body-content">
         <div class="chat_box">
-          <div
-            class="chat_scroll_view"
-            @scroll="chatScrollViewListen"
-            ref="chatScrollView"
-          >
+          <div class="chat_scroll_view" @scroll="chatScrollViewListen" ref="chatScrollView">
             <div class="list_content" ref="chatScrollPage">
               <div v-show="chatList.loading" class="loading">正在加载...</div>
               <template v-for="(item, idx) in chatList.list" :key="idx">
                 <div v-if="item.type == 1" class="msg_item question">
                   <div class="toright">
                     <div class="bubble">
-                      <div
-                        v-text="item.description"
-                        style="white-space: pre-wrap"
-                      ></div>
+                      <div v-text="item.description" style="white-space: pre-wrap"></div>
                     </div>
-                    <img
-                      class="avatar"
-                      src="https://quanres.hanhoukeji.com/hanhou-ai-pc/mine-avatar.png"
-                      alt=""
-                    />
+                    <img class="avatar" src="https://quanres.hanhoukeji.com/hanhou-ai-pc/mine-avatar.png" alt="" />
                   </div>
                 </div>
                 <div v-else-if="item.type == 2" class="msg_item answer">
                   <div class="toleft">
-                    <img
-                      class="avatar"
-                      src="https://quanres.hanhoukeji.com/hanhou-ai-pc/hhrobot-avatar.png"
-                      alt=""
-                    />
+                    <img class="avatar" src="https://quanres.hanhoukeji.com/hanhou-ai-pc/hhrobot-avatar.png" alt="" />
                     <div class="bubble">
-                      <div
-                        v-if="
-                          !item.description &&
-                          sendLoading &&
-                          chatList.list.length - 1 === idx
-                        "
-                      >
+                      <div v-if="!item.description &&
+                        sendLoading &&
+                        chatList.list.length - 1 === idx
+                        ">
                         <el-icon class="rotate_icon"><loading-icon /></el-icon>
                       </div>
-                      <div
-                        v-else
-                        v-text="item.description"
-                        style="white-space: pre-wrap"
-                      ></div>
-                      <div
-                        class="taptap"
-                        v-show="
-                          !(chatList.list.length - 1 == idx && sendLoading)
-                        "
-                      >
+                      <div v-else v-text="item.description" style="white-space: pre-wrap"></div>
+                      <div class="taptap" v-show="!(chatList.list.length - 1 == idx && sendLoading)
+                        ">
                         <div class="copy" @click="handleCopy(item.description)">
-                          <img
-                            src="https://quanres.hanhoukeji.com/hanhou-ai-pc/copy-icon.svg"
-                            alt=""
-                          />
+                          <img src="https://quanres.hanhoukeji.com/hanhou-ai-pc/copy-icon.svg" alt="" />
                           复制
                         </div>
                         <div class="del" @click="handShowRemoveMsg(item.id)">
-                          <img
-                            src="https://quanres.hanhoukeji.com/hanhou-ai-pc/delete-icon.svg"
-                            alt=""
-                          />
+                          <img src="https://quanres.hanhoukeji.com/hanhou-ai-pc/delete-icon.svg" alt="" />
                           删除
                         </div>
                       </div>
@@ -181,34 +97,20 @@
         </div>
         <div class="ask">
           <div class="ask_input">
-            <el-input
-              class="textarea"
-              v-model="question"
-              resize="none"
-              @keydown="sendByKey"
-              :autosize="{ minRows: 1, maxRows: 6 }"
-              type="textarea"
-              placeholder="请输入您需要提问的信息..."
-            />
+            <el-input class="textarea" v-model="question" resize="none" @keydown="sendByKey"
+              :autosize="{ minRows: 1, maxRows: 6 }" type="textarea" placeholder="请输入您需要提问的信息..." />
             <div class="length_count">
-              <span
-                :style="{ color: question.length > 800 ? 'red' : 'inherit' }"
-                >{{ question.length }}</span
-              >/800
+              <span :style="{ color: question.length > 800 ? 'red' : 'inherit' }">{{ question.length }}</span>/800
             </div>
           </div>
 
           <div v-if="sendLoading" class="send_btn_disabled">发送</div>
-          <div v-else @click="handSend" class="send_btn">发送</div>
+          <div v-else @click="handleSend" class="send_btn">发送</div>
         </div>
       </div>
     </div>
     <!-- 敏感词提醒 -->
-    <my-dialog
-      :show-close="false"
-      :close-on-click-modal="false"
-      v-model:visible="dialogVisible"
-    >
+    <my-dialog :show-close="false" :close-on-click-modal="false" v-model:visible="dialogVisible">
       <div class="dialog_dia">
         <div class="dia_title">敏感词提醒</div>
         <div class="dia_content">{{ tipMessage }}</div>
@@ -219,11 +121,7 @@
     </my-dialog>
 
     <!-- 删除对话窗口提醒 -->
-    <my-dialog
-      :show-close="false"
-      :close-on-click-modal="false"
-      v-model:visible="removeVisible"
-    >
+    <my-dialog :show-close="false" :close-on-click-modal="false" v-model:visible="removeVisible">
       <div class="dialog_dia">
         <div class="dia_title">温馨提示</div>
         <div class="dia_content">是否要删除此对话窗口？</div>
@@ -235,11 +133,7 @@
     </my-dialog>
 
     <!-- 删除对话信息提醒 -->
-    <my-dialog
-      :show-close="false"
-      :close-on-click-modal="false"
-      v-model:visible="removeMsgVisible"
-    >
+    <my-dialog :show-close="false" :close-on-click-modal="false" v-model:visible="removeMsgVisible">
       <div class="dialog_dia">
         <div class="dia_title">温馨提示</div>
         <div class="dia_content">是否要删除此对话信息？</div>
@@ -250,12 +144,7 @@
       </div>
     </my-dialog>
 
-    <div
-      ref="copy_text"
-      class="clipboard_text"
-      data-clipboard-action="copy"
-      data-clipboard-text="copytext"
-    ></div>
+    <div ref="copy_text" class="clipboard_text" data-clipboard-action="copy" data-clipboard-text="copytext"></div>
   </div>
 </template>
 
@@ -281,6 +170,7 @@ import utils from "@/common/utils";
 import Sidebar from "./components/Sidebar.vue";
 import MyDialog from "@/components/MyDialog.vue";
 import { useUserStore } from "@/store/user";
+import { debounce } from 'lodash';
 
 const userStore = useUserStore(); //用户信息
 
@@ -297,7 +187,7 @@ const userInfo = utils.getUserInfo() || { residueQAQuantity: 0 };
 const residueQAQuantity = ref(Number(userInfo.residueQAQuantity || 0));
 
 // 弹层关闭事件
-const dialogClose = () => {};
+const dialogClose = () => { };
 
 // 敏感词提醒弹窗
 const dialogVisible = ref(false);
@@ -528,8 +418,7 @@ const _getResult = async (message, tagId) => {
   let resultSign = await _getSign({});
 
   const source = new EventSourcePolyfill(
-    `${process.env.VUE_APP_BASE_URL}${
-      api.chat_qa
+    `${process.env.VUE_APP_BASE_URL}${api.chat_qa
     }?question=${encodeURIComponent(message)}&tagId=${tagId}`,
     {
       headers: {
@@ -654,6 +543,7 @@ const _getResult = async (message, tagId) => {
 
       chatList.list[chatList.list.length - 1].description += s;
     }
+    scrollToEnd();
   };
 
   source.onerror = (e) => {
@@ -666,7 +556,7 @@ const _getResult = async (message, tagId) => {
         type: "error",
         message: data.code + ":" + data.error,
       });
-    } catch (error) {}
+    } catch (error) { }
   };
 };
 
@@ -731,6 +621,12 @@ const removeVisible = ref(false);
 const handDeleteTag = (item, index) => {
   removeVisible.value = true;
 };
+
+const scrollToEnd = debounce(function () {
+  nextTick(() => {
+    slideAnimation(chatScrollPage.value.offsetHeight);
+  });
+ }, 250);
 
 // 确认删除 左侧历史
 const handConfirmDeleteTag = () => {
@@ -798,7 +694,7 @@ watch(
 );
 
 // 发送问题
-const handSend = () => {
+const handleSend = () => {
   if (question.value.length === 0) {
     return;
   }
@@ -835,16 +731,19 @@ const handSend = () => {
     description: "",
     createdAt: "",
   });
-  nextTick(() => {
-    slideAnimation(chatScrollPage.value.offsetHeight);
-  });
+  scrollToEnd();
 
   _getResult(question1, activeTag.value);
 };
 
 const sendByKey = (event) => {
-  if (event.ctrlKey && event.code === "Enter") {
-    handSend();
+  if (event.code === "Enter") {
+    if (!event.ctrlKey && !event.metaKey) {
+      event.preventDefault();
+      handleSend();
+    } else {
+      question.value = question.value + '\n';
+    }
   }
 };
 
@@ -958,6 +857,7 @@ onMounted(() => {
 
   .side-content {
     height: 100%;
+
     .newchat {
       display: flex;
       align-items: center;
@@ -974,13 +874,16 @@ onMounted(() => {
       background: #126cfe;
       margin: auto;
       cursor: pointer;
+
       span {
         margin-left: 11px;
       }
+
       &:active {
         opacity: 0.8;
       }
     }
+
     .newchat_disabled {
       display: flex;
       align-items: center;
@@ -998,6 +901,7 @@ onMounted(() => {
       margin: auto;
       cursor: auto;
       opacity: 0.5;
+
       span {
         margin-left: 11px;
       }
@@ -1009,12 +913,15 @@ onMounted(() => {
       height: calc(100% - 90px);
       margin: auto;
       padding: 22px 0;
+
       .scroll_view {
         width: 301px;
         height: 100%;
         overflow-y: scroll;
+
         .scroll_page {
           margin-left: 22px;
+
           .log_item {
             position: relative;
             box-sizing: border-box;
@@ -1037,6 +944,7 @@ onMounted(() => {
               width: 20px;
               height: 20px;
             }
+
             .log_name {
               flex: 1;
               min-width: 0;
@@ -1050,6 +958,7 @@ onMounted(() => {
               line-height: normal;
               text-align: left;
             }
+
             .delete_icon {
               position: absolute;
               top: 50%;
@@ -1058,23 +967,29 @@ onMounted(() => {
               width: 20px;
               height: 20px;
               border-radius: 5px;
+
               &:hover {
                 background-color: rgba(0, 0, 0, 0.4);
               }
+
               &:active {
                 background-color: rgba(0, 0, 0, 0.5);
               }
             }
           }
+
           .log_item:nth-child(1) {
             margin-top: 0;
           }
+
           .log_item:nth-last-child(1) {
             margin-bottom: 0;
           }
+
           .log_item_active {
             background-color: rgba(0, 0, 0, 0.3);
             border: 1px solid rgba(90, 161, 248, 1);
+
             .log_name {
               color: rgba(201, 225, 255, 1);
             }
@@ -1083,10 +998,12 @@ onMounted(() => {
       }
     }
   }
+
   .container-body {
     flex: 1;
     height: 100%;
     background: #f1f2f6;
+
     .body-top {
       display: flex;
       align-items: center;
@@ -1101,10 +1018,12 @@ onMounted(() => {
       font-weight: 400;
       line-height: normal;
     }
+
     .body-content {
       position: relative;
       width: 100%;
       height: calc(100% - 68px);
+
       .chat_box {
         position: relative;
         height: 100%;
@@ -1113,6 +1032,7 @@ onMounted(() => {
           position: relative;
           height: 100%;
           overflow-y: scroll;
+
           &::-webkit-scrollbar {
             display: none;
           }
@@ -1134,15 +1054,19 @@ onMounted(() => {
               font-weight: 400;
               line-height: 22px;
             }
+
             .msg_item {
               margin: 40px 0;
             }
+
             .question {
               display: flex;
               justify-content: flex-end;
+
               .toright {
                 display: flex;
                 justify-content: flex-end;
+
                 .bubble {
                   max-width: 1278px;
                   padding: 12px 16px;
@@ -1155,6 +1079,7 @@ onMounted(() => {
                   font-weight: 400;
                   line-height: 44px;
                 }
+
                 .avatar {
                   width: 68px;
                   height: 68px;
@@ -1163,18 +1088,22 @@ onMounted(() => {
                 }
               }
             }
+
             .answer {
               display: flex;
               justify-content: flex-start;
+
               .toleft {
                 display: flex;
                 justify-content: flex-start;
+
                 .avatar {
                   width: 68px;
                   height: 68px;
                   border-radius: 50%;
                   margin-right: 10px;
                 }
+
                 .bubble {
                   position: relative;
                   max-width: 1278px;
@@ -1202,30 +1131,36 @@ onMounted(() => {
                     font-style: normal;
                     font-weight: 500;
                     line-height: normal;
+
                     .copy {
                       display: flex;
                       align-items: center;
                       margin-right: 15px;
+
                       img {
                         width: 30px;
                         height: 30px;
                         margin-right: 15px;
                         cursor: pointer;
                       }
+
                       &:active {
                         border-radius: 5px;
                         background-color: rgba(18, 108, 254, 0.5);
                       }
                     }
+
                     .del {
                       display: flex;
                       align-items: center;
+
                       img {
                         width: 30px;
                         height: 30px;
                         margin-right: 15px;
                         cursor: pointer;
                       }
+
                       &:active {
                         border-radius: 5px;
                         background-color: rgba(18, 108, 254, 0.5);
@@ -1236,10 +1171,12 @@ onMounted(() => {
               }
             }
           }
+
           .page_bottom {
             height: 225px;
           }
         }
+
         .scroll_page::-webkit-scrollbar {
           display: none !important;
         }
@@ -1256,10 +1193,12 @@ onMounted(() => {
         width: 100%;
         padding: 0 30px 38px 30px;
         background: #f1f2f6;
+
         .ask_input {
           position: relative;
           flex: 1;
           min-height: 52px;
+
           .textarea {
             &::placeholder {
               color: #ccc;
@@ -1282,12 +1221,15 @@ onMounted(() => {
               color: #333;
               font-size: 19px;
               line-height: 27px;
-              resize: none; /*禁止拉伸*/
+              resize: none;
+              /*禁止拉伸*/
             }
+
             /deep/.el-textarea__inner::-webkit-scrollbar {
               display: none;
             }
           }
+
           .length_count {
             position: absolute;
             bottom: 16.5px;
@@ -1301,6 +1243,7 @@ onMounted(() => {
             line-height: 19px;
           }
         }
+
         .send_btn {
           display: flex;
           align-items: center;
@@ -1318,10 +1261,12 @@ onMounted(() => {
           font-weight: 500;
           line-height: normal;
           cursor: pointer;
+
           &:active {
             opacity: 0.8;
           }
         }
+
         .send_btn_disabled {
           display: flex;
           align-items: center;
@@ -1344,8 +1289,10 @@ onMounted(() => {
       }
     }
   }
+
   .dialog_dia {
     height: 229px;
+
     .dia_title {
       color: #000;
       text-align: center;
@@ -1357,6 +1304,7 @@ onMounted(() => {
       padding-top: 23.7px;
       padding-bottom: 12px;
     }
+
     .dia_content {
       color: #000;
       text-align: center;
@@ -1372,6 +1320,7 @@ onMounted(() => {
       align-items: center;
       justify-content: center;
       margin-top: 67px;
+
       .confirm {
         display: flex;
         align-items: center;
@@ -1394,11 +1343,13 @@ onMounted(() => {
         }
       }
     }
+
     .dia_footer_2 {
       display: flex;
       align-items: center;
       justify-content: space-between;
       margin-top: 50px;
+
       .cancel {
         display: flex;
         align-items: center;
@@ -1415,10 +1366,12 @@ onMounted(() => {
         font-weight: 500;
         line-height: normal;
         cursor: pointer;
+
         &:active {
           opacity: 0.8;
         }
       }
+
       .confirm {
         display: flex;
         align-items: center;
@@ -1450,6 +1403,7 @@ onMounted(() => {
     display: flex;
     flex-direction: column;
     align-items: center;
+
     .service_title {
       margin-top: 30px;
       color: #000;
@@ -1459,6 +1413,7 @@ onMounted(() => {
       font-weight: 400;
       line-height: normal;
     }
+
     .service_code {
       display: flex;
       align-items: center;
@@ -1467,6 +1422,7 @@ onMounted(() => {
       margin-bottom: 40px;
       width: 320px;
       height: 320px;
+
       img {
         width: 270px;
         height: 270px;
@@ -1481,10 +1437,12 @@ onMounted(() => {
     width: 200px;
     height: 200px;
   }
+
   @keyframes rotateLoading {
     0% {
       transform: rotate(0deg);
     }
+
     100% {
       transform: rotate(360deg);
     }

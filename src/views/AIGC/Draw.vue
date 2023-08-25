@@ -437,7 +437,7 @@ onMounted(() => {
                         popper-class="popper_style2"
                         effect="dark"
                         content="升级左侧上方图为单张大图"
-                        placement="right"
+                        placement="bottom-start·"
                       >
                         <div
                           :class="[
@@ -455,7 +455,7 @@ onMounted(() => {
                         popper-class="popper_style2"
                         effect="dark"
                         content="升级右侧上方图为单张大图"
-                        placement="right"
+                        placement="bottom-start"
                       >
                         <div
                           :class="[
@@ -473,7 +473,7 @@ onMounted(() => {
                         popper-class="popper_style2"
                         effect="dark"
                         content="升级左侧下方图为单张大图"
-                        placement="right"
+                        placement="bottom-start"
                       >
                         <div
                           :class="[
@@ -491,7 +491,7 @@ onMounted(() => {
                         popper-class="popper_style2"
                         effect="dark"
                         content="升级右侧下方图为单张大图"
-                        placement="right"
+                        placement="bottom-start"
                       >
                         <div
                           :class="[

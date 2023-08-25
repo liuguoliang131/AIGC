@@ -18,7 +18,8 @@
         @click="goProduct"
         >AI工具</span
       >
-      <span
+      <div class="learn_center_wrapper">
+        <span
         :class="[
           'banner_text',
           useRouterConfig.currentPath == '/learn_center'
@@ -26,8 +27,9 @@
             : '',
         ]"
         @click="goLearnCenter"
-        >学习中心</span
-      >
+        >学习中心</span>
+        <img src="https://quanres.hanhoukeji.com/hanhou-ai-pc/icon_limit_free.png" class="label" @click="goHome" />
+      </div>
     </div>
     <div class="banner_right">
       <el-button
@@ -162,14 +164,28 @@ const confirmExit = () => {
       cursor: pointer;
     }
 
+    .learn_center_wrapper{
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .label {
+      width: 80px;
+      height: 32px;
+      margin-bottom: 12px;
+    }
+
     .banner_text {
       position: relative;
       color: #1e1e1e;
       font-size: 22px;
-      margin-right: 40px;
       font-weight: normal;
       line-height: 39px;
       cursor: pointer;
+
+      &:nth-child(2) {
+        margin-right: 40px;
+      }
 
       &::after {
         position: absolute;
