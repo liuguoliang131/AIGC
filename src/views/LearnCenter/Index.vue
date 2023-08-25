@@ -14,8 +14,19 @@
       </div>
       <div class="content1">
         <div class="group_list">
-          <div class="group_item" v-for="item in list" :key="item.id">
-            {{ item.name }}
+          <div
+            class="group_item"
+            v-for="item in list"
+            :key="item.id"
+            @click="handGoPlay(item)"
+          >
+            <el-image
+              class="cover"
+              src="https://quanres.hanhoukeji.com/hanhou-ai-pc/login_bg2.png"
+              alt=""
+              fit="fill"
+            ></el-image>
+            <div class="title lineClamp2">{{ item.name }}</div>
           </div>
         </div>
         <div class="footer">
@@ -35,34 +46,24 @@
 
 <script setup>
 import { onMounted, onUnmounted, reactive, ref, watch } from "vue";
-import utils from "@/common/utils";
+import { ElImage, ElMessage } from "element-plus";
 import TopTitleBar from "@/components/TopTitleBar.vue";
+import playData from "./playData.js";
+import { useRouter } from "vue-router";
+const router = useRouter();
 
 const tabs = ref([
   {
-    id: 1,
+    id: null,
     name: "全部",
   },
   {
-    id: 2,
-    name: "AI对话课程",
-  },
-  {
-    id: 3,
-    name: "AI绘画课程",
-  },
-]);
-
-const originList = ref([
-  {
     id: 1,
     name: "AI对话课程",
-    cover: "",
   },
   {
     id: 2,
     name: "AI绘画课程",
-    cover: "",
   },
 ]);
 
@@ -76,22 +77,39 @@ const handActive = (item) => {
 
 // 根据tab值筛选列表
 const screenList = (val) => {
-  if (val.id === 1) {
-    list.value = originList.value;
-  } else {
+  if (val.id === null) {
+    return (list.value = playData);
   }
+  list.value = playData.filter((item) => {
+    return item.type === val.id;
+  });
 };
 
 watch(
   activeTab,
   (newVal) => {
-    console.log("newVal", newVal);
     screenList(newVal);
   },
   {
     immediate: true,
   }
 );
+
+// 去往播放页
+const handGoPlay = (item) => {
+  if (!item.children || !item.children.length) {
+    return ElMessage({
+      type: "warning",
+      message: "这个视频是空的~",
+    });
+  }
+  router.push({
+    path: "/learn_center/player",
+    query: {
+      id: item.id,
+    },
+  });
+};
 
 const handGoICP = () => {
   window.open(`https://beian.miit.gov.cn/`);
@@ -146,8 +164,42 @@ const handGoICP = () => {
     .content1 {
       height: calc(100% - 112px);
       overflow-y: scroll;
-
-      background-color: pink;
+      .group_list {
+        display: grid;
+        grid-template-columns: 400px 400px 400px 400px;
+        grid-template-rows: 302px;
+        grid-row-gap: 66px;
+        grid-column-gap: 25px;
+        width: 1675px;
+        padding-top: 60px;
+        margin: auto;
+        .group_item {
+          width: 400px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          cursor: pointer;
+          &:hover {
+            opacity: 0.9;
+          }
+          .cover {
+            width: 400px;
+            height: 225.5px;
+            border-radius: 10px;
+          }
+          .title {
+            width: 400px;
+            height: 54px;
+            margin-top: 20.5px;
+            color: #000;
+            font-family: PingFang SC;
+            font-size: 19px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: 27px;
+          }
+        }
+      }
     }
     .footer {
       padding-top: 100px;
