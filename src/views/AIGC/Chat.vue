@@ -104,7 +104,7 @@
             </div>
           </div>
 
-          <div v-if="sendLoading" class="send_btn_disabled">发送</div>
+          <div v-if="sendLoading || question == ''" class="send_btn_disabled">发送</div>
           <div v-else @click="handleSend" class="send_btn">发送</div>
         </div>
       </div>
