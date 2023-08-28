@@ -81,7 +81,7 @@ const screenList = (val) => {
     return (list.value = playData);
   }
   list.value = playData.filter((item) => {
-    return item.type === val.id;
+    return item.group === val.id;
   });
 };
 
@@ -106,7 +106,7 @@ const handGoPlay = (item) => {
   router.push({
     path: "/learn_center/player",
     query: {
-      id: item.id,
+      group: item.group,
     },
   });
 };

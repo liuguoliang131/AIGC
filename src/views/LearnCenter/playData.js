@@ -1,7 +1,7 @@
 const data = [
   {
     id: 1,
-    type: 1,
+    group: 1,
     name: "AI对话课程",
     cover: "",
     children: [
@@ -57,7 +57,7 @@ const data = [
   },
   {
     id: 2,
-    type: 2,
+    group: 2,
     name: "AI绘画课程",
     cover: "",
     children: [
