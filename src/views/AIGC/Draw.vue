@@ -437,7 +437,7 @@ onMounted(() => {
                         popper-class="popper_style2"
                         effect="dark"
                         content="升级左侧上方图为单张大图"
-                        placement="bottom-start·"
+                        placement="bottom-start"
                       >
                         <div
                           :class="[
