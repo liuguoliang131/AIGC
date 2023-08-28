@@ -694,7 +694,7 @@ watch(
 
 // 发送问题
 const handleSend = () => {
-  if (question.value.length === 0) {
+  if (question.value.trim().length === 0) {
     return;
   }
   if (question.value.length > 800) {
@@ -710,7 +710,7 @@ const handleSend = () => {
     });
   }
   actionState = "2"; //动作状态设定为添加新问题
-  const question1 = reString(question.value);
+  const question1 = reString(question.value.trim());
   question.value = "";
   sendLoading.value = true;
   // 添加问题和答案的位置到列表
@@ -737,7 +737,7 @@ const handleSend = () => {
 
 const sendByKey = (event) => {
   if (event.code === "Enter") {
-    if (!event.ctrlKey && !event.metaKey) {
+    if (!event.ctrlKey && !event.metaKey && !event.shiftKey && !event.altKey) {
       event.preventDefault();
       handleSend();
     } else {
