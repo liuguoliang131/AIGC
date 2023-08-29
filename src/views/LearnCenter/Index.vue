@@ -22,7 +22,7 @@
           >
             <el-image
               class="cover"
-              src="https://quanres.hanhoukeji.com/hanhou-ai-pc/login_bg2.png"
+              :src="item.cover"
               alt=""
               fit="fill"
             ></el-image>

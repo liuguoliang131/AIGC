@@ -1,35 +1,23 @@
 <template>
   <div class="container" v-loading="loading">
     <div class="background"></div>
-    <div class="logo-view">
-      <img src="@/assets/logo.png" class="logo" @click="goHome" />
+    <div class="logoWrapper" @click="goHome">
+      <img src="@/assets/logo.png" class="logo" />
+      <span :class="['logoText', 'logoTextBlack']">
+        Hanhou·AI
+      </span>
     </div>
     <div></div>
     <div class="login-box">
       <div class="login-title">一起探索AI的无限可能</div>
       <div class="input-box">
         <div class="input-group">
-          <input
-            type="tel"
-            id="phone"
-            maxlength="11"
-            v-model="phone"
-            placeholder="请输入手机号"
-            class="input-phone"
-            @input="handlePhoneInput"
-          />
+          <input type="tel" id="phone" maxlength="11" v-model="phone" placeholder="请输入手机号" class="input-phone"
+            @input="handlePhoneInput" />
         </div>
         <div class="input-group">
-          <input
-            type="tel"
-            id="code"
-            maxlength="4"
-            v-model="code"
-            placeholder="请输入验证码"
-            class="input-verCode"
-            @input="handleCodeInput"
-            @keyup.enter="login"
-          />
+          <input type="tel" id="code" maxlength="4" v-model="code" placeholder="请输入验证码" class="input-verCode"
+            @input="handleCodeInput" @keyup.enter="login" />
           <button class="code-btn" @click="sendCode" :disabled="timer !== null">
             {{ timer ? countDown : "获取验证码" }}
           </button>
@@ -41,9 +29,7 @@
         <!-- <input v-model="agree" type="checkbox" class="checkbox"> -->
         <!-- <label for="agree">我同意相关协议</label> -->
         登录即代表您已同意
-        <span class="policy" @click="handGoAgree(1)"
-          >《服务协议和隐私政策》</span
-        >
+        <span class="policy" @click="handGoAgree(1)">《服务协议和隐私政策》</span>
         和
         <span class="policy" @click="handGoAgree(2)">《安全协议》</span>
       </div>
@@ -199,6 +185,33 @@ export default {
   justify-content: space-between;
   align-items: center;
   position: relative;
+
+  .logoWrapper {
+    position: absolute;
+    top: 0;
+    cursor: pointer;
+    height: 70px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    .logo {
+      width: 40px;
+      height: 40px;
+      margin-left: 22px;
+      margin-right: 14px;
+    }
+
+    .logoText {
+      color: #fff;
+      font-size: 28px;
+      font-weight: 600;
+    }
+
+    .logoTextBlack {
+      color: #1e1e1e;
+    }
+  }
 }
 
 .background {

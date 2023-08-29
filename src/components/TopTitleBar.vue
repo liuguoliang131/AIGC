@@ -1,64 +1,50 @@
 <template>
-  <div
-    class="banner"
-    :style="{
-      backgroundColor: `rgba(255, 255, 255, ${useRouterConfig.titleBarOpacity})`,
-      display: useRouterConfig.titleBar ? 'flex' : 'none',
-    }"
-  >
+  <div class="banner" :style="{
+    backgroundColor: `rgba(255, 255, 255, ${useRouterConfig.titleBarOpacity})`,
+    display: useRouterConfig.titleBar ? 'flex' : 'none',
+  }">
     <div class="banner_left">
-      <img src="@/assets/logo.png" class="logo" @click="goHome" />
-      <span
-        :class="[
-          'banner_text',
-          useRouterConfig.currentPath == '/product_center'
-            ? 'banner_text_selected'
-            : '',
-        ]"
-        @click="goProduct"
-        >AI工具</span
-      >
+      <div class="logoWrapper" @click="goHome">
+        <img src="@/assets/logo.png" class="logo" />
+        <span :class="['logoText', isBlackMode ? 'logoTextBlack' : '']">
+          Hanhou·AI
+        </span>
+      </div>
+      <span :class="[
+        'banner_text',
+        isBlackMode ? 'black_text' : '',
+        useRouterConfig.currentPath == '/product_center'
+          ? 'banner_text_selected'
+          : '',
+      ]" @click="goProduct">AI工具</span>
       <div class="learn_center_wrapper">
-        <span
-        :class="[
+        <span :class="[
           'banner_text',
+          isBlackMode ? 'black_text' : '',
           useRouterConfig.currentPath.includes('/learn_center')
             ? 'banner_text_selected'
             : '',
-        ]"
-        @click="goLearnCenter"
-        >学习中心</span>
+        ]" @click="goLearnCenter">学习中心</span>
         <img src="https://quanres.hanhoukeji.com/hanhou-ai-pc/icon_limit_free.png" class="label" @click="goHome" />
       </div>
     </div>
     <div class="banner_right">
-      <el-button
-        type="primary"
-        plain
-        v-if="!userStore.userInfo"
-        @click="goLogin"
-        class="login"
-        >登录/注册</el-button
-      >
-      <div v-else>
-        <span style="font-size: 15px; color: #1e1e1e; margin-right: 20px">{{
-          userStore.userInfo.tel
-        }}</span>
-        <el-button type="primary" class="logout" @click="handExit"
-          >退出登录</el-button
-        >
+      <el-button plain v-if="!userStore.userInfo" @click="goLogin" :class="['login', isBlackMode ? 'loginBlack' : '',]">
+        登录/注册
+      </el-button>
+      <div class="logged" v-else>
+        <span :class="['loggedText', isBlackMode ? 'black_text' : '',]">
+          {{
+            userStore.userInfo.tel
+          }}
+        </span>
+        <el-button :class="['logout', isBlackMode ? 'loginBlack' : '',]" @click="handExit">退出登录</el-button>
       </div>
     </div>
 
     <!-- 退出提醒 -->
-    <el-dialog
-      align-center
-      v-model="exitVisible"
-      width="3.1777rem"
-      :show-close="false"
-      :close-on-click-modal="false"
-      @close="dialogClose"
-    >
+    <el-dialog align-center v-model="exitVisible" width="3.1777rem" :show-close="false" :close-on-click-modal="false"
+      @close="dialogClose">
       <div class="dia_title">退出提醒</div>
       <div class="dia_content">是否要退出登录</div>
       <div class="dia_footer_2">
@@ -77,12 +63,16 @@ import { useRouterConfigStore } from "@/store/routerConfigStore";
 import { useUserStore } from "@/store/user";
 
 import { ElButton, ElDialog, ElMessage } from "element-plus";
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { useRouter } from "vue-router";
 const router = useRouter();
 const useRouterConfig = useRouterConfigStore();
 
 const userStore = useUserStore(); // 用户信息
+
+const isBlackMode = computed(() => {
+  return useRouterConfig.titleBarOpacity > 0.65 || useRouterConfig.currentPath != '/';
+});
 
 function goHome() {
   router.push({
@@ -109,7 +99,7 @@ function goLogin() {
 }
 
 // 弹层关闭事件
-const dialogClose = () => {};
+const dialogClose = () => { };
 
 // 退出登录弹窗
 const exitVisible = ref(false);
@@ -157,18 +147,37 @@ const confirmExit = () => {
     justify-content: center;
     align-items: center;
 
-    .logo {
-      width: 197px;
-      height: 40px;
-      margin-right: 107px;
+    .logoWrapper {
       cursor: pointer;
+      margin-right: 107px;
+      height: 40px;
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+
+      .logo {
+        width: 40px;
+        height: 40px;
+        margin-right: 14px;
+      }
+
+      .logoText {
+        color: #fff;
+        font-size: 28px;
+        font-weight: 600;
+      }
+
+      .logoTextBlack {
+        color: #1e1e1e;
+      }
     }
 
-    .learn_center_wrapper{
+    .learn_center_wrapper {
       position: relative;
       display: flex;
       align-items: center;
     }
+
     .label {
       width: 80px;
       height: 32px;
@@ -177,7 +186,7 @@ const confirmExit = () => {
 
     .banner_text {
       position: relative;
-      color: #1e1e1e;
+      color: white;
       font-size: 22px;
       font-weight: normal;
       line-height: 39px;
@@ -200,6 +209,10 @@ const confirmExit = () => {
       }
     }
 
+    .black_text {
+      color: #1e1e1e;
+    }
+
     .banner_text_selected {
       font-weight: 600;
 
@@ -214,8 +227,8 @@ const confirmExit = () => {
 
     .login.el-button {
       background-color: transparent;
-      color: #126cfe;
-      border-color: #126cfe;
+      color: white;
+      border-color: white;
       font-size: 20px;
       width: 120px;
       height: 42px;
@@ -229,6 +242,34 @@ const confirmExit = () => {
       font-size: 20px;
       width: 120px;
       height: 42px;
+      background-color: transparent;
+      color: white;
+      border-color: white;
+    }
+
+    .loginBlack.el-button {
+      color: #fff;
+      border-color: #5495FF;
+      background-color: #5495FF;
+
+      &:hover {
+        background-color: #5495FF;
+      }
+    }
+
+    .logged {
+      display: flex;
+      align-items: center;
+
+      .loggedText {
+        font-size: 20px;
+        color: #fff;
+        margin-right: 20px;
+      }
+
+      .black_text {
+        color: #1e1e1e;
+      }
     }
   }
 }
