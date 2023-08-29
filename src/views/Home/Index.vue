@@ -7,7 +7,7 @@
         }
       " @scroll="onScroll">
       <div class="positionRelative">
-        <video class="coverVideo" autoplay muted loop>
+        <video ref="video" class="coverVideo" autoplay muted loop playsinline>
           <source src="https://quanres.hanhoukeji.com/hanhou-ai-pc/ai_home1_video.mp4" type="video/mp4">
         </video>
         <img src="https://quanres.hanhoukeji.com/hanhou-ai-pc/ai_home1_foreground.png" class="home1_fg" />
@@ -128,6 +128,7 @@
 import TopTitleBar from "@/components/TopTitleBar.vue";
 import {
   nextTick,
+  onMounted,
   ref,
 } from "vue";
 import MyDialog from "@/components/MyDialog.vue";
@@ -137,6 +138,7 @@ import { useRouter } from "vue-router";
 const useRouterConfig = useRouterConfigStore();
 const dialogVisible = ref(false);
 const slideItemHover = ref(null);
+const video = ref(null);
 function onMouseEnter(index) {
   nextTick(() => {
     slideItemHover.value = index;
@@ -202,6 +204,7 @@ function showWeCard() {
       transform: translateX(-50%);
       width: 1212px;
       height: auto;
+      pointer-events: none;
     }
 
 
