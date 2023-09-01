@@ -77,4 +77,14 @@ utils.isMobile = function () {
   return flag
 }
 
+// 判断浏览器是否是微信浏览器
+utils.isWechat = function () {
+  var ua = window.navigator.userAgent.toLowerCase()
+  if (ua.match(/micromessenger/i) == 'micromessenger') {
+    return true
+  } else {
+    return false
+  }
+}
+
 export default utils
