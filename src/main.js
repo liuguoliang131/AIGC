@@ -9,7 +9,7 @@ import {
   ElInfiniteScroll
 } from 'element-plus'
 import 'element-plus/dist/index.css'
-
+import 'vant/lib/index.css';
 
 if (process.env.VUE_APP_SELF_ENV === 'prod') {
   window.console.log = function () { };

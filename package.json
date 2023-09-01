@@ -25,6 +25,7 @@
     "postcss-pxtorem": "^6.0.0",
     "qiniu-js": "^3.4.1",
     "terser-webpack-plugin": "^5.3.9",
+    "vant": "^4.6.6",
     "video.js": "^8.5.2",
     "vue": "^3.2.13",
     "vue-core-video-player": "^0.2.0",

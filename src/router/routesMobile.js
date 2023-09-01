@@ -1,11 +1,10 @@
-import Home from '../views/Home/Index.vue'
+import Home from '../viewsMobile/Home/Index.vue'
 const routes = [
   {
     path: '/',
     name: 'Home',
     component: Home,
     meta: {
-      titleBar: true,
       isAuthenticated: false
     }
   },
@@ -68,15 +67,6 @@ const routes = [
       isAuthenticated: false
     },
   },
-  {
-    path: '/hello',
-    name: 'Hello',
-    component: () => import('../viewsMobile/hello/Index.vue'),
-    meta: {
-      titleBar: true,
-      isAuthenticated: false
-    },
-  }
 ]
 
 export default routes
