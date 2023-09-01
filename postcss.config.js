@@ -1,9 +1,10 @@
 module.exports = ({ file }) => {
 
-  const mobileList = ['mobile', 'viewsMobile']
-  const isMobile = mobileList.some(item => file.toLowerCase().indexOf(item.toLowerCase()) !== -1)
-  const rootValue = isMobile ? 75 : 192
 
+  const mobileList = [/\\mobile/, /\\viewsMobile/, /\\node_modules\\vant/]
+  const isMobile = mobileList.some(item => item.test(file))
+  const rootValue = isMobile ? 37.5 : 192
+  console.log(file, isMobile)
   return {
     plugins: {
       autoprefixer: {

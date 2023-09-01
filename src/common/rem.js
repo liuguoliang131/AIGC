@@ -6,7 +6,7 @@ export function mobileRem() {
 
   const calc = function () {
     let rootFontSize = document.documentElement.clientWidth / 10
-    rootFontSize = rootFontSize > 75 ? rootFontSize : 75
+    rootFontSize = rootFontSize > 37.5 ? rootFontSize : 37.5
     document.documentElement.style.fontSize = rootFontSize + 'px'
   }
   calc()

@@ -24,6 +24,11 @@
   border-radius: 10px;
 }
 
+:root:root {
+  --van-base-font: "PingFang SC";
+  --van-price-font: "PingFang SC";
+}
+
 body {
   font-size: 14px;
 }
