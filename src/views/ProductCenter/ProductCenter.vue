@@ -50,10 +50,6 @@ export default {
           path: "/aigc/chat",
         });
       } else if (value == 2) {
-        // return ElMessage({
-        //   message: "AI绘画功能正在开发中，敬请期待~",
-        //   type: "warning",
-        // });
         this.$router.push({
           path: "/aigc/draw",
         });

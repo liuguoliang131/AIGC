@@ -3,21 +3,34 @@
     <div class="background"></div>
     <div class="logoWrapper" @click="goHome">
       <img src="@/assets/logo.png" class="logo" />
-      <span :class="['logoText', 'logoTextBlack']">
-        Hanhou·AI
-      </span>
+      <span :class="['logoText', 'logoTextBlack']"> Hanhou·AI </span>
     </div>
     <div></div>
     <div class="login-box">
       <div class="login-title">一起探索AI的无限可能</div>
       <div class="input-box">
         <div class="input-group">
-          <input type="tel" id="phone" maxlength="11" v-model="phone" placeholder="请输入手机号" class="input-phone"
-            @input="handlePhoneInput" />
+          <input
+            type="tel"
+            id="phone"
+            maxlength="11"
+            v-model="phone"
+            placeholder="请输入手机号"
+            class="input-phone"
+            @input="handlePhoneInput"
+          />
         </div>
         <div class="input-group">
-          <input type="tel" id="code" maxlength="4" v-model="code" placeholder="请输入验证码" class="input-verCode"
-            @input="handleCodeInput" @keyup.enter="login" />
+          <input
+            type="tel"
+            id="code"
+            maxlength="4"
+            v-model="code"
+            placeholder="请输入验证码"
+            class="input-verCode"
+            @input="handleCodeInput"
+            @keyup.enter="login"
+          />
           <button class="code-btn" @click="sendCode" :disabled="timer !== null">
             {{ timer ? countDown : "获取验证码" }}
           </button>
@@ -29,7 +42,9 @@
         <!-- <input v-model="agree" type="checkbox" class="checkbox"> -->
         <!-- <label for="agree">我同意相关协议</label> -->
         登录即代表您已同意
-        <span class="policy" @click="handGoAgree(1)">《服务协议和隐私政策》</span>
+        <span class="policy" @click="handGoAgree(1)"
+          >《服务协议和隐私政策》</span
+        >
         和
         <span class="policy" @click="handGoAgree(2)">《安全协议》</span>
       </div>
@@ -47,7 +62,7 @@
 
 <script>
 import { ElMessage } from "element-plus";
-import api, { sendVerifyCode, userLogin } from "./api";
+import { sendVerifyCode, userLogin } from "./api";
 import utils from "@/common/utils";
 import { mapStores } from "pinia";
 import { useUserStore } from "@/store/user";

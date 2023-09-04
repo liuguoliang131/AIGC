@@ -1,7 +1,7 @@
 <script setup>
 import { ref, reactive, watch } from "vue";
 import request from "@/http/index";
-import api from "../api";
+import api from "@/http/api";
 import { ElMessage, ElDialog, ElInput, ElTooltip, ElImage } from "element-plus";
 import MyUpload from "@/components/MyUpload.vue";
 import { useUserStore } from "@/store/user";

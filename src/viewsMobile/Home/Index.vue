@@ -5,11 +5,20 @@
     <vip-model></vip-model>
     <div class="container-body">
       <div class="page1">
-        <video class="coverVideo" autoplay loop playsinline muted>
+        <video
+          id="video1"
+          class="coverVideo"
+          autoplay
+          loop
+          playsinline
+          muted
+          poster="https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile-page1-bg.png"
+        >
           <source
             src="https://quanres.hanhoukeji.com/hanhou-ai-pc/ai_home1_video.mp4"
             type="video/mp4"
           />
+          <div>您的浏览器不支持mp4</div>
         </video>
         <div class="up">
           <div class="row1">AI赋能计划</div>
@@ -139,9 +148,10 @@
 import TopTitleBar from "@/components/mobile/TopTitleBar.vue";
 import MMenu from "@/components/mobile/MMenu.vue";
 import VipModel from "@/components/mobile/VipModel.vue";
-import { Swipe as VanSwipe, SwipeItem as VanSwipeItem } from "vant";
+import { Swipe as VanSwipe, SwipeItem as VanSwipeItem, showToast } from "vant";
 
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
+import utils from "@/common/utils";
 
 const list = ref([
   {
@@ -187,6 +197,25 @@ const page5SwipeList = ref([
 const handGoICP = () => {
   window.open(`https://beian.miit.gov.cn/`);
 };
+
+const setWechatVideoAutoPlay = () => {
+  const result = utils.isWechat();
+  if (!result) return;
+
+  try {
+    document.addEventListener(
+      "WeixinJSBridgeReady",
+      function () {
+        document.getElementById("video1").play();
+      },
+      false
+    );
+  } catch (error) {}
+};
+
+onMounted(() => {
+  setWechatVideoAutoPlay();
+});
 </script>
 
 <style scoped lang="less">
@@ -201,8 +230,14 @@ const handGoICP = () => {
     .page1 {
       position: relative;
       height: 100%;
+      overflow: hidden;
+      text-align: center;
       .coverVideo {
+        margin: auto;
         height: 100%;
+        background: no-repeat
+          url("https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile-page2-bg.png")
+          0 0 / cover;
       }
       .up {
         position: absolute;
@@ -477,6 +512,7 @@ const handGoICP = () => {
           width: 298px;
           height: 104px;
           margin: auto;
+          pointer-events: none;
         }
       }
     }

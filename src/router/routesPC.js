@@ -38,6 +38,7 @@ const routes = [
     name: 'Agreement',
     component: () => import('../views/Agreement/Index.vue'),
     meta: {
+      titleBar: true,
       isAuthenticated: false
     }
   },

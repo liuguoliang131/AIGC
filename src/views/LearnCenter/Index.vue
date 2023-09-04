@@ -202,7 +202,10 @@ const handGoICP = () => {
       }
     }
     .footer {
-      padding-top: 100px;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      padding-top: 32px;
       padding-bottom: 32px;
       width: 100%;
       color: #666666;
