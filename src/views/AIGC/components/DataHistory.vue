@@ -2,7 +2,7 @@
 import { ElDialog, ElMessage, ElImage, dayjs } from "element-plus";
 import { ref, reactive, watch, nextTick, onMounted, onUnmounted } from "vue";
 import request from "@/http/index";
-import api from "../api";
+import api from "@/http/api";
 import { useUserStore } from "@/store/user";
 
 const userStore = useUserStore();

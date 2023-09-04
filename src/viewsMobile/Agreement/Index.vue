@@ -6,12 +6,12 @@
 </template>
 
 <script setup>
-import TopTitleBar from "@/components/TopTitleBar.vue";
+import TopTitleBar from "@/components/mobile/TopTitleBar.vue";
 import { ref } from "vue";
 import { useRoute } from "vue-router";
 import api from "@/http/api";
 import http from "@/http/index";
-import { ElMessage } from "element-plus";
+import { showToast } from "vant";
 const {
   query: { type },
 } = useRoute();
@@ -25,10 +25,7 @@ const getAgreement = (type) => {
     })
     .then((res) => {
       if (res.code !== 200) {
-        return ElMessage({
-          type: "error",
-          message: res.msg,
-        });
+        return showToast(res.msg);
       }
       agreementText.value = res.data.agreementText;
     });
@@ -38,14 +35,7 @@ getAgreement(type);
 
 <style scoped lang="less">
 .container {
-  height: 100%;
-  padding-top: 70px;
-  overflow: hidden;
-  box-sizing: border-box;
   .container-body {
-    height: 100%;
-    overflow-y: scroll;
-    box-sizing: border-box;
     padding: 12px;
   }
 }

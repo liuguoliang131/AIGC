@@ -27,7 +27,7 @@ const routes = [
   {
     path: '/login',
     name: 'Login',
-    component: () => import('../views/Login/Login.vue'),
+    component: () => import('../viewsMobile/Login/Login.vue'),
     meta: {
       isAuthenticated: false
     }
@@ -35,7 +35,7 @@ const routes = [
   {
     path: '/agreement',
     name: 'Agreement',
-    component: () => import('../views/Agreement/Index.vue'),
+    component: () => import('../viewsMobile/Agreement/Index.vue'),
     meta: {
       isAuthenticated: false
     }
@@ -61,7 +61,7 @@ const routes = [
   {
     path: '/product_center',
     name: 'ProductCenter',
-    component: () => import('../views/ProductCenter/ProductCenter.vue'),
+    component: () => import('../viewsMobile/ProductCenter/ProductCenter.vue'),
     meta: {
       titleBar: true,
       isAuthenticated: false

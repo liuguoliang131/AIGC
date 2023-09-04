@@ -47,7 +47,7 @@
 <script setup>
 import { onMounted, onUnmounted, reactive, ref, watch } from "vue";
 import { ElImage, ElMessage } from "element-plus";
-import TopTitleBar from "@/components/mobile/TopTitleBar.vue";
+import TopTitleBar from "@/components/TopTitleBar.vue";
 import playData from "./playData.js";
 import { useRouter } from "vue-router";
 const router = useRouter();
@@ -119,52 +119,43 @@ const handGoICP = () => {
 
 <style scoped lang="less">
 .container {
-  box-sizing: border-box;
-  height: 100%;
-  background: #f6f6f6;
-  overflow: hidden;
+  position: relative;
+  height: calc(100% - 70px);
+  padding-top: 70px;
+  background-color: #fff;
+  background-image: url("https://quanres.hanhoukeji.com/hanhou-ai-pc/index-background1.png");
+  background-size: cover;
   .container-body {
     height: 100%;
     .tabs {
       display: flex;
-      justify-content: space-around;
-      padding: 21px 0;
-      height: 29px;
+      padding: 60px 122.5px 0 122.5px;
+      height: 52px;
       user-select: none;
       .tab_item {
-        position: relative;
         display: flex;
         justify-content: center;
         align-items: center;
         box-sizing: border-box;
-        height: 29px;
-        color: #666;
+        width: 200px;
+        height: 52px;
+        border: 1px solid #126cfe;
+        margin-right: 44px;
+        border-radius: 6px;
+        color: #126cfe;
+        text-align: center;
         font-family: PingFang SC;
-        font-size: 16px;
+        font-size: 19px;
         font-style: normal;
         font-weight: 400;
-        line-height: 22px;
         cursor: pointer;
-        &::after {
-          content: "";
-          position: absolute;
-          bottom: 0;
-          left: 50%;
-          width: 100%;
-          height: 3px;
-          border-radius: 3px;
-          background: linear-gradient(
-            90deg,
-            #126cfe -0.2%,
-            rgba(13, 119, 218, 0.39) 105.39%
-          );
-          transform: translate(-50%, 0);
-        }
       }
       .tab_item-active {
-        color: #333;
+        background: #126cfe;
+        color: #fff;
+        text-align: center;
         font-family: PingFang SC;
-        font-size: 16px;
+        font-size: 19px;
         font-style: normal;
         font-weight: 600;
         line-height: normal;

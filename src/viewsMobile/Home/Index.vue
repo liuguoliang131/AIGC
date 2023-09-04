@@ -212,7 +212,7 @@ const setWechatVideoAutoPlay = () => {
     );
   } catch (error) {}
 };
-// setWechatVideoAutoPlay();
+
 onMounted(() => {
   setWechatVideoAutoPlay();
 });
@@ -512,6 +512,7 @@ onMounted(() => {
           width: 298px;
           height: 104px;
           margin: auto;
+          pointer-events: none;
         }
       }
     }

@@ -1,7 +1,7 @@
 <template>
   <div class="top_title_bar">
     <div class="float">
-      <div class="logo">
+      <div class="logo" @click="goHome">
         <img src="@/assets/logo.png" class="img" />
         <span class="name"> Hanhou·AI </span>
       </div>
@@ -27,6 +27,13 @@ import { useUserStore } from "@/store/user";
 const userStore = useUserStore(); // 用户信息
 
 const router = useRouter();
+
+// 去首页
+const goHome = () => {
+  router.push({
+    path: "/",
+  });
+};
 
 // 确认退出登录
 const confirmExit = () => {

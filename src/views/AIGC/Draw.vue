@@ -7,7 +7,7 @@ import DataTab from "./components/DataTab.vue";
 import DataHistory from "./components/DataHistory.vue";
 import { useUserStore } from "@/store/user";
 import request from "@/http/index";
-import api from "./api";
+import api from "@/http/api";
 import { saveAs } from "file-saver";
 
 const userStore = useUserStore(); //用户信息

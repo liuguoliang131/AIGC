@@ -19,19 +19,14 @@
 </template>
 
 <script setup>
-import { showDialog, showToast } from "vant";
 import { useRouter } from "vue-router";
-import request from "@/http/index";
-import api from "@/http/api";
-import { useUserStore } from "@/store/user";
-const userStore = useUserStore(); // 用户信息
 
 const router = useRouter();
 
 function goProduct() {
   router.push({
     path: "/product_center",
-    replace: true,
+    replace: false,
   });
 }
 
