@@ -665,10 +665,10 @@ const _getResult = async (message, tagId) => {
       console.log(e, "onerror");
       sendLoading.value = false;
       e.target.close();
-      ElMessage({
-        type: "error",
-        message: e.error || "异常: 对话中断",
-      });
+      // ElMessage({
+      //   type: "error",
+      //   message: e.error || "异常: 对话中断",
+      // });
     } catch (error) {}
   };
 };

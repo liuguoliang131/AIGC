@@ -43,18 +43,17 @@ const routes = [
   {
     path: '/learn_center',
     name: 'LearnCenter',
-    component: () => import('../views/LearnCenter/Index.vue'),
+    component: () => import('../viewsMobile/LearnCenter/Index.vue'),
     meta: {
-      titleBar: true,
       isAuthenticated: true
     }
   },
   {
     path: '/learn_center/player',
     name: 'Player',
-    component: () => import('../views/LearnCenter/Player.vue'),
+    component: () => import('../viewsMobile/LearnCenter/Player.vue'),
     meta: {
-      titleBar: true,
+      title: 'AI对话课程',
       isAuthenticated: true
     }
   },
@@ -63,7 +62,6 @@ const routes = [
     name: 'ProductCenter',
     component: () => import('../viewsMobile/ProductCenter/ProductCenter.vue'),
     meta: {
-      titleBar: true,
       isAuthenticated: false
     },
   },
