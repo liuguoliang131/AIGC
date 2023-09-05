@@ -157,7 +157,7 @@ const handGoPlay = (item) => {
       padding: 4px 16px 8px 16px;
       .group_item {
         padding: 18.5px 0;
-        border-bottom: 1px solid rgba(195, 195, 195, 1);
+        border-bottom: 0.7px solid rgba(0, 0, 0, 0.1);
         .item_box {
           position: relative;
           height: 193px;

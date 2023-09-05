@@ -73,6 +73,7 @@
         </div>
         <div class="right">
           <div class="title">课程列表</div>
+          <div class="splitline"></div>
           <div class="list">
             <template v-for="(item, idx) in playList" :key="idx">
               <div v-if="active.id === item.id" class="item item_active nowrap">
@@ -329,17 +330,17 @@ onMounted(() => {
             bottom: 0;
             left: 0;
             right: 0;
-            margin: auto;
             display: flex;
             align-items: center;
             justify-content: center;
             width: 100%;
-            height: 45px;
+            height: 100%;
             font-family: PingFang SC;
             font-size: 32px;
             font-weight: 400;
             line-height: 45px;
             color: rgba(255, 255, 255, 1);
+            background-color: rgba(0, 0, 0, 0.6);
 
             .next {
               display: flex;
@@ -447,9 +448,8 @@ onMounted(() => {
           line-height: normal;
         }
         .list {
-          // width: 384px;
-          height: 579px;
-          // margin-left: 35px;
+          padding-top: 33.5px;
+          height: 545.5px;
           overflow-x: hidden;
           overflow-y: scroll;
           &::-webkit-scrollbar {

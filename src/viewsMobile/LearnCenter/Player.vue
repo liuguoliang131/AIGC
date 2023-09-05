@@ -210,7 +210,7 @@ onMounted(() => {
         width: 343px;
         height: 193px;
         padding: 18.5px 0;
-        border-bottom: 1px solid rgba(195, 195, 195, 1);
+        border-bottom: 0.7px solid rgba(0, 0, 0, 0.1);
         .player {
           position: relative;
           width: 100%;
