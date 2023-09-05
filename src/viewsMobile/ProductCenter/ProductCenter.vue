@@ -44,8 +44,9 @@ const navToItem = (value) => {
   box-sizing: border-box;
   overflow: hidden;
   .container-body {
-    height: 100%;
+    height: calc(100% - 44px);
     overflow-y: scroll;
+    overflow-x: hidden;
     text-align: center;
     background: no-repeat
       url("https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile-product_center-bg.png")
