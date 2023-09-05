@@ -41,7 +41,7 @@ function goLearnCenter() {
 .menu {
   z-index: 9;
   position: fixed;
-  bottom: 34px;
+  bottom: 44px;
   left: 50%;
   transform: translate(-50%, 0);
   display: flex;

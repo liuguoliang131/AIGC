@@ -11,6 +11,8 @@
             maxlength="11"
             v-model="formData.phone"
             placeholder="请输入手机号"
+            @focus="() => (showMenu = false)"
+            @blur="() => (showMenu = true)"
             @input="handlePhoneInput"
           />
         </div>
@@ -22,6 +24,8 @@
             v-model="formData.code"
             placeholder="请输入验证码"
             class="input-verCode"
+            @focus="() => (showMenu = false)"
+            @blur="() => (showMenu = true)"
             @input="handleCodeInput"
             @keyup.enter="login"
           />
@@ -37,7 +41,7 @@
         </div>
       </div>
     </div>
-    <m-menu></m-menu>
+    <m-menu v-show="showMenu"></m-menu>
   </div>
 </template>
 
@@ -62,6 +66,9 @@ const formData = ref({
 });
 const timer = ref(null);
 const countDown = ref(60);
+
+// 是否显示悬浮的菜单组件
+const showMenu = ref(true);
 
 const handlePhoneInput = (event) => {
   // 使用正则表达式来限制输入框只能输入数字
@@ -153,7 +160,7 @@ const handGoAgree = (type) => {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 100%;
+    height: calc(100% - 44px);
     overflow-y: scroll;
     background: no-repeat
       url("https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile-login-bg.png") 0 0 /

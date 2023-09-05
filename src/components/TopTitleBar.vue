@@ -1,8 +1,11 @@
 <template>
-  <div class="banner" :style="{
-    backgroundColor: `rgba(255, 255, 255, ${useRouterConfig.titleBarOpacity})`,
-    display: useRouterConfig.titleBar ? 'flex' : 'none',
-  }">
+  <div
+    class="banner"
+    :style="{
+      backgroundColor: `rgba(255, 255, 255, ${useRouterConfig.titleBarOpacity})`,
+      display: useRouterConfig.titleBar ? 'flex' : 'none',
+    }"
+  >
     <div class="banner_left">
       <div class="logoWrapper" @click="goHome">
         <img src="@/assets/logo.png" class="logo" />
@@ -10,41 +13,66 @@
           Hanhou·AI
         </span>
       </div>
-      <span :class="[
-        'banner_text',
-        isBlackMode ? 'black_text' : '',
-        useRouterConfig.currentPath == '/product_center'
-          ? 'banner_text_selected'
-          : '',
-      ]" @click="goProduct">AI工具</span>
-      <div class="learn_center_wrapper">
-        <span :class="[
+      <span
+        :class="[
           'banner_text',
           isBlackMode ? 'black_text' : '',
-          useRouterConfig.currentPath.includes('/learn_center')
+          useRouterConfig.currentPath == '/product_center'
             ? 'banner_text_selected'
             : '',
-        ]" @click="goLearnCenter">学习中心</span>
-        <img src="https://quanres.hanhoukeji.com/hanhou-ai-pc/icon_limit_free.png" class="label" @click="goHome" />
+        ]"
+        @click="goProduct"
+        >AI工具</span
+      >
+      <div class="learn_center_wrapper">
+        <span
+          :class="[
+            'banner_text',
+            isBlackMode ? 'black_text' : '',
+            useRouterConfig.currentPath.includes('/learn_center')
+              ? 'banner_text_selected'
+              : '',
+          ]"
+          @click="goLearnCenter"
+          >学习中心</span
+        >
+        <img
+          src="https://quanres.hanhoukeji.com/hanhou-ai-pc/icon_limit_free.png"
+          class="label"
+          @click="goHome"
+        />
       </div>
     </div>
     <div class="banner_right">
-      <el-button plain v-if="!userStore.userInfo" @click="goLogin" :class="['login', isBlackMode ? 'loginBlack' : '',]">
+      <el-button
+        plain
+        v-if="!userStore.userInfo"
+        @click="goLogin"
+        :class="['login', isBlackMode ? 'loginBlack' : '']"
+      >
         登录/注册
       </el-button>
       <div class="logged" v-else>
-        <span :class="['loggedText', isBlackMode ? 'black_text' : '',]">
-          {{
-            userStore.userInfo.tel
-          }}
+        <span :class="['loggedText', isBlackMode ? 'black_text' : '']">
+          {{ userStore.userInfo.tel }}
         </span>
-        <el-button :class="['logout', isBlackMode ? 'loginBlack' : '',]" @click="handExit">退出登录</el-button>
+        <el-button
+          :class="['logout', isBlackMode ? 'loginBlack' : '']"
+          @click="handExit"
+          >退出登录</el-button
+        >
       </div>
     </div>
 
     <!-- 退出提醒 -->
-    <el-dialog align-center v-model="exitVisible" width="3.1777rem" :show-close="false" :close-on-click-modal="false"
-      @close="dialogClose">
+    <el-dialog
+      align-center
+      v-model="exitVisible"
+      width="3.1777rem"
+      :show-close="false"
+      :close-on-click-modal="false"
+      @close="dialogClose"
+    >
       <div class="dia_title">退出提醒</div>
       <div class="dia_content">是否要退出登录</div>
       <div class="dia_footer_2">
@@ -71,7 +99,9 @@ const useRouterConfig = useRouterConfigStore();
 const userStore = useUserStore(); // 用户信息
 
 const isBlackMode = computed(() => {
-  return useRouterConfig.titleBarOpacity > 0.65 || useRouterConfig.currentPath != '/';
+  return (
+    useRouterConfig.titleBarOpacity > 0.65 || useRouterConfig.currentPath != "/"
+  );
 });
 
 function goHome() {
@@ -99,7 +129,7 @@ function goLogin() {
 }
 
 // 弹层关闭事件
-const dialogClose = () => { };
+const dialogClose = () => {};
 
 // 退出登录弹窗
 const exitVisible = ref(false);
@@ -229,9 +259,11 @@ const confirmExit = () => {
       background-color: transparent;
       color: white;
       border-color: white;
-      font-size: 20px;
       width: 120px;
       height: 42px;
+      font-family: PingFang SC;
+      font-size: 20px;
+      font-weight: 400;
     }
 
     .login.el-button:hover {
@@ -239,21 +271,23 @@ const confirmExit = () => {
     }
 
     .logout.el-button {
-      font-size: 20px;
       width: 120px;
       height: 42px;
       background-color: transparent;
       color: white;
       border-color: white;
+      font-family: PingFang SC;
+      font-size: 20px;
+      font-weight: 400;
     }
 
     .loginBlack.el-button {
       color: #fff;
-      border-color: #5495FF;
-      background-color: #5495FF;
+      border-color: #5495ff;
+      background-color: #5495ff;
 
       &:hover {
-        background-color: #5495FF;
+        background-color: #5495ff;
       }
     }
 

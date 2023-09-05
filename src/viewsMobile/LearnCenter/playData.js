@@ -3,7 +3,7 @@ const data = [
     id: 1,
     group: 1,
     name: "AI对话课程",
-    cover: "https://quanres.hanhoukeji.com/hanhou-ai-pc/ai_chat_img.png",
+    cover: "https://quanres.hanhoukeji.com/hanhou-ai-pc/ai_chat_learn_cover.png",
     children: [
       {
         id: 1,
@@ -59,7 +59,7 @@ const data = [
     id: 2,
     group: 2,
     name: "AI绘画课程",
-    cover: "https://quanres.hanhoukeji.com/hanhou-ai-pc/ai_draw_img.png",
+    cover: "https://quanres.hanhoukeji.com/hanhou-ai-pc/ai_draw_learn_cover.png",
     children: [
       {
         id: 9,

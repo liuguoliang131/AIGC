@@ -134,10 +134,10 @@
             class="code2"
           />
           <div class="text1">扫码咨询专属客服</div>
-          <div class="footer" @click="handGoICP">
-            <div>京ICP备19041919号-2京公网安备11010502039881号</div>
-            <div>网络经营许可证京网文[2020]4683-870号</div>
-          </div>
+        </div>
+        <div class="footer" @click="handGoICP">
+          <div>京ICP备19041919号-2京公网安备11010502039881号</div>
+          <div>网络经营许可证京网文[2020]4683-870号</div>
         </div>
       </div>
     </div>
@@ -225,7 +225,7 @@ onMounted(() => {
   box-sizing: border-box;
   overflow: hidden;
   .container-body {
-    height: 100%;
+    height: calc(100% - 44px);
     overflow-y: scroll;
     .page1 {
       position: relative;
@@ -245,8 +245,11 @@ onMounted(() => {
         left: 0;
         width: 100%;
         height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
         .row1 {
-          margin-top: 106px;
           color: #fff;
           text-align: center;
           font-family: PingFang SC;
@@ -282,8 +285,11 @@ onMounted(() => {
       background: no-repeat
         url("https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile-page2-bg.png") 0
         0 / cover;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       .row1 {
-        margin-top: 30px;
         color: #126cfe;
         font-family: PingFang SC;
         font-size: 30px;
@@ -357,10 +363,13 @@ onMounted(() => {
       background: no-repeat
         url("https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile-page3-bg.png") 0
         0 / cover;
-
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       .row1 {
         width: 302px;
-        margin: 37px auto 25px auto;
+        margin-bottom: 25px;
         color: #fff;
         text-align: center;
         font-family: PingFang SC;
@@ -369,9 +378,13 @@ onMounted(() => {
         font-weight: 600;
         line-height: 36px; /* 133.333% */
       }
+      .my-swipe {
+        position: relative;
+        width: 100%;
+        padding-bottom: 20px;
+      }
       .my-swipe .van-swipe-item {
         box-sizing: border-box;
-        width: 100vw;
         padding: 0 27px;
         img {
           width: 100%;
@@ -379,6 +392,10 @@ onMounted(() => {
         }
       }
       .custom-indicator {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
         color: #fff;
         display: flex;
         align-items: center;
@@ -404,8 +421,12 @@ onMounted(() => {
       background: no-repeat
         url("https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile-page4-bg.png") 0
         0 / cover;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       .row1 {
-        margin: 48px 0 33px 0;
+        margin-bottom: 33px;
         color: #126cfe;
         text-align: center;
         font-family: PingFang SC;
@@ -414,9 +435,14 @@ onMounted(() => {
         font-weight: 600;
         line-height: 36px; /* 120% */
       }
+      .my-swipe {
+        position: relative;
+        width: 100%;
+        padding-bottom: 20px;
+      }
       .my-swipe .van-swipe-item {
         box-sizing: border-box;
-        width: 100vw;
+        width: 100%;
         padding: 0 27px;
         img {
           width: 100%;
@@ -424,6 +450,10 @@ onMounted(() => {
         }
       }
       .custom-indicator {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
         color: #fff;
         display: flex;
         align-items: center;
@@ -448,9 +478,12 @@ onMounted(() => {
       background: no-repeat
         url("https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile-page3-bg.png") 0
         0 / cover;
-
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       .row1 {
-        margin: 48px 0 33px 0;
+        margin-bottom: 33px;
         color: #fff;
         text-align: center;
         font-family: PingFang SC;
@@ -459,9 +492,13 @@ onMounted(() => {
         font-weight: 600;
         line-height: 36px; /* 120% */
       }
+      .my-swipe {
+        position: relative;
+        width: 100%;
+        padding-bottom: 40px;
+      }
       .my-swipe .van-swipe-item {
         box-sizing: border-box;
-        width: 100vw;
         padding: 0 39px;
         img {
           width: 100%;
@@ -469,6 +506,10 @@ onMounted(() => {
         }
       }
       .custom-indicator {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
         color: #fff;
         display: flex;
         align-items: center;
@@ -494,9 +535,12 @@ onMounted(() => {
       background: no-repeat
         url("https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile-page6-bg.png") 0
         0 / cover;
-
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
       .row1 {
-        margin: 48px 0 30px 0;
+        margin-bottom: 30px;
         color: #126cfe;
         text-align: center;
         font-family: PingFang SC;
@@ -517,14 +561,18 @@ onMounted(() => {
       }
     }
     .page7 {
+      position: relative;
       height: 100%;
       overflow: hidden;
       background: no-repeat
         url("https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile-page7-bg.png") 0
         0 / cover;
-
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       .row1 {
-        margin: 48px 0 17px 0;
+        margin-bottom: 17px;
         color: #fff;
         text-align: center;
         font-family: PingFang SC;
@@ -534,14 +582,12 @@ onMounted(() => {
         line-height: 36px; /* 133.333% */
       }
       .row2 {
-        position: relative;
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
         width: 297px;
         height: 392px;
-        margin: auto;
         background: no-repeat
           url("https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile-page7-element1.png")
           0 0 / contain;
@@ -558,24 +604,24 @@ onMounted(() => {
           font-weight: 400;
           line-height: 26px; /* 185.714% */
         }
-        .footer {
-          position: absolute;
-          bottom: 20px;
-          left: 0;
-          width: 594px;
-          color: #fff;
-          text-align: center;
-          font-family: PingFang SC;
-          font-size: 22px;
-          font-style: normal;
-          font-weight: 400;
-          line-height: 30px;
-          transform-origin: top left;
-          transform: scale(0.5);
-          &:active {
-            opacity: 0.7;
-            outline: auto;
-          }
+      }
+      .footer {
+        position: absolute;
+        bottom: 10px;
+        left: 0;
+        width: 750px;
+        color: #fff;
+        text-align: center;
+        font-family: PingFang SC;
+        font-size: 18px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 30px;
+        text-align: center;
+        transform-origin: bottom left;
+        transform: scale(0.5);
+        &:active {
+          opacity: 0.7;
         }
       }
     }
