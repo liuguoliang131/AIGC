@@ -6,6 +6,7 @@
         <div class="group_item" v-for="item in playList" :key="item.id">
           <div class="player">
             <video
+              preload="auto"
               :data-id="item.id"
               class="real"
               width="343"
@@ -14,24 +15,25 @@
               :autoplay="false"
               playsinline
               webkit-playsinline
+              x5-video-orientation="landscape"
               controlslist="nodownload noremoteplayback"
               @play="onPlay"
               @ended="onEnded"
               @contextmenu="onContextmenu"
               @timeupdate="onTimeupdate"
             >
-              <source :src="item.path" type="video/mp4" />
+              <source :src="item.path + '#t=0.1'" type="video/mp4" />
               您的浏览器不支持H5视频播放。
             </video>
-          </div>
-          <div class="mask" v-show="active !== item">
-            <div class="title nowrap">{{ item.name }}</div>
-            <img
-              @click="handActive(item)"
-              class="player-start"
-              src="https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile-player-start.png"
-              alt=""
-            />
+            <div class="mask" v-show="active !== item">
+              <div class="title nowrap">{{ item.name }}</div>
+              <img
+                @click="handActive(item)"
+                class="player-start"
+                src="https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile-player-start.png"
+                alt=""
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -78,6 +80,11 @@ const echoActiveVideo = () => {
 // 选中视频
 const handActive = (item) => {
   active.value = item;
+  const videoDoms = Array.from(document.getElementsByClassName("real"));
+  console.log(videoDoms);
+  videoDoms.forEach((dom) => {
+    dom.pause();
+  });
   echoActiveVideo().play();
 };
 
@@ -200,74 +207,60 @@ onMounted(() => {
       padding: 4px 16px 8px 16px;
       .group_item {
         position: relative;
+        width: 343px;
         height: 193px;
-        margin: 4px 0;
-        &:hover {
-          opacity: 0.9;
-        }
+        padding: 18.5px 0;
+        border-bottom: 1px solid rgba(195, 195, 195, 1);
         .player {
-          position: reactive;
+          position: relative;
           width: 100%;
           height: 100%;
           border-radius: 8px;
+          .mask {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 8px;
+            background: linear-gradient(
+              0deg,
+              #000 -0.03%,
+              rgba(0, 0, 0, 0) 41.43%
+            );
+            .title {
+              position: absolute;
+              bottom: 10px;
+              left: 10px;
+              width: 267px;
+              height: 20px;
+              line-height: 20px;
+              color: #fff;
+              font-family: PingFang SC;
+              font-size: 14px;
+              font-style: normal;
+              font-weight: 600;
+              text-align: left;
+            }
+            .player-start {
+              position: absolute;
+              top: 50%;
+              left: 50%;
+              transform: translate(-50%, -50%);
+              width: 38px;
+              height: 38px;
+            }
+          }
           .real {
             width: 100%;
             height: 100%;
             border-radius: 8px;
-          }
-          .replay {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            display: flex;
-            align-items: center;
-            user-select: none;
-            color: #ffffff;
-            font-size: 20px;
-            .replay_icon {
-              width: 18px;
-              height: 18px;
-              margin-left: 13px;
-              vertical-align: middle;
-            }
+            background-color: rgba(0, 0, 0, 0.3);
           }
         }
-        .mask {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          border-radius: 8px;
-          background: linear-gradient(
-            0deg,
-            #000 -0.03%,
-            rgba(0, 0, 0, 0) 41.43%
-          );
-          .title {
-            position: absolute;
-            bottom: 10px;
-            left: 10px;
-            width: 267px;
-            height: 20px;
-            line-height: 20px;
-            color: #fff;
-            font-family: PingFang SC;
-            font-size: 14px;
-            font-style: normal;
-            font-weight: 600;
-            text-align: left;
-          }
-          .player-start {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 38px;
-            height: 38px;
-          }
-        }
+      }
+      .group_item:nth-last-child(1) {
+        border: none;
       }
     }
   }

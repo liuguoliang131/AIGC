@@ -13,15 +13,12 @@
     </div>
     <div class="container-body">
       <div class="group_list">
-        <div
-          class="group_item"
-          v-for="item in list"
-          :key="item.id"
-          @click="handGoPlay(item)"
-        >
-          <van-image class="cover" :src="item.cover" />
-          <div class="mask">
-            <div class="title nowrap">{{ item.name }}</div>
+        <div class="group_item" v-for="item in list" :key="item.id">
+          <div class="item_box" @click="handGoPlay(item)">
+            <van-image class="cover" :src="item.cover" />
+            <div class="mask">
+              <div class="title nowrap">{{ item.name }}</div>
+            </div>
           </div>
         </div>
       </div>
@@ -159,44 +156,54 @@ const handGoPlay = (item) => {
       align-items: center;
       padding: 4px 16px 8px 16px;
       .group_item {
-        position: relative;
-        height: 193px;
-        margin: 4px 0;
-        &:hover {
-          opacity: 0.9;
-        }
-        .cover {
-          width: 100%;
-          height: 100%;
-          border-radius: 8px;
-        }
-        .mask {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          border-radius: 8px;
-          background: linear-gradient(
-            0deg,
-            #000 -0.03%,
-            rgba(0, 0, 0, 0) 41.43%
-          );
-          .title {
+        padding: 18.5px 0;
+        border-bottom: 1px solid rgba(195, 195, 195, 1);
+        .item_box {
+          position: relative;
+          height: 193px;
+
+          &:hover {
+            opacity: 0.9;
+          }
+          .cover {
+            width: 100%;
+            height: 100%;
+            border-radius: 8px;
+          }
+          .mask {
             position: absolute;
-            bottom: 10px;
-            left: 10px;
-            width: 267px;
-            height: 20px;
-            line-height: 20px;
-            color: #fff;
-            font-family: PingFang SC;
-            font-size: 14px;
-            font-style: normal;
-            font-weight: 600;
-            text-align: left;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 8px;
+            background: linear-gradient(
+              0deg,
+              #000 -0.03%,
+              rgba(0, 0, 0, 0) 41.43%
+            );
+            .title {
+              position: absolute;
+              bottom: 10px;
+              left: 10px;
+              width: 267px;
+              height: 20px;
+              line-height: 20px;
+              color: #fff;
+              font-family: PingFang SC;
+              font-size: 14px;
+              font-style: normal;
+              font-weight: 600;
+              text-align: left;
+            }
           }
         }
+      }
+      .group_item:nth-child(1) {
+        padding-top: 4px;
+      }
+      .group_item:nth-last-child(1) {
+        border: none;
       }
     }
   }

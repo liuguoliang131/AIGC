@@ -38,6 +38,7 @@ const goback = () => {
 .nav_bar {
   height: 44px;
   .float {
+    z-index: 9;
     position: fixed;
     left: 0;
     top: 0;
