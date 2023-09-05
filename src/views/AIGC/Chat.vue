@@ -850,7 +850,7 @@ const handleSend = () => {
 };
 
 const sendByKey = (event) => {
-  if (event.code === "Enter") {
+  if (event.key === "Enter") {
     if (!event.ctrlKey && !event.metaKey && !event.shiftKey && !event.altKey) {
       event.preventDefault();
       handleSend();
