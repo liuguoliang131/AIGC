@@ -29,3 +29,11 @@ yarn lint
 ### Customize configuration
 
 See [Configuration Reference](https://cli.vuejs.org/config/).
+
+
+### 注意事项
+
+src/views/路径下为PC端页面, src/viewsMobile/路径下为移动端页面
+
+插件postcss-pxtorem rem布局:  项目中,路径带有mobile文字的会转换为移动端rem数值
+

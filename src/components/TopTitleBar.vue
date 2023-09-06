@@ -7,10 +7,16 @@
     }"
   >
     <div class="banner_left">
-      <img src="@/assets/logo.png" class="logo" @click="goHome" />
+      <div class="logoWrapper" @click="goHome">
+        <img src="@/assets/logo.png" class="logo" />
+        <span :class="['logoText', isBlackMode ? 'logoTextBlack' : '']">
+          Hanhou·AI
+        </span>
+      </div>
       <span
         :class="[
           'banner_text',
+          isBlackMode ? 'black_text' : '',
           useRouterConfig.currentPath == '/product_center'
             ? 'banner_text_selected'
             : '',
@@ -18,31 +24,41 @@
         @click="goProduct"
         >AI工具</span
       >
-      <span
-        :class="[
-          'banner_text',
-          useRouterConfig.currentPath == '/learn_center'
-            ? 'banner_text_selected'
-            : '',
-        ]"
-        @click="goLearnCenter"
-        >学习中心</span
-      >
+      <div class="learn_center_wrapper">
+        <span
+          :class="[
+            'banner_text',
+            isBlackMode ? 'black_text' : '',
+            useRouterConfig.currentPath.includes('/learn_center')
+              ? 'banner_text_selected'
+              : '',
+          ]"
+          @click="goLearnCenter"
+          >学习中心</span
+        >
+        <img
+          src="https://quanres.hanhoukeji.com/hanhou-ai-pc/icon_limit_free.png"
+          class="label"
+          @click="goHome"
+        />
+      </div>
     </div>
     <div class="banner_right">
       <el-button
-        type="primary"
         plain
         v-if="!userStore.userInfo"
         @click="goLogin"
-        class="login"
-        >登录/注册</el-button
+        :class="['login', isBlackMode ? 'loginBlack' : '']"
       >
-      <div v-else>
-        <span style="font-size: 15px; color: #1e1e1e; margin-right: 20px">{{
-          userStore.userInfo.tel
-        }}</span>
-        <el-button type="primary" class="logout" @click="handExit"
+        登录/注册
+      </el-button>
+      <div class="logged" v-else>
+        <span :class="['loggedText', isBlackMode ? 'black_text' : '']">
+          {{ userStore.userInfo.tel }}
+        </span>
+        <el-button
+          :class="['logout', isBlackMode ? 'loginBlack' : '']"
+          @click="handExit"
           >退出登录</el-button
         >
       </div>
@@ -75,12 +91,18 @@ import { useRouterConfigStore } from "@/store/routerConfigStore";
 import { useUserStore } from "@/store/user";
 
 import { ElButton, ElDialog, ElMessage } from "element-plus";
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { useRouter } from "vue-router";
 const router = useRouter();
 const useRouterConfig = useRouterConfigStore();
 
 const userStore = useUserStore(); // 用户信息
+
+const isBlackMode = computed(() => {
+  return (
+    useRouterConfig.titleBarOpacity > 0.65 || useRouterConfig.currentPath != "/"
+  );
+});
 
 function goHome() {
   router.push({
@@ -146,6 +168,7 @@ const confirmExit = () => {
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
+  z-index: 2;
 
   .banner_left {
     display: flex;
@@ -154,21 +177,54 @@ const confirmExit = () => {
     justify-content: center;
     align-items: center;
 
-    .logo {
-      width: 197px;
-      height: 40px;
-      margin-right: 107px;
+    .logoWrapper {
       cursor: pointer;
+      margin-right: 107px;
+      height: 40px;
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+
+      .logo {
+        width: 40px;
+        height: 40px;
+        margin-right: 14px;
+      }
+
+      .logoText {
+        color: #fff;
+        font-size: 28px;
+        font-weight: 600;
+      }
+
+      .logoTextBlack {
+        color: #1e1e1e;
+      }
+    }
+
+    .learn_center_wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .label {
+      width: 80px;
+      height: 32px;
+      margin-bottom: 12px;
     }
 
     .banner_text {
       position: relative;
-      color: #1e1e1e;
+      color: white;
       font-size: 22px;
-      margin-right: 40px;
       font-weight: normal;
       line-height: 39px;
       cursor: pointer;
+
+      &:nth-child(2) {
+        margin-right: 40px;
+      }
 
       &::after {
         position: absolute;
@@ -181,6 +237,10 @@ const confirmExit = () => {
         background-color: #1e1e1e;
         opacity: 0;
       }
+    }
+
+    .black_text {
+      color: #1e1e1e;
     }
 
     .banner_text_selected {
@@ -197,11 +257,13 @@ const confirmExit = () => {
 
     .login.el-button {
       background-color: transparent;
-      color: #126cfe;
-      border-color: #126cfe;
-      font-size: 20px;
+      color: white;
+      border-color: white;
       width: 120px;
       height: 42px;
+      font-family: PingFang SC;
+      font-size: 20px;
+      font-weight: 400;
     }
 
     .login.el-button:hover {
@@ -209,9 +271,39 @@ const confirmExit = () => {
     }
 
     .logout.el-button {
-      font-size: 20px;
       width: 120px;
       height: 42px;
+      background-color: transparent;
+      color: white;
+      border-color: white;
+      font-family: PingFang SC;
+      font-size: 20px;
+      font-weight: 400;
+    }
+
+    .loginBlack.el-button {
+      color: #fff;
+      border-color: #5495ff;
+      background-color: #5495ff;
+
+      &:hover {
+        background-color: #5495ff;
+      }
+    }
+
+    .logged {
+      display: flex;
+      align-items: center;
+
+      .loggedText {
+        font-size: 20px;
+        color: #fff;
+        margin-right: 20px;
+      }
+
+      .black_text {
+        color: #1e1e1e;
+      }
     }
   }
 }

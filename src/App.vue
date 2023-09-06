@@ -1,9 +1,7 @@
 <template>
   <router-view />
-  <TopTitleBar />
 </template>
 <script setup>
-import TopTitleBar from "@/components/TopTitleBar.vue";
 </script>
 <style lang="less">
 * {
@@ -26,6 +24,11 @@ import TopTitleBar from "@/components/TopTitleBar.vue";
   border-radius: 10px;
 }
 
+:root:root {
+  --van-base-font: "PingFang SC";
+  --van-price-font: "PingFang SC";
+}
+
 body {
   font-size: 14px;
 }
@@ -34,8 +37,6 @@ body {
   width: 100%;
   height: 100vh;
   font-family: PingFang SC;
-  font-size: 19px;
-  font-weight: 500;
   text-align: left;
   color: #333333;
 }

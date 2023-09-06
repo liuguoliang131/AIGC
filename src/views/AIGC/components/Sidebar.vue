@@ -4,7 +4,7 @@ import { ref, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { ElMessage, ElDialog } from "element-plus";
 import request from "@/http/index";
-import api from "../api";
+import api from "@/http/api";
 import utils from "@/common/utils";
 import { useUserStore } from "@/store/user";
 

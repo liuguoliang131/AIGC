@@ -1,8 +1,9 @@
 <template>
   <div class="container" v-loading="loading">
     <div class="background"></div>
-    <div class="logo-view">
-      <img src="@/assets/logo.png" class="logo" @click="goHome" />
+    <div class="logoWrapper" @click="goHome">
+      <img src="@/assets/logo.png" class="logo" />
+      <span :class="['logoText', 'logoTextBlack']"> Hanhou·AI </span>
     </div>
     <div></div>
     <div class="login-box">
@@ -61,7 +62,7 @@
 
 <script>
 import { ElMessage } from "element-plus";
-import api, { sendVerifyCode, userLogin } from "./api";
+import { sendVerifyCode, userLogin } from "./api";
 import utils from "@/common/utils";
 import { mapStores } from "pinia";
 import { useUserStore } from "@/store/user";
@@ -199,6 +200,33 @@ export default {
   justify-content: space-between;
   align-items: center;
   position: relative;
+
+  .logoWrapper {
+    position: absolute;
+    top: 0;
+    cursor: pointer;
+    height: 70px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    .logo {
+      width: 40px;
+      height: 40px;
+      margin-left: 22px;
+      margin-right: 14px;
+    }
+
+    .logoText {
+      color: #fff;
+      font-size: 28px;
+      font-weight: 600;
+    }
+
+    .logoTextBlack {
+      color: #1e1e1e;
+    }
+  }
 }
 
 .background {

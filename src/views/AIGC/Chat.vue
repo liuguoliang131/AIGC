@@ -198,8 +198,10 @@
             </div>
           </div>
 
-          <div v-if="sendLoading" class="send_btn_disabled">发送</div>
-          <div v-else @click="handSend" class="send_btn">发送</div>
+          <div v-if="sendLoading || question == ''" class="send_btn_disabled">
+            发送
+          </div>
+          <div v-else @click="handleSend" class="send_btn">发送</div>
         </div>
       </div>
     </div>
@@ -274,13 +276,14 @@ import request from "@/http/index";
 import { ElMessage, ElDialog, ElInput, ElIcon } from "element-plus";
 import { Loading as LoadingIcon } from "@element-plus/icons-vue";
 import { EventSourcePolyfill } from "event-source-polyfill";
-import api from "./api";
+import api from "@/http/api";
 import Clipboard from "clipboard";
 import { _getSign } from "@/http/sign";
 import utils from "@/common/utils";
 import Sidebar from "./components/Sidebar.vue";
 import MyDialog from "@/components/MyDialog.vue";
 import { useUserStore } from "@/store/user";
+import { debounce } from "lodash";
 
 const userStore = useUserStore(); //用户信息
 
@@ -645,7 +648,7 @@ const _getResult = async (message, tagId) => {
     console.log("onmessage", e);
     if (e.data == "[DONE]") {
       sendLoading.value = false;
-      source.close(source);
+      source.close();
     } else if (e.type == "message") {
       let n = e.data.replace(/\\\\/g, "\\");
       n = n.replace(/\\n/g, "\n");
@@ -654,18 +657,18 @@ const _getResult = async (message, tagId) => {
 
       chatList.list[chatList.list.length - 1].description += s;
     }
+    scrollToEnd();
   };
 
   source.onerror = (e) => {
-    sendLoading.value = false;
-    source._close(source);
     try {
       console.log(e, "onerror");
-      const data = JSON.parse(e.data);
-      ElMessage({
-        type: "error",
-        message: data.code + ":" + data.error,
-      });
+      sendLoading.value = false;
+      e.target.close();
+      // ElMessage({
+      //   type: "error",
+      //   message: e.error || "异常: 对话中断",
+      // });
     } catch (error) {}
   };
 };
@@ -731,6 +734,12 @@ const removeVisible = ref(false);
 const handDeleteTag = (item, index) => {
   removeVisible.value = true;
 };
+
+const scrollToEnd = debounce(function () {
+  nextTick(() => {
+    slideAnimation(chatScrollPage.value.offsetHeight);
+  });
+}, 250);
 
 // 确认删除 左侧历史
 const handConfirmDeleteTag = () => {
@@ -798,8 +807,8 @@ watch(
 );
 
 // 发送问题
-const handSend = () => {
-  if (question.value.length === 0) {
+const handleSend = () => {
+  if (question.value.trim().length === 0) {
     return;
   }
   if (question.value.length > 800) {
@@ -815,7 +824,7 @@ const handSend = () => {
     });
   }
   actionState = "2"; //动作状态设定为添加新问题
-  const question1 = reString(question.value);
+  const question1 = reString(question.value.trim());
   question.value = "";
   sendLoading.value = true;
   // 添加问题和答案的位置到列表
@@ -835,16 +844,19 @@ const handSend = () => {
     description: "",
     createdAt: "",
   });
-  nextTick(() => {
-    slideAnimation(chatScrollPage.value.offsetHeight);
-  });
+  scrollToEnd();
 
   _getResult(question1, activeTag.value);
 };
 
 const sendByKey = (event) => {
-  if (event.ctrlKey && event.code === "Enter") {
-    handSend();
+  if (event.key === "Enter") {
+    if (!event.ctrlKey && !event.metaKey && !event.shiftKey && !event.altKey) {
+      event.preventDefault();
+      handleSend();
+    } else {
+      question.value = question.value + "\n";
+    }
   }
 };
 
@@ -958,6 +970,7 @@ onMounted(() => {
 
   .side-content {
     height: 100%;
+
     .newchat {
       display: flex;
       align-items: center;
@@ -974,13 +987,16 @@ onMounted(() => {
       background: #126cfe;
       margin: auto;
       cursor: pointer;
+
       span {
         margin-left: 11px;
       }
+
       &:active {
         opacity: 0.8;
       }
     }
+
     .newchat_disabled {
       display: flex;
       align-items: center;
@@ -998,6 +1014,7 @@ onMounted(() => {
       margin: auto;
       cursor: auto;
       opacity: 0.5;
+
       span {
         margin-left: 11px;
       }
@@ -1009,12 +1026,15 @@ onMounted(() => {
       height: calc(100% - 90px);
       margin: auto;
       padding: 22px 0;
+
       .scroll_view {
         width: 301px;
         height: 100%;
         overflow-y: scroll;
+
         .scroll_page {
           margin-left: 22px;
+
           .log_item {
             position: relative;
             box-sizing: border-box;
@@ -1037,6 +1057,7 @@ onMounted(() => {
               width: 20px;
               height: 20px;
             }
+
             .log_name {
               flex: 1;
               min-width: 0;
@@ -1050,6 +1071,7 @@ onMounted(() => {
               line-height: normal;
               text-align: left;
             }
+
             .delete_icon {
               position: absolute;
               top: 50%;
@@ -1058,23 +1080,29 @@ onMounted(() => {
               width: 20px;
               height: 20px;
               border-radius: 5px;
+
               &:hover {
                 background-color: rgba(0, 0, 0, 0.4);
               }
+
               &:active {
                 background-color: rgba(0, 0, 0, 0.5);
               }
             }
           }
+
           .log_item:nth-child(1) {
             margin-top: 0;
           }
+
           .log_item:nth-last-child(1) {
             margin-bottom: 0;
           }
+
           .log_item_active {
             background-color: rgba(0, 0, 0, 0.3);
             border: 1px solid rgba(90, 161, 248, 1);
+
             .log_name {
               color: rgba(201, 225, 255, 1);
             }
@@ -1083,10 +1111,12 @@ onMounted(() => {
       }
     }
   }
+
   .container-body {
     flex: 1;
     height: 100%;
     background: #f1f2f6;
+
     .body-top {
       display: flex;
       align-items: center;
@@ -1101,10 +1131,12 @@ onMounted(() => {
       font-weight: 400;
       line-height: normal;
     }
+
     .body-content {
       position: relative;
       width: 100%;
       height: calc(100% - 68px);
+
       .chat_box {
         position: relative;
         height: 100%;
@@ -1113,6 +1145,7 @@ onMounted(() => {
           position: relative;
           height: 100%;
           overflow-y: scroll;
+
           &::-webkit-scrollbar {
             display: none;
           }
@@ -1134,15 +1167,19 @@ onMounted(() => {
               font-weight: 400;
               line-height: 22px;
             }
+
             .msg_item {
               margin: 40px 0;
             }
+
             .question {
               display: flex;
               justify-content: flex-end;
+
               .toright {
                 display: flex;
                 justify-content: flex-end;
+
                 .bubble {
                   max-width: 1278px;
                   padding: 12px 16px;
@@ -1155,6 +1192,7 @@ onMounted(() => {
                   font-weight: 400;
                   line-height: 44px;
                 }
+
                 .avatar {
                   width: 68px;
                   height: 68px;
@@ -1163,18 +1201,22 @@ onMounted(() => {
                 }
               }
             }
+
             .answer {
               display: flex;
               justify-content: flex-start;
+
               .toleft {
                 display: flex;
                 justify-content: flex-start;
+
                 .avatar {
                   width: 68px;
                   height: 68px;
                   border-radius: 50%;
                   margin-right: 10px;
                 }
+
                 .bubble {
                   position: relative;
                   max-width: 1278px;
@@ -1202,30 +1244,36 @@ onMounted(() => {
                     font-style: normal;
                     font-weight: 500;
                     line-height: normal;
+
                     .copy {
                       display: flex;
                       align-items: center;
                       margin-right: 15px;
+
                       img {
                         width: 30px;
                         height: 30px;
                         margin-right: 15px;
                         cursor: pointer;
                       }
+
                       &:active {
                         border-radius: 5px;
                         background-color: rgba(18, 108, 254, 0.5);
                       }
                     }
+
                     .del {
                       display: flex;
                       align-items: center;
+
                       img {
                         width: 30px;
                         height: 30px;
                         margin-right: 15px;
                         cursor: pointer;
                       }
+
                       &:active {
                         border-radius: 5px;
                         background-color: rgba(18, 108, 254, 0.5);
@@ -1236,10 +1284,12 @@ onMounted(() => {
               }
             }
           }
+
           .page_bottom {
             height: 225px;
           }
         }
+
         .scroll_page::-webkit-scrollbar {
           display: none !important;
         }
@@ -1256,10 +1306,12 @@ onMounted(() => {
         width: 100%;
         padding: 0 30px 38px 30px;
         background: #f1f2f6;
+
         .ask_input {
           position: relative;
           flex: 1;
           min-height: 52px;
+
           .textarea {
             &::placeholder {
               color: #ccc;
@@ -1282,12 +1334,15 @@ onMounted(() => {
               color: #333;
               font-size: 19px;
               line-height: 27px;
-              resize: none; /*禁止拉伸*/
+              resize: none;
+              /*禁止拉伸*/
             }
+
             /deep/.el-textarea__inner::-webkit-scrollbar {
               display: none;
             }
           }
+
           .length_count {
             position: absolute;
             bottom: 16.5px;
@@ -1301,6 +1356,7 @@ onMounted(() => {
             line-height: 19px;
           }
         }
+
         .send_btn {
           display: flex;
           align-items: center;
@@ -1318,10 +1374,12 @@ onMounted(() => {
           font-weight: 500;
           line-height: normal;
           cursor: pointer;
+
           &:active {
             opacity: 0.8;
           }
         }
+
         .send_btn_disabled {
           display: flex;
           align-items: center;
@@ -1344,8 +1402,10 @@ onMounted(() => {
       }
     }
   }
+
   .dialog_dia {
     height: 229px;
+
     .dia_title {
       color: #000;
       text-align: center;
@@ -1357,6 +1417,7 @@ onMounted(() => {
       padding-top: 23.7px;
       padding-bottom: 12px;
     }
+
     .dia_content {
       color: #000;
       text-align: center;
@@ -1372,6 +1433,7 @@ onMounted(() => {
       align-items: center;
       justify-content: center;
       margin-top: 67px;
+
       .confirm {
         display: flex;
         align-items: center;
@@ -1394,11 +1456,13 @@ onMounted(() => {
         }
       }
     }
+
     .dia_footer_2 {
       display: flex;
       align-items: center;
       justify-content: space-between;
       margin-top: 50px;
+
       .cancel {
         display: flex;
         align-items: center;
@@ -1415,10 +1479,12 @@ onMounted(() => {
         font-weight: 500;
         line-height: normal;
         cursor: pointer;
+
         &:active {
           opacity: 0.8;
         }
       }
+
       .confirm {
         display: flex;
         align-items: center;
@@ -1450,6 +1516,7 @@ onMounted(() => {
     display: flex;
     flex-direction: column;
     align-items: center;
+
     .service_title {
       margin-top: 30px;
       color: #000;
@@ -1459,6 +1526,7 @@ onMounted(() => {
       font-weight: 400;
       line-height: normal;
     }
+
     .service_code {
       display: flex;
       align-items: center;
@@ -1467,6 +1535,7 @@ onMounted(() => {
       margin-bottom: 40px;
       width: 320px;
       height: 320px;
+
       img {
         width: 270px;
         height: 270px;
@@ -1481,10 +1550,12 @@ onMounted(() => {
     width: 200px;
     height: 200px;
   }
+
   @keyframes rotateLoading {
     0% {
       transform: rotate(0deg);
     }
+
     100% {
       transform: rotate(360deg);
     }

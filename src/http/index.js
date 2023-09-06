@@ -9,6 +9,7 @@ import {
 import utils from '../common/utils';
 
 import { ElMessage } from 'element-plus';
+import { showToast } from 'vant'
 
 
 console.log('axios')
@@ -17,13 +18,13 @@ const instance = axios.create({
   baseURL: process.env.VUE_APP_BASE_URL,
   timeout: 20000,
   headers: {
-    'x-token':''
+    'x-token': ''
   }
 })
 
 // 添加请求拦截器
 instance.interceptors.request.use(async (config) => {
-  console.log('request',config)
+  console.log('request', config)
   const sign = await _getSign(config.headers)
   // 在发送请求之前做些什么
   config.headers = {
@@ -47,7 +48,7 @@ instance.interceptors.request.use(async (config) => {
   return config
 }, function (error) {
   // 对请求错误做些什么
-  console.log('request error',error)
+  console.log('request error', error)
   return Promise.reject(error)
 })
 
@@ -62,13 +63,16 @@ instance.interceptors.response.use(function (response) {
   }
   return response.data
 }, function (error) {
-  console.log('response-error',error)
+  console.log('response-error', error)
   // 对响应错误做点什么
-  if(error.response.status == 500){
-    ElMessage({
-      message: '网络连接中断，请检查您的网络并重试。',
-      type:'error'
-    })
+  if (error.response.status == 500) {
+
+    utils.isMobile() ?
+      showToast('网络连接中断，请检查您的网络并重试。')
+      : ElMessage({
+        message: '网络连接中断，请检查您的网络并重试。',
+        type: 'error'
+      })
   }
   return Promise.reject(error)
 })
