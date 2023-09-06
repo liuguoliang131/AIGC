@@ -95,7 +95,7 @@ const data = [
         id: 14,
         name: "用AI助力企业营销：如何制作「赛博朋克风格」的营销物料",
         poster: "",
-        path: "http://aigc-img.hanhoukeji.cn/6.%E7%94%A8AI%E5%8A%A9%E5%8A%9B%E4%BC%81%E4%B8%9A%E8%90%A5%E9%94%80%EF%BC%9A%E5%A6%82%E4%BD%95%E5%88%B6%E4%BD%9C%E3%80%8C%E8%B5%9B%E5%8D%9A%E6%9C%8B%E5%85%8B%E9%A3%8E%E6%A0%BC%E3%80%8D%E7%9A%84%E8%90%A5%E9%94%80%E7%89%A9%E6%96%99.mp4",
+        path: "http://aigc-img.hanhoukeji.cn/AI%E7%BB%98%E7%94%BB%E8%A7%86%E9%A2%91/6.1%E7%94%A8AI%E5%8A%A9%E5%8A%9B%E4%BC%81%E4%B8%9A%E8%90%A5%E9%94%80%EF%BC%9A%E5%A6%82%E4%BD%95%E5%88%B6%E4%BD%9C%E3%80%8C%E8%B5%9B%E5%8D%9A%E6%9C%8B%E5%85%8B%E9%A3%8E%E6%A0%BC%E3%80%8D%E7%9A%84%E8%90%A5%E9%94%80%E7%89%A9%E6%96%99.mp4",
       },
       {
         id: 15,

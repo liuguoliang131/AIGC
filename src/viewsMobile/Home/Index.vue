@@ -18,7 +18,6 @@
             src="https://quanres.hanhoukeji.com/hanhou-ai-pc/ai_home1_video.mp4"
             type="video/mp4"
           />
-          <div>您的浏览器不支持mp4</div>
         </video>
         <div class="up">
           <div class="row1">AI赋能计划</div>
@@ -233,7 +232,10 @@ onMounted(() => {
       overflow: hidden;
       text-align: center;
       .coverVideo {
-        margin: auto;
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translate(-50%, 0);
         height: 100%;
         background: no-repeat
           url("https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile-page2-bg.png")
