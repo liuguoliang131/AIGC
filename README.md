@@ -32,6 +32,8 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 
 
 ### 注意事项
+nodejs v16.17.0
+
 
 src/views/路径下为PC端页面, src/viewsMobile/路径下为移动端页面
 
