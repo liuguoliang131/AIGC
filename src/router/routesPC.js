@@ -10,17 +10,17 @@ const routes = [
     }
   },
   {
-    path: '/aigc/chat',
+    path: '/chat',
     name: 'Chat',
-    component: () => import('../views/AIGC/Chat.vue'),
+    component: () => import('../views/Chat/Chat.vue'),
     meta: {
       isAuthenticated: true
     }
   },
   {
-    path: '/aigc/draw',
+    path: '/draw',
     name: 'Draw',
-    component: () => import('../views/AIGC/Draw.vue'),
+    component: () => import('../views/Draw/Draw.vue'),
     meta: {
       isAuthenticated: true
     }

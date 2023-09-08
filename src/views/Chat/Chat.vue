@@ -280,7 +280,7 @@ import api from "@/http/api";
 import Clipboard from "clipboard";
 import { _getSign } from "@/http/sign";
 import utils from "@/common/utils";
-import Sidebar from "./components/Sidebar.vue";
+import Sidebar from "@/components/Sidebar.vue";
 import MyDialog from "@/components/MyDialog.vue";
 import { useUserStore } from "@/store/user";
 import { debounce } from "lodash";

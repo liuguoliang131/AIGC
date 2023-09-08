@@ -1,7 +1,7 @@
 <script setup>
 import { onMounted, reactive, ref, watch } from "vue";
 import { ElMessage, ElTooltip } from "element-plus";
-import Sidebar from "./components/Sidebar.vue";
+import Sidebar from "@/components/Sidebar.vue";
 import MyDialog from "@/components/MyDialog.vue";
 import DataTab from "./components/DataTab.vue";
 import DataHistory from "./components/DataHistory.vue";

@@ -9,20 +9,56 @@ const routes = [
     }
   },
   {
-    path: '/aigc/chat',
+    path: '/chat',
     name: 'Chat',
-    component: () => import('../views/AIGC/Chat.vue'),
-    meta: {
-      isAuthenticated: true
-    }
+    children: [
+      {
+        path: '/chat',
+        name: 'Chat',
+        component: () => import('../viewsMobile/Chat/Chat.vue'),
+        meta: {
+          isAuthenticated: true
+        }
+      },
+      {
+        path: '/chat/history',
+        name: 'ChatHistory',
+        component: () => import('../viewsMobile/Chat/ChatHistory.vue'),
+        meta: {
+          isAuthenticated: true
+        }
+      },
+    ]
   },
   {
-    path: '/aigc/draw',
+    path: '/draw',
     name: 'Draw',
-    component: () => import('../views/AIGC/Draw.vue'),
-    meta: {
-      isAuthenticated: true
-    }
+    children: [
+      {
+        path: '/draw',
+        name: 'Draw',
+        component: () => import('../viewsMobile/Draw/Draw.vue'),
+        meta: {
+          isAuthenticated: true
+        }
+      },
+      {
+        path: '/draw/result',
+        name: 'DrawResult',
+        component: () => import('../viewsMobile/Draw/DrawResult.vue'),
+        meta: {
+          isAuthenticated: true
+        }
+      },
+      {
+        path: '/draw/history',
+        name: 'DrawHistory',
+        component: () => import('../viewsMobile/Draw/DrawHistory.vue'),
+        meta: {
+          isAuthenticated: true
+        }
+      },
+    ]
   },
   {
     path: '/login',

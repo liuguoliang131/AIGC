@@ -1,5 +1,7 @@
 <template>
-  <router-view />
+  <Transition>
+    <router-view />
+  </Transition>
 </template>
 <script setup>
 </script>
@@ -34,11 +36,14 @@ body {
 }
 
 #app {
+  box-sizing: border-box;
   width: 100%;
   height: 100vh;
   font-family: PingFang SC;
   text-align: left;
   color: #333333;
+  padding-bottom: constant(safe-area-inset-bottom);
+  padding-bottom: env(safe-area-inset-bottom);
 }
 
 /*  强制一行显示 超出显示省略号 */
@@ -65,5 +70,19 @@ body {
   text-overflow: ellipsis;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
+}
+.v-enter-active,
+.v-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.v-enter-active,
+.v-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.v-enter-from,
+.v-leave-to {
+  opacity: 0;
 }
 </style>
