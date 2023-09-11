@@ -878,7 +878,6 @@ const slideAnimation = (length, time = 800) => {
       if (length1 <= 0) {
         clearInterval(slideTimer);
         slideTimer = null;
-        chatScrollTop;
       }
     }
   }, interval);
