@@ -47,11 +47,11 @@ export default {
     navToItem(value) {
       if (value == 1) {
         this.$router.push({
-          path: "/aigc/chat",
+          path: "/chat",
         });
       } else if (value == 2) {
         this.$router.push({
-          path: "/aigc/draw",
+          path: "/draw",
         });
       }
     },

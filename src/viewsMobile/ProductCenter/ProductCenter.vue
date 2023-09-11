@@ -27,11 +27,11 @@ const router = useRouter();
 const navToItem = (value) => {
   if (value == 1) {
     router.push({
-      path: "/aigc/chat",
+      path: "/chat",
     });
   } else if (value == 2) {
     router.push({
-      path: "/aigc/draw",
+      path: "/draw",
     });
   }
 };
