@@ -2,13 +2,21 @@ import { defineStore } from "pinia";
 import utils from '../common/utils'
 
 console.log('user store.js')
-
+const userInfo = utils.getUserInfo() || null
+const token = utils.getToken() || ''
+let residueQAQuantity
+if (utils.getStorageSync('residueQAQuantity')) {
+  residueQAQuantity = Number(utils.getStorageSync('residueQAQuantity'))
+} else {
+  residueQAQuantity = userInfo ? userInfo.residueQAQuantity : 0
+}
 export const useUserStore = defineStore({
   id: "user",
   state: () => ({
-    userInfo: utils.getUserInfo() || null,
-    token: utils.getToken() || '',
-    residuePictureQuantity: 0  //绘画剩余次数
+    userInfo,
+    token,
+    residuePictureQuantity: 0,  //绘画剩余次数
+    residueQAQuantity,  //对话剩余次数
   }),
   actions: {
     // 清空数据 
@@ -29,7 +37,7 @@ export const useUserStore = defineStore({
       utils.loginAfter(data)
     },
     // 修改userInfo
-    saveUserInfo(data){
+    saveUserInfo(data) {
       this.userInfo = data
       utils.setUserInfo(data)
     },
@@ -37,6 +45,12 @@ export const useUserStore = defineStore({
     // 修改绘画剩余次数
     saveResiduePictureQuantity(count) {
       this.residuePictureQuantity = count
+    },
+
+    // 修改对话剩余次数
+    saveResidueQAQuantity(count) {
+      this.residueQAQuantity = count
+      utils.setStorageSync('residueQAQuantity', this.residueQAQuantity)
     }
   },
 });

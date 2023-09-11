@@ -28,7 +28,7 @@ import { useRoute, useRouter } from "vue-router";
 const route = useRoute();
 const router = useRouter();
 
-// 去首页
+// 退一步
 const goback = () => {
   router.go(-1);
 };

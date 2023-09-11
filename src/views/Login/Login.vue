@@ -152,6 +152,7 @@ export default {
       userLogin(this.phone, this.code).then((res) => {
         if (res.code == 200) {
           this.loading = false;
+          this.userStore.saveResidueQAQuantity(res.data.residueQAQuantity);
           this.userStore.loginBackPage(res.data);
         } else {
           this.loading = false;
