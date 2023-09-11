@@ -19,7 +19,7 @@ export const useUserStore = defineStore({
     residueQAQuantity,  //对话剩余次数
   }),
   actions: {
-    // 清空数据 
+    // 清空数据
     clearLog() {
       this.userInfo = ''
       this.token = ''
