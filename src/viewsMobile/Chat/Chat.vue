@@ -2,7 +2,7 @@
   <div class="container">
     <div class="navbar">
       <img
-        @click="slideVisible = true"
+        @click="handShowSlide"
         class="call_left"
         src="https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile-chat-navmenu.svg"
         alt=""
@@ -215,6 +215,12 @@ const handGoHome = () => {
   router.push({
     path: "/",
   });
+};
+
+// 显示slidebar
+const handShowSlide = () => {
+  if (sendLoading.value) return;
+  slideVisible.value = true;
 };
 
 // 打开删除聊天消息弹窗
@@ -546,17 +552,12 @@ const onSend = () => {
     return;
   }
   if (newQuestion.value.length > 800) {
-    return ElMessage({
-      message: "您的输入已超出800字，请进行修改。",
-      type: "warning",
-    });
+    return showToast("您的输入已超出800字，请进行修改。");
   }
   if (userStore.residueQAQuantity == 0) {
-    return ElMessage({
-      message: "您的问答次数已用尽，请联系客服购买",
-      type: "warning",
-    });
+    return showToast("您的问答次数已用尽，请联系客服购买");
   }
+
   sendLoading.value = true;
   actionState = "2"; //动作状态设定为添加新问题
   const newQuestion1 = reString(newQuestion.value.trim());

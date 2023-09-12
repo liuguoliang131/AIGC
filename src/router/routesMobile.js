@@ -25,7 +25,8 @@ const routes = [
         name: 'ChatHistory',
         component: () => import('../viewsMobile/Chat/ChatHistory.vue'),
         meta: {
-          isAuthenticated: true
+          isAuthenticated: true,
+          title: '我的对话'
         }
       },
     ]
