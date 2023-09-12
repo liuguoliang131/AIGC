@@ -6,9 +6,13 @@
     ]"
   >
     <div class="firstRow">
-      <span class="leftCount"
-        >剩余问答次数：{{ userStore.residueQAQuantity }}次</span
-      >
+      <span class="leftCount">
+        {{
+          from
+            ? `剩余问答次数：${userStore.residueQAQuantity}次`
+            : `剩余绘画次数：${userStore.residuePictureQuantity}次`
+        }}
+      </span>
       <img @click="handHide" src="@/assets/icon_close_page.png" class="close" />
     </div>
     <div class="topEntry">
@@ -57,24 +61,24 @@
       <div @click="handGoLearnIndex" class="footerItemWrapper">
         <img
           src="https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile_learn_center.png"
-          style="width: 14px; height: 16.64px"
+          class="footerItemIcon"
         />
         <span class="footer_item_title">学习中心</span>
         <img
           src="https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile_sidebar_more.png"
-          style="width: 12px; height: 12px"
+          class="footerItemMore"
         />
       </div>
       <div class="divider"></div>
       <div @click="serviceVisible = true" class="footerItemWrapper">
         <img
           src="https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile_contacts.png"
-          style="width: 14px; height: 16.64px"
+          class="footerItemIcon"
         />
         <span class="footer_item_title">联系客服</span>
         <img
           src="https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile_sidebar_more.png"
-          style="width: 12px; height: 12px"
+          class="footerItemMore"
         />
       </div>
 
@@ -82,12 +86,12 @@
       <div @click="handExit" class="footerItemWrapper">
         <img
           src="https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile_exit.png"
-          style="width: 14px; height: 16.64px"
+          class="footerItemIcon"
         />
         <span class="footer_item_title">退出登录</span>
         <img
           src="https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile_sidebar_more.png"
-          style="width: 12px; height: 12px"
+          class="footerItemMore"
         />
       </div>
     </div>
@@ -109,7 +113,7 @@
 
 <script setup>
 import { ElRow, ElCol } from "element-plus";
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { showDialog, showToast, Overlay as VanOverlay } from "vant";
 import request from "@/http/index";
@@ -132,7 +136,6 @@ const emit = defineEmits(["update:visible"]);
 const route = useRoute();
 const router = useRouter();
 const from = route.path.includes("/chat"); // true对话 false绘画
-
 const serviceVisible = ref(false); // 显示客服二维码弹窗
 
 // 隐藏当前组件
@@ -145,7 +148,6 @@ const handCreat = () => {
   if (from) {
     // 操作pinia store
     chatStore.saveActiveTagId(0);
-    console.log(chatStore.activeTagId);
   } else {
     // 操作pinia store
   }
@@ -237,6 +239,33 @@ const handExit = () => {
     })
     .catch(() => {});
 };
+
+// 获取剩余绘画次数
+const getResidueQuantity = () => {
+  return new Promise(async (resolve) => {
+    try {
+      const res = await request.get(api.picture_residueQuantity, {});
+      if (res.code !== 200) {
+        resolve(false);
+        return ElMessage({
+          type: "error",
+          message: res.msg,
+        });
+      }
+      userStore.saveResiduePictureQuantity(res.data.residuePictureQuantity);
+      resolve(true);
+    } catch (error) {
+      resolve(false);
+      throw error;
+    }
+  });
+};
+
+onMounted(() => {
+  if (!from) {
+    getResidueQuantity();
+  }
+});
 </script>
 
 <style scoped lang="less">
@@ -335,6 +364,16 @@ const handExit = () => {
         font-size: 14px;
         flex: 1;
         color: rgba(255, 255, 255, 0.7);
+      }
+
+      .footerItemIcon {
+        width: 14px;
+        height: 16.64px;
+      }
+
+      .footerItemMore {
+        width: 12px;
+        height: 12px;
       }
     }
   }
