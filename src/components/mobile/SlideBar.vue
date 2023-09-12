@@ -4,7 +4,9 @@
     props.visible ? 'slide_bar-visible' : 'slide_bar-hidden',
   ]">
     <div class="firstRow">
-      <span class="leftCount">剩余问答次数：{{ userStore.residueQAQuantity }}次</span>
+      <span class="leftCount">
+        {{ from ? `剩余问答次数：${userStore.residueQAQuantity}次` : `剩余绘画次数：${userStore.residuePictureQuantity}次` }}
+      </span>
       <img @click="handHide" src="@/assets/icon_close_page.png" class="close" />
     </div>
     <div class="topEntry">
@@ -65,7 +67,7 @@
 
 <script setup>
 import { ElRow, ElCol } from "element-plus";
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { showDialog, showToast, Overlay as VanOverlay } from "vant";
 import request from "@/http/index";
@@ -86,7 +88,6 @@ const emit = defineEmits(["update:visible"]);
 const route = useRoute();
 const router = useRouter();
 const from = route.path.includes("/chat"); // true对话 false绘画
-
 const serviceVisible = ref(false); // 显示客服二维码弹窗
 
 // 隐藏当前组件
@@ -189,6 +190,33 @@ const handExit = () => {
     })
     .catch(() => { });
 };
+
+// 获取剩余绘画次数
+const getResidueQuantity = () => {
+  return new Promise(async (resolve) => {
+    try {
+      const res = await request.get(api.picture_residueQuantity, {});
+      if (res.code !== 200) {
+        resolve(false);
+        return ElMessage({
+          type: "error",
+          message: res.msg,
+        });
+      }
+      userStore.saveResiduePictureQuantity(res.data.residuePictureQuantity);
+      resolve(true);
+    } catch (error) {
+      resolve(false);
+      throw error;
+    }
+  });
+};
+
+onMounted(() => {
+  if (!from) {
+    getResidueQuantity();
+  }
+});
 </script>
 
 <style scoped lang="less">
