@@ -24,13 +24,14 @@
             :data-id="item.id"
           >
             <div class="q-view">
-              <div class="timestamp">2023/10/10 10:09:30</div>
+              <div class="timestamp">{{ item.createdAt }}</div>
               <div class="message">
                 {{ item.description }}
                 <img
                   class="copy_icon"
                   src="https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile-chat-copy-icon.svg"
                   alt=""
+                  @click="handCopyText(item.description)"
                 />
               </div>
             </div>
@@ -51,7 +52,7 @@
               alt=""
             />
             <div class="a-view">
-              <div class="timestamp">2023/10/10 10:09:30</div>
+              <div class="timestamp">{{ item.createdAt }}</div>
               <template v-if="item.outputing">
                 <div v-if="item.outputing === '0'" class="message_state0">
                   <div class="round light1"></div>
@@ -68,11 +69,13 @@
                     class="copy_icon"
                     src="https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile-chat-copy-icon1.png"
                     alt=""
+                    @click="handCopyText(item.description)"
                   />
                   <img
                     class="remove_icon"
                     src="https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile-chat-removemsg-icon.svg"
                     alt=""
+                    @click="handShowRemove(item)"
                   />
                 </div>
                 <div v-else-if="item.outputing === '3'" class="message_state3">
@@ -86,11 +89,13 @@
                     class="copy_icon"
                     src="https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile-chat-copy-icon1.png"
                     alt=""
+                    @click="handCopyText(item.description)"
                   />
                   <img
                     class="remove_icon"
                     src="https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile-chat-removemsg-icon.svg"
                     alt=""
+                    @click="handShowRemove(item)"
                   />
                 </div>
               </template>
@@ -116,10 +121,19 @@
       <slide-bar v-model:visible="slideVisible"></slide-bar>
     </transition>
     <my-dialog
-      v-model:show="visible"
+      v-model:show="removeMsgVisible"
       title="温馨提示"
       message="是否要删除此对话消息？"
       showCancelButton
+      @confirm="confirmRemoveMsg"
+    >
+    </my-dialog>
+    <my-dialog
+      v-model:show="dialogVisible"
+      title="敏感词提醒"
+      :message="tipMessage"
+      confirm-button-text="确认"
+      @confirm="confirmRemoveLastMsg"
     >
     </my-dialog>
     <my-clipboard
@@ -137,20 +151,20 @@ import SlideBar from "@/components/mobile/SlideBar.vue";
 import MyDialog from "@/components/mobile/MyDialog.vue";
 import MyClipboard from "@/components/MyClipboard.vue";
 import { ElInput } from "element-plus";
-import { showToast } from "vant";
+import { showToast, closeToast } from "vant";
 import { EventSourcePolyfill } from "event-source-polyfill";
 import request from "@/http/index";
 import api from "@/http/api";
 import { _getSign } from "@/http/sign";
 import { useUserStore } from "@/store/user";
 import { useChatStore } from "@/store/chat";
+import dayjs from "dayjs";
 
 const router = useRouter();
 
 const userStore = useUserStore(); // 用户信息
 const chatStore = useChatStore(); // ai对话store
 
-const visible = ref(false);
 const slideVisible = ref(false); // 菜单页是否显示
 const newQuestion = ref(""); // 新的提问内容
 const myClip = ref(); // 复制文字组件
@@ -159,11 +173,12 @@ const chatList = reactive({
   lastId: 0,
   loading: false,
   finish: false,
-  empty: false,
 });
 const sendLoading = ref(false); // 发送时loading
 const tipMessage = ref(""); // 敏感提示信息
 const dialogVisible = ref(false); // 敏感词提示窗开关
+const removeMsgVisible = ref(false); // 删除消息弹窗开关
+const msgId = ref(null); // 要删除的消息的id
 // 记录当前动作状态是1加载列表 2发送新问题 3接收答案中
 let actionState = "1";
 // 聊天窗口scroll元素
@@ -200,6 +215,46 @@ const handGoHome = () => {
   router.push({
     path: "/",
   });
+};
+
+// 打开删除聊天消息弹窗
+const handShowRemove = (item) => {
+  msgId.value = item.id;
+  removeMsgVisible.value = true;
+};
+
+// 确认删除一对问答消息
+const confirmRemoveMsg = () => {
+  showToast({
+    duration: 0,
+    forbidClick: true,
+    type: "loading",
+    message: "加载中",
+  });
+  request
+    .post(api.chat_delAnswer, {
+      answerId: msgId.value,
+    })
+    .then((res) => {
+      closeToast();
+      if (res.code == 200) {
+        // 设置动作为删除  删除后不用手动填充新数据到列表, 监听高度不足一屏时会自动获取
+        actionState = "4";
+        const idx = chatList.list.findIndex((item) => item.id === msgId.value);
+        chatList.list.splice(idx - 1, 2);
+      } else {
+        showToast(res.message || res.msg);
+      }
+    });
+};
+
+// 敏感词弹窗确认
+const confirmRemoveLastMsg = () => {
+  chatList.list.splice(chatList.list.length - 2, 2);
+  // 重新设置lastId
+  chatList.lastId = chatList.list.length
+    ? chatList.list[chatList.list.length - 1].id
+    : 0;
 };
 
 let slideTimer = null;
@@ -250,6 +305,11 @@ const onScroll = (e) => {
     getChatList();
   }
 };
+// 转换标准时间
+const formatNormal = (inputDateString) => {
+  let str = inputDateString.split(" +")[0];
+  return dayjs(str).format("YYYY/MM/DD HH:mm:ss");
+};
 
 // 加载列表
 const getChatList = () => {
@@ -272,6 +332,9 @@ const getChatList = () => {
           n = n.replace(/\\n/g, "<br/>");
           n = n.replace(/\\/g, "");
           item.description = n;
+        });
+        res.data.list.forEach((item) => {
+          item.createdAt = formatNormal(item.createdAt);
         });
         chatList.list = [...res.data.list.reverse(), ...chatList.list];
         chatList.lastId = res.data.lastId;
@@ -319,7 +382,7 @@ watch(
       scrollToEnd(oldVal, newVal);
     } else if (actionState === "4") {
       // 动作状态为删除对话信息: 删除对话信息,卷轴scrollTop设定为加载之前观看的位置
-      chatScrollView.value.scrollTop = oldVal - newVal;
+      // chatScrollView.value.scrollTop = oldVal - newVal;
     }
   },
   {
@@ -328,8 +391,19 @@ watch(
 );
 
 onMounted(() => {
-  getChatList();
+  if (chatStore.activeTagId) {
+    getChatList();
+  }
 });
+
+watch(
+  () => chatStore.activeTagId,
+  (next, prev) => {
+    if (next === 0) {
+      clearChatList();
+    }
+  }
+);
 
 // 清空聊天窗口数据
 const clearChatList = () => {
@@ -495,7 +569,7 @@ const onSend = () => {
     tagId: "",
     type: 1,
     description: newQuestion1,
-    createdAt: "",
+    createdAt: dayjs().format("YYYY/MM/DD HH:mm:ss"),
   });
   chatList.list.push({
     id: "",
@@ -503,7 +577,7 @@ const onSend = () => {
     tagId: "",
     type: 2,
     description: "",
-    createdAt: "",
+    createdAt: dayjs().format("YYYY/MM/DD HH:mm:ss"),
     outputing: "0", // 答案输出状态  0等待中1输出中2输出完成3错误提示
   });
   // scrollToEnd();
@@ -589,7 +663,7 @@ const onSend = () => {
             display: inline-block;
             min-width: 58px;
             min-height: 33px;
-            max-width: 297px;
+            max-width: 280px;
             padding: 12px 16px 28px 16px;
             color: #161616;
             font-family: PingFang SC;
@@ -752,7 +826,7 @@ const onSend = () => {
             display: inline-block;
             min-width: 80px;
             min-height: 33px;
-            max-width: 297px;
+            max-width: 280px;
             padding: 12px 16px 28px 16px;
             color: #161616;
             font-family: PingFang SC;
@@ -771,7 +845,7 @@ const onSend = () => {
             display: inline-block;
             min-width: 80px;
             min-height: 33px;
-            max-width: 297px;
+            max-width: 280px;
             padding: 12px 16px 28px 16px;
             color: #161616;
             font-family: PingFang SC;
@@ -810,7 +884,7 @@ const onSend = () => {
             display: inline-block;
             min-width: 80px;
             min-height: 33px;
-            max-width: 297px;
+            max-width: 280px;
             padding: 6px 16px;
             color: #161616;
             font-family: PingFang SC;

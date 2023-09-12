@@ -1,53 +1,94 @@
 <template>
-  <div :class="[
-    'slide_bar',
-    props.visible ? 'slide_bar-visible' : 'slide_bar-hidden',
-  ]">
+  <div
+    :class="[
+      'slide_bar',
+      props.visible ? 'slide_bar-visible' : 'slide_bar-hidden',
+    ]"
+  >
     <div class="firstRow">
-      <span class="leftCount">剩余问答次数：{{ userStore.residueQAQuantity }}次</span>
+      <span class="leftCount"
+        >剩余问答次数：{{ userStore.residueQAQuantity }}次</span
+      >
       <img @click="handHide" src="@/assets/icon_close_page.png" class="close" />
     </div>
     <div class="topEntry">
       <div class="imgLeft">
-        <img @click="handCreat" :src="from ? 'https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile_new_chat.png'
-          : 'https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile_new_chat.png'
-          " class="imgLeftTop" />
-        <img @click="handGoAiHistory" :src="from ? 'https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile_my_chat.png'
-          : 'https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile_my_chat.png'
-          " class="imgLeftBottom" />
+        <img
+          @click="handCreat"
+          :src="
+            from
+              ? 'https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile_new_chat.png'
+              : 'https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile_new_chat.png'
+          "
+          class="imgLeftTop"
+        />
+        <img
+          @click="handGoAiHistory"
+          :src="
+            from
+              ? 'https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile_my_chat.png'
+              : 'https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile_my_chat.png'
+          "
+          class="imgLeftBottom"
+        />
       </div>
-      <img @click="handGoAiIndex" :src="from ? 'https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile_enter_draw.png'
-        : 'https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile_enter_draw.png'
-        " class="imgRightCenter" />
+      <img
+        @click="handGoAiIndex"
+        :src="
+          from
+            ? 'https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile_enter_draw.png'
+            : 'https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile_enter_draw.png'
+        "
+        class="imgRightCenter"
+      />
     </div>
-    <img @click="handGoLearnInfo" :src="from ? 'https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile_course.png'
-      : 'https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile_course.png'
-      " class="imgCourse" />
+    <img
+      @click="handGoLearnInfo"
+      :src="
+        from
+          ? 'https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile_course.png'
+          : 'https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile_course.png'
+      "
+      class="imgCourse"
+    />
 
     <div class="footerWrapper">
       <div class="footerTitle">更多服务</div>
       <div @click="handGoLearnIndex" class="footerItemWrapper">
-        <img src="https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile_learn_center.png"
-          style="width: 14px; height: 16.64px;" />
+        <img
+          src="https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile_learn_center.png"
+          style="width: 14px; height: 16.64px"
+        />
         <span class="footer_item_title">学习中心</span>
-        <img src="https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile_sidebar_more.png"
-          style="width: 12px; height: 12px;" />
+        <img
+          src="https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile_sidebar_more.png"
+          style="width: 12px; height: 12px"
+        />
       </div>
       <div class="divider"></div>
       <div @click="serviceVisible = true" class="footerItemWrapper">
-        <img src="https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile_contacts.png"
-          style="width: 14px; height: 16.64px;" />
+        <img
+          src="https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile_contacts.png"
+          style="width: 14px; height: 16.64px"
+        />
         <span class="footer_item_title">联系客服</span>
-        <img src="https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile_sidebar_more.png"
-          style="width: 12px; height: 12px;" />
+        <img
+          src="https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile_sidebar_more.png"
+          style="width: 12px; height: 12px"
+        />
       </div>
 
       <div class="divider"></div>
       <div @click="handExit" class="footerItemWrapper">
-        <img src="https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile_exit.png" style="width: 14px; height: 16.64px;" />
+        <img
+          src="https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile_exit.png"
+          style="width: 14px; height: 16.64px"
+        />
         <span class="footer_item_title">退出登录</span>
-        <img src="https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile_sidebar_more.png"
-          style="width: 12px; height: 12px;" />
+        <img
+          src="https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile_sidebar_more.png"
+          style="width: 12px; height: 12px"
+        />
       </div>
     </div>
     <van-overlay :show="serviceVisible" @click="serviceVisible = false">
@@ -55,7 +96,10 @@
         <div class="serviceWrapper">
           <div class="service_title">扫描二维码添加专属客服</div>
           <div class="service_code">
-            <img src="https://quanres.hanhoukeji.com/hanhou-ai-pc/CustomerServiceCode.png" alt="" />
+            <img
+              src="https://quanres.hanhoukeji.com/hanhou-ai-pc/CustomerServiceCode.png"
+              alt=""
+            />
           </div>
         </div>
       </div>
@@ -72,7 +116,9 @@ import request from "@/http/index";
 import api from "@/http/api";
 import { useUserStore } from "@/store/user";
 import MyDialog from "@/components/MyDialog.vue";
+import { useChatStore } from "@/store/chat";
 const userStore = useUserStore(); // 用户信息
+const chatStore = useChatStore(); // ai对话
 
 const props = defineProps({
   visible: {
@@ -98,6 +144,8 @@ const handHide = () => {
 const handCreat = () => {
   if (from) {
     // 操作pinia store
+    chatStore.saveActiveTagId(0);
+    console.log(chatStore.activeTagId);
   } else {
     // 操作pinia store
   }
@@ -187,7 +235,7 @@ const handExit = () => {
     .then(() => {
       confirmExit();
     })
-    .catch(() => { });
+    .catch(() => {});
 };
 </script>
 
@@ -200,7 +248,7 @@ const handExit = () => {
   width: 100%;
   height: 100%;
   box-sizing: border-box;
-  background: #222E50;
+  background: #222e50;
   transition: left 0.5s;
   padding: 14px 16px;
 
@@ -289,7 +337,6 @@ const handExit = () => {
         color: rgba(255, 255, 255, 0.7);
       }
     }
-
   }
 }
 
@@ -333,7 +380,6 @@ const handExit = () => {
       }
     }
   }
-
 }
 
 .slide_bar-visible {
