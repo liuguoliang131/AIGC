@@ -29,27 +29,22 @@
     <div class="footerWrapper">
       <div class="footerTitle">更多服务</div>
       <div @click="handGoLearnIndex" class="footerItemWrapper">
-        <img src="https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile_learn_center.png"
-          style="width: 14px; height: 16.64px;" />
+        <img src="https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile_learn_center.png" class="footerItemIcon" />
         <span class="footer_item_title">学习中心</span>
-        <img src="https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile_sidebar_more.png"
-          style="width: 12px; height: 12px;" />
+        <img src="https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile_sidebar_more.png" class="footerItemMore" />
       </div>
       <div class="divider"></div>
       <div @click="serviceVisible = true" class="footerItemWrapper">
-        <img src="https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile_contacts.png"
-          style="width: 14px; height: 16.64px;" />
+        <img src="https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile_contacts.png" class="footerItemIcon" />
         <span class="footer_item_title">联系客服</span>
-        <img src="https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile_sidebar_more.png"
-          style="width: 12px; height: 12px;" />
+        <img src="https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile_sidebar_more.png" class="footerItemMore" />
       </div>
 
       <div class="divider"></div>
       <div @click="handExit" class="footerItemWrapper">
-        <img src="https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile_exit.png" style="width: 14px; height: 16.64px;" />
+        <img src="https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile_exit.png" class="footerItemIcon" />
         <span class="footer_item_title">退出登录</span>
-        <img src="https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile_sidebar_more.png"
-          style="width: 12px; height: 12px;" />
+        <img src="https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile_sidebar_more.png" class="footerItemMore" />
       </div>
     </div>
     <van-overlay :show="serviceVisible" @click="serviceVisible = false">
@@ -315,6 +310,16 @@ onMounted(() => {
         font-size: 14px;
         flex: 1;
         color: rgba(255, 255, 255, 0.7);
+      }
+
+      .footerItemIcon {
+        width: 14px;
+        height: 16.64px;
+      }
+
+      .footerItemMore {
+        width: 12px;
+        height: 12px;
       }
     }
 
