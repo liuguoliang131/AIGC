@@ -275,7 +275,7 @@ const madePicture4 = async () => {
                   <path d="M1 7.59937H13.56" stroke="#AFAFAF" stroke-linecap="round" />
                   <path d="M7.20996 14.021L7.20996 1.461" stroke="#AFAFAF" stroke-linecap="round" />
                 </svg>
-                <div class="none-text">支持JPG、PNG 10M以内</div>
+                <div class="none-text">支持JPG、PNG<br>10M以内</div>
               </div>
             </template>
           </div>
@@ -350,36 +350,37 @@ const madePicture4 = async () => {
   background-color: #666666 !important;
   border: none !important;
   font-family: PingFang SC !important;
-  line-height: 12px !important;
+  line-height: 19px !important;
+  height: 19px;
   align-items: center;
-  padding: 4px 4px;
+  padding: 4px 10px;
   display: flex;
 
   span {
     font-family: PingFang SC !important;
-    font-size: 12px;
+    font-size: 10px;
   }
 
   .el-popper__arrow::before {
-    width: 4px;
-    height: 4px;
+    width: 12px;
+    height: 12px;
     background-color: #666666 !important;
     border: none !important;
-    left: -1.2px;
+    left: -5.2px;
+    top: -5px;
   }
 }
 </style>
 <style scoped lang="less">
 .tabContainer {
   display: flex;
-  background-color: #fff;
   flex-direction: column;
   height: 100%;
 
   .data-tab {
     box-sizing: border-box;
     height: 100%;
-    padding: 17px 17px 107px 17px;
+    padding: 16px 14px 107px 14px;
     overflow-y: scroll;
     border-radius: 5px;
     box-shadow: 0px 4px 8px 0px rgba(0, 0, 0, 0.1);
@@ -393,7 +394,7 @@ const madePicture4 = async () => {
       box-sizing: border-box;
       width: 100%;
       height: 166px;
-      padding: 7.7px 5px 26px 0;
+      padding: 7.7px 5px 24px 0;
       border-radius: 5px;
       border: 1px solid #e3e3e3;
       background: #fafafa;
@@ -492,8 +493,8 @@ const madePicture4 = async () => {
     }
 
     .title2 {
-      margin-top: 30.49px;
-      margin-bottom: 15.3px;
+      margin-top: 24px;
+      margin-bottom: 15px;
       display: flex;
       align-items: center;
       color: #000;
@@ -530,10 +531,9 @@ const madePicture4 = async () => {
     }
 
     .upload {
-      width: 89px;
-      height: 89px;
+      width: 97px;
+      height: 91px;
       border: 1px dashed #e3e3e3;
-      margin-top: 15.4px;
       background-color: #fafafa;
       border-radius: 5px;
       user-select: none;
@@ -592,10 +592,10 @@ const madePicture4 = async () => {
           color: rgba(0, 0, 0, 0.3);
           text-align: center;
           font-family: PingFang SC;
-          font-size: 18px;
+          font-size: 12px;
           font-style: normal;
           font-weight: 400;
-          line-height: 18px;
+          line-height: 12px;
           /* 120% */
           transform: scale(0.67);
         }
@@ -631,17 +631,17 @@ const madePicture4 = async () => {
 
     .quality {
       display: flex;
-      justify-content: space-between;
+      justify-content: start;
       width: 100%;
 
       .quality-item {
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 89px;
-        height: 29px;
+        width: 91px;
+        height: 31px;
         border-radius: 5px;
-        border: 0.7px dashed #848484;
+        border: 1px dashed #848484;
         color: #848484;
         font-family: PingFang SC;
         font-size: 14px;
@@ -650,14 +650,17 @@ const madePicture4 = async () => {
         line-height: normal;
         user-select: none;
         cursor: pointer;
+        &:not(:last-child) {
+          margin-right: 16.32px;
+        }
       }
 
       .quality-item_active {
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 89px;
-        height: 29px;
+        width: 91px;
+        height: 31px;
         border-radius: 5px;
         border: 0.7px solid #126cfe;
         color: #126cfe;
@@ -667,6 +670,9 @@ const madePicture4 = async () => {
         font-weight: 600;
         line-height: normal;
         user-select: none;
+        &:not(:last-child) {
+          margin-right: 16.32px;
+        }
       }
     }
 
@@ -674,8 +680,8 @@ const madePicture4 = async () => {
       display: grid;
       grid-template-rows: 31px;
       grid-template-columns: 91px 91px 91px;
-      grid-row-gap: 12.67px;
-      grid-column-gap: 37.32px;
+      grid-row-gap: 16.05px;
+      grid-column-gap: 16.32px;
       width: 100%;
 
       .scale-item {
@@ -683,10 +689,10 @@ const madePicture4 = async () => {
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        width: 89px;
-        height: 29px;
+        width: 91px;
+        height: 31px;
         border-radius: 5px;
-        border: 0.7px dashed #848484;
+        border: 1px dashed #848484;
         color: #848484;
         text-align: center;
         user-select: none;
@@ -716,8 +722,8 @@ const madePicture4 = async () => {
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        width: 89px;
-        height: 29px;
+        width: 91px;
+        height: 31px;
         border-radius: 5px;
         border: 0.7px solid #126cfe;
         color: #126cfe;
@@ -748,8 +754,8 @@ const madePicture4 = async () => {
       display: grid;
       grid-template-rows: 80px;
       grid-template-columns: 80px 80px 80px 80px;
-      grid-row-gap: 12.67px;
-      grid-column-gap: 9px;
+      grid-row-gap: 5px;
+      grid-column-gap: 7px;
       width: 100%;
 
       .drawstyle-item {
@@ -820,7 +826,7 @@ const madePicture4 = async () => {
     z-index: 999;
     align-items: center;
     justify-content: center;
-    background-color: white;
+    background-color: #F6F6F6;
     padding-top: 22px;
     padding-bottom: 22px;
 

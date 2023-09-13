@@ -86,7 +86,7 @@ const createSuccess = (data) => {
   box-sizing: border-box;
   height: 100%;
   overflow: hidden;
-  background: #f6f6f6;
+  background: #F6F6F6;
 
   .navbar {
     position: relative;
