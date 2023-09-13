@@ -122,10 +122,10 @@ const createSuccess = (data) => {
   }
 
   .formWrapper{
-    position: relative;
-    box-sizing: border-box;
+    // position: relative;
+    // box-sizing: border-box;
     width: 100%;
-    height: 100%;
+    height: calc(100% - 44px);
   }
 }
 </style>
