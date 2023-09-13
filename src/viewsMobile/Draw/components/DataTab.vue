@@ -372,16 +372,14 @@ const madePicture4 = async () => {
 <style scoped lang="less">
 .tabContainer {
   display: flex;
-  position: absolute;
   background-color: #fff;
   flex-direction: column;
-  padding-top: 0;
   height: 100%;
 
   .data-tab {
     box-sizing: border-box;
     height: 100%;
-    padding: 17px 17px 17px 17px;
+    padding: 17px 17px 107px 17px;
     overflow-y: scroll;
     border-radius: 5px;
     box-shadow: 0px 4px 8px 0px rgba(0, 0, 0, 0.1);
@@ -818,8 +816,8 @@ const madePicture4 = async () => {
     display: flex;
     position: absolute;
     width: 100%;
-    bottom: 45px;
-    // z-index: 999;
+    bottom: 0;
+    z-index: 999;
     align-items: center;
     justify-content: center;
     background-color: white;
