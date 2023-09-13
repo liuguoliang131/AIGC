@@ -203,238 +203,145 @@ const madePicture4 = async () => {
 </script>
 
 <template>
-  <div class="data-tab">
-    <div class="ipt">
-      <textarea
-        class="textarea"
-        v-model="baseData.pictureIdea"
-        resize="none"
-        maxlength="500"
-        :autosize="false"
-        placeholder="请描述您想要的画面（目前支持中/英文，英文输入效果更佳）。"
-      ></textarea>
-      <div class="ipt_ass" v-if="baseData.pictureIdea.length">
-        <div class="limit">
-          <span class="weight">{{ baseData.pictureIdea.length }}</span
-          >/500
+  <div class="tabContainer">
+    <div class="data-tab">
+      <div class="ipt">
+        <textarea class="textarea" v-model="baseData.pictureIdea" resize="none" maxlength="500" :autosize="false"
+          placeholder="请描述您想要的画面（目前支持中/英文，英文输入效果更佳）。"></textarea>
+        <div class="ipt_ass" v-if="baseData.pictureIdea.length">
+          <div class="limit">
+            <span class="weight">{{ baseData.pictureIdea.length }}</span>/500
+          </div>
+          <div class="vertical"></div>
+          <div class="clear_input" @click="baseData.pictureIdea = ''">清空</div>
         </div>
-        <div class="vertical"></div>
-        <div class="clear_input" @click="baseData.pictureIdea = ''">清空</div>
-      </div>
-      <div class="ipt_ass" v-else>
-        <div class="limit">{{ baseData.pictureIdea.length }}/500</div>
-      </div>
-    </div>
-    <div class="taketry">
-      <span @click="handRange">随便试试</span>
-    </div>
-    <div class="title2">
-      <span class="title2-n">参考图</span>
-      <el-tooltip
-        popper-class="popper_style"
-        effect="dark"
-        content="基于参考图生成作品"
-        placement="right"
-      >
-        <div class="title2-t">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="12"
-            height="13"
-            viewBox="0 0 12 13"
-            fill="none"
-          >
-            <mask
-              id="mask0_57_258"
-              style="mask-type: luminance"
-              maskUnits="userSpaceOnUse"
-              x="0"
-              y="0"
-              width="12"
-              height="13"
-            >
-              <path d="M11.9977 0H0V12.0164H11.9977V0Z" fill="white" />
-            </mask>
-            <g mask="url(#mask0_57_258)">
-              <path
-                d="M5.9917 0.00939941C9.30195 0.00939941 11.9859 2.6933 11.9859 6.00355C11.9859 9.31379 9.30195 11.9977 5.9917 11.9977C2.68146 11.9977 -0.00244141 9.31379 -0.00244141 6.00355C-0.00244141 2.6933 2.68146 0.00939941 5.9917 0.00939941ZM5.9917 1.00842C3.23346 1.00842 0.996583 3.2453 0.996583 6.00355C0.996583 8.76179 3.23346 10.9987 5.9917 10.9987C8.74995 10.9987 10.9868 8.76179 10.9868 6.00355C10.9868 3.2453 8.74995 1.00842 5.9917 1.00842ZM6.09863 7.71633C6.51249 7.71633 6.8479 8.05194 6.8479 8.46559C6.8479 8.87945 6.51249 9.21486 6.09863 9.21486C5.68478 9.21486 5.34936 8.87945 5.34936 8.46559C5.34936 8.05194 5.68478 7.71633 6.09863 7.71633ZM6.06312 3.00647C6.33902 3.00647 6.56263 3.23008 6.56263 3.50598V6.36023C6.56263 6.63613 6.33902 6.85974 6.06312 6.85974C5.78722 6.85974 5.56361 6.63613 5.56361 6.36023V3.50598C5.56361 3.23008 5.78722 3.00647 6.06312 3.00647Z"
-                fill="#111111"
-                fill-opacity="0.3"
-              />
-            </g>
-          </svg>
-          <span class="tip_">选填</span>
+        <div class="ipt_ass" v-else>
+          <div class="limit">{{ baseData.pictureIdea.length }}/500</div>
         </div>
-      </el-tooltip>
-    </div>
-    <div>
-      <my-upload
-        :type="['image/png', 'image/jpeg']"
-        v-model:value="baseData.bgImageUrl"
-        v-slot="slotProps"
-      >
-        <div class="upload">
-          <template v-if="slotProps.loading">
-            <div class="upload-loading">
-              <img
-                class="loading-img"
-                src="https://quanres.hanhoukeji.com/hanhou-ai-pc/draw-default-static.png"
-                alt=""
-              />
-              <div class="loading-text">上传中</div>
-            </div>
-          </template>
-          <template v-else>
-            <div class="cover" v-if="baseData.bgImageUrl">
-              <el-image
-                style="width: 100%; height: 100%; border-radius: inherit"
-                :src="baseData.bgImageUrl"
-                fit="cover"
-              />
-              <div class="clear_img" @click.stop="baseData.bgImageUrl = ''">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="5"
-                  height="5"
-                  viewBox="0 0 5 5"
-                  fill="none"
-                >
-                  <g clip-path="url(#clip0_556_551)">
-                    <path
-                      d="M3.08163 2.48573L4.87667 0.710313C5.03979 0.549295 5.04109 0.286444 4.88007 0.123318C4.71905 -0.0398084 4.45588 -0.0411056 4.29308 0.119913L2.49561 1.8976L0.725541 0.122021C0.563225 -0.0402948 0.300861 -0.0411056 0.138546 0.12121C-0.0237698 0.283201 -0.0242562 0.54589 0.137735 0.708205L1.90521 2.48119L0.123141 4.24412C-0.0399851 4.40563 -0.0412824 4.66799 0.119736 4.83112C0.201137 4.91333 0.307834 4.95435 0.414855 4.95435C0.520255 4.95435 0.625655 4.91414 0.706731 4.83452L2.49139 3.06948L4.29048 4.87425C4.3714 4.95565 4.47777 4.99619 4.58447 4.99619C4.69068 4.99619 4.79656 4.95549 4.87748 4.87506C5.03979 4.71323 5.04028 4.45087 4.87829 4.28807L3.08163 2.48573Z"
-                      fill="white"
-                    />
-                  </g>
-                  <defs>
-                    <clipPath id="clip0_556_551">
-                      <rect width="5" height="4.99643" fill="white" />
-                    </clipPath>
-                  </defs>
-                </svg>
+      </div>
+      <div class="taketry">
+        <span @click="handRange">随便试试</span>
+      </div>
+      <div class="title2">
+        <span class="title2-n">参考图</span>
+        <el-tooltip popper-class="popper_style" effect="dark" content="基于参考图生成作品" placement="right">
+          <div class="title2-t">
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="13" viewBox="0 0 12 13" fill="none">
+              <mask id="mask0_57_258" style="mask-type: luminance" maskUnits="userSpaceOnUse" x="0" y="0" width="12"
+                height="13">
+                <path d="M11.9977 0H0V12.0164H11.9977V0Z" fill="white" />
+              </mask>
+              <g mask="url(#mask0_57_258)">
+                <path
+                  d="M5.9917 0.00939941C9.30195 0.00939941 11.9859 2.6933 11.9859 6.00355C11.9859 9.31379 9.30195 11.9977 5.9917 11.9977C2.68146 11.9977 -0.00244141 9.31379 -0.00244141 6.00355C-0.00244141 2.6933 2.68146 0.00939941 5.9917 0.00939941ZM5.9917 1.00842C3.23346 1.00842 0.996583 3.2453 0.996583 6.00355C0.996583 8.76179 3.23346 10.9987 5.9917 10.9987C8.74995 10.9987 10.9868 8.76179 10.9868 6.00355C10.9868 3.2453 8.74995 1.00842 5.9917 1.00842ZM6.09863 7.71633C6.51249 7.71633 6.8479 8.05194 6.8479 8.46559C6.8479 8.87945 6.51249 9.21486 6.09863 9.21486C5.68478 9.21486 5.34936 8.87945 5.34936 8.46559C5.34936 8.05194 5.68478 7.71633 6.09863 7.71633ZM6.06312 3.00647C6.33902 3.00647 6.56263 3.23008 6.56263 3.50598V6.36023C6.56263 6.63613 6.33902 6.85974 6.06312 6.85974C5.78722 6.85974 5.56361 6.63613 5.56361 6.36023V3.50598C5.56361 3.23008 5.78722 3.00647 6.06312 3.00647Z"
+                  fill="#111111" fill-opacity="0.3" />
+              </g>
+            </svg>
+            <span class="tip_">选填</span>
+          </div>
+        </el-tooltip>
+      </div>
+      <div>
+        <my-upload :type="['image/png', 'image/jpeg']" v-model:value="baseData.bgImageUrl" v-slot="slotProps">
+          <div class="upload">
+            <template v-if="slotProps.loading">
+              <div class="upload-loading">
+                <img class="loading-img" src="https://quanres.hanhoukeji.com/hanhou-ai-pc/draw-default-static.png"
+                  alt="" />
+                <div class="loading-text">上传中</div>
               </div>
-            </div>
-            <div class="upload-none" v-else>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="15"
-                height="15"
-                viewBox="0 0 15 15"
-                fill="none"
-              >
+            </template>
+            <template v-else>
+              <div class="cover" v-if="baseData.bgImageUrl">
+                <el-image style="width: 100%; height: 100%; border-radius: inherit" :src="baseData.bgImageUrl"
+                  fit="cover" />
+                <div class="clear_img" @click.stop="baseData.bgImageUrl = ''">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="5" height="5" viewBox="0 0 5 5" fill="none">
+                    <g clip-path="url(#clip0_556_551)">
+                      <path
+                        d="M3.08163 2.48573L4.87667 0.710313C5.03979 0.549295 5.04109 0.286444 4.88007 0.123318C4.71905 -0.0398084 4.45588 -0.0411056 4.29308 0.119913L2.49561 1.8976L0.725541 0.122021C0.563225 -0.0402948 0.300861 -0.0411056 0.138546 0.12121C-0.0237698 0.283201 -0.0242562 0.54589 0.137735 0.708205L1.90521 2.48119L0.123141 4.24412C-0.0399851 4.40563 -0.0412824 4.66799 0.119736 4.83112C0.201137 4.91333 0.307834 4.95435 0.414855 4.95435C0.520255 4.95435 0.625655 4.91414 0.706731 4.83452L2.49139 3.06948L4.29048 4.87425C4.3714 4.95565 4.47777 4.99619 4.58447 4.99619C4.69068 4.99619 4.79656 4.95549 4.87748 4.87506C5.03979 4.71323 5.04028 4.45087 4.87829 4.28807L3.08163 2.48573Z"
+                        fill="white" />
+                    </g>
+                    <defs>
+                      <clipPath id="clip0_556_551">
+                        <rect width="5" height="4.99643" fill="white" />
+                      </clipPath>
+                    </defs>
+                  </svg>
+                </div>
+              </div>
+              <div class="upload-none" v-else>
+                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 15 15" fill="none">
+                  <path d="M1 7.59937H13.56" stroke="#AFAFAF" stroke-linecap="round" />
+                  <path d="M7.20996 14.021L7.20996 1.461" stroke="#AFAFAF" stroke-linecap="round" />
+                </svg>
+                <div class="none-text">支持JPG、PNG 10M以内</div>
+              </div>
+            </template>
+          </div>
+        </my-upload>
+      </div>
+      <div class="title2">
+        <span class="title2-n">图片品质</span>
+        <el-tooltip popper-class="popper_style" effect="dark" content="品质越高，绘制时间越长" placement="right">
+          <div class="title2-t">
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="13" viewBox="0 0 12 13" fill="none">
+              <mask id="mask0_57_258" style="mask-type: luminance" maskUnits="userSpaceOnUse" x="0" y="0" width="12"
+                height="13">
+                <path d="M11.9977 0H0V12.0164H11.9977V0Z" fill="white" />
+              </mask>
+              <g mask="url(#mask0_57_258)">
                 <path
-                  d="M1 7.59937H13.56"
-                  stroke="#AFAFAF"
-                  stroke-linecap="round"
-                />
-                <path
-                  d="M7.20996 14.021L7.20996 1.461"
-                  stroke="#AFAFAF"
-                  stroke-linecap="round"
-                />
-              </svg>
-              <div class="none-text">支持JPG、PNG 10M以内</div>
-            </div>
-          </template>
-        </div>
-      </my-upload>
-    </div>
-    <div class="title2">
-      <span class="title2-n">图片品质</span>
-      <el-tooltip
-        popper-class="popper_style"
-        effect="dark"
-        content="品质越高，绘制时间越长"
-        placement="right"
-      >
-        <div class="title2-t">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="12"
-            height="13"
-            viewBox="0 0 12 13"
-            fill="none"
-          >
-            <mask
-              id="mask0_57_258"
-              style="mask-type: luminance"
-              maskUnits="userSpaceOnUse"
-              x="0"
-              y="0"
-              width="12"
-              height="13"
-            >
-              <path d="M11.9977 0H0V12.0164H11.9977V0Z" fill="white" />
-            </mask>
-            <g mask="url(#mask0_57_258)">
-              <path
-                d="M5.9917 0.00939941C9.30195 0.00939941 11.9859 2.6933 11.9859 6.00355C11.9859 9.31379 9.30195 11.9977 5.9917 11.9977C2.68146 11.9977 -0.00244141 9.31379 -0.00244141 6.00355C-0.00244141 2.6933 2.68146 0.00939941 5.9917 0.00939941ZM5.9917 1.00842C3.23346 1.00842 0.996583 3.2453 0.996583 6.00355C0.996583 8.76179 3.23346 10.9987 5.9917 10.9987C8.74995 10.9987 10.9868 8.76179 10.9868 6.00355C10.9868 3.2453 8.74995 1.00842 5.9917 1.00842ZM6.09863 7.71633C6.51249 7.71633 6.8479 8.05194 6.8479 8.46559C6.8479 8.87945 6.51249 9.21486 6.09863 9.21486C5.68478 9.21486 5.34936 8.87945 5.34936 8.46559C5.34936 8.05194 5.68478 7.71633 6.09863 7.71633ZM6.06312 3.00647C6.33902 3.00647 6.56263 3.23008 6.56263 3.50598V6.36023C6.56263 6.63613 6.33902 6.85974 6.06312 6.85974C5.78722 6.85974 5.56361 6.63613 5.56361 6.36023V3.50598C5.56361 3.23008 5.78722 3.00647 6.06312 3.00647Z"
-                fill="#111111"
-                fill-opacity="0.3"
-              />
-            </g>
-          </svg>
-        </div>
-      </el-tooltip>
-    </div>
+                  d="M5.9917 0.00939941C9.30195 0.00939941 11.9859 2.6933 11.9859 6.00355C11.9859 9.31379 9.30195 11.9977 5.9917 11.9977C2.68146 11.9977 -0.00244141 9.31379 -0.00244141 6.00355C-0.00244141 2.6933 2.68146 0.00939941 5.9917 0.00939941ZM5.9917 1.00842C3.23346 1.00842 0.996583 3.2453 0.996583 6.00355C0.996583 8.76179 3.23346 10.9987 5.9917 10.9987C8.74995 10.9987 10.9868 8.76179 10.9868 6.00355C10.9868 3.2453 8.74995 1.00842 5.9917 1.00842ZM6.09863 7.71633C6.51249 7.71633 6.8479 8.05194 6.8479 8.46559C6.8479 8.87945 6.51249 9.21486 6.09863 9.21486C5.68478 9.21486 5.34936 8.87945 5.34936 8.46559C5.34936 8.05194 5.68478 7.71633 6.09863 7.71633ZM6.06312 3.00647C6.33902 3.00647 6.56263 3.23008 6.56263 3.50598V6.36023C6.56263 6.63613 6.33902 6.85974 6.06312 6.85974C5.78722 6.85974 5.56361 6.63613 5.56361 6.36023V3.50598C5.56361 3.23008 5.78722 3.00647 6.06312 3.00647Z"
+                  fill="#111111" fill-opacity="0.3" />
+              </g>
+            </svg>
+          </div>
+        </el-tooltip>
+      </div>
 
-    <div class="quality">
-      <div
-        v-for="item in pxOptions"
-        :key="item.id"
-        :class="[
+      <div class="quality">
+        <div v-for="item in pxOptions" :key="item.id" :class="[
           baseData.picturePx === item.id
             ? 'quality-item_active'
             : 'quality-item',
-        ]"
-        @click="baseData.picturePx = item.id"
-      >
-        {{ item.name }}
+        ]" @click="baseData.picturePx = item.id">
+          {{ item.name }}
+        </div>
       </div>
-    </div>
-    <div class="title2">
-      <span class="title2-n">图片比例</span>
-    </div>
-    <div class="scale">
-      <div
-        v-for="item in ratioOptions"
-        :key="item.id"
-        :class="[
+      <div class="title2">
+        <span class="title2-n">图片比例</span>
+      </div>
+      <div class="scale">
+        <div v-for="item in ratioOptions" :key="item.id" :class="[
           baseData.pictureRatio === item.id
             ? 'scale-item_active'
             : 'scale-item',
-        ]"
-        @click="baseData.pictureRatio = item.id"
-      >
-        <div class="t1">{{ item.name }}</div>
-        <div class="t2">{{ item.desc }}</div>
+        ]" @click="baseData.pictureRatio = item.id">
+          <div class="t1">{{ item.name }}</div>
+          <div class="t2">{{ item.desc }}</div>
+        </div>
+      </div>
+
+      <div class="title2">
+        <span class="title2-n">图片风格</span>
+      </div>
+
+      <div class="drawstyle">
+        <div class="drawstyle-item" v-for="(item, index) in drawStyle" :key="index"
+          @click="baseData.pictureStyle = item.id">
+          <img :src="item.path" alt="" />
+          <div :class="[item.id === baseData.pictureStyle ? 'mask-active' : 'mask']"></div>
+          <div class="style_title">{{ item.name }}</div>
+        </div>
       </div>
     </div>
-
-    <div class="title2">
-      <span class="title2-n">图片风格</span>
-    </div>
-
-    <div class="drawstyle">
-      <div
-        class="drawstyle-item"
-        v-for="(item, index) in drawStyle"
-        :key="index"
-        @click="baseData.pictureStyle = item.id"
-      >
-        <img :src="item.path" alt="" />
-        <div
-          :class="[item.id === baseData.pictureStyle ? 'mask-active' : 'mask']"
-        ></div>
-        <div class="style_title">{{ item.name }}</div>
+    <div class="btnWrapper">
+      <div v-if="props.madeDisabled" :class="['action-btn', 'action-btn_disabled']">
+        生成中
       </div>
+      <div v-else :class="['action-btn']" @click="madePicture4">立即生成</div>
     </div>
-    <div
-      v-if="props.madeDisabled"
-      :class="['action-btn', 'action-btn_disabled']"
-    >
-      生成中
-    </div>
-    <div v-else :class="['action-btn']" @click="madePicture4">立即生成</div>
   </div>
 </template>
 
@@ -443,433 +350,506 @@ const madePicture4 = async () => {
   background-color: #666666 !important;
   border: none !important;
   font-family: PingFang SC !important;
+  line-height: 12px !important;
+  align-items: center;
+  padding: 4px 4px;
+  display: flex;
+
   span {
     font-family: PingFang SC !important;
+    font-size: 12px;
   }
+
   .el-popper__arrow::before {
+    width: 4px;
+    height: 4px;
     background-color: #666666 !important;
     border: none !important;
+    left: -1.2px;
   }
 }
 </style>
 <style scoped lang="less">
-.data-tab {
-  box-sizing: border-box;
-  height: 100%;
-  padding: 17px;
-  overflow-y: scroll;
+.tabContainer {
+  display: flex;
+  position: absolute;
   background-color: #fff;
-  border-radius: 5px;
-  box-shadow: 0px 4px 8px 0px rgba(0, 0, 0, 0.1);
-  &::-webkit-scrollbar {
-    display: none;
-  }
-  .ipt {
-    position: relative;
+  flex-direction: column;
+  padding-top: 0;
+  height: 100%;
+
+  .data-tab {
     box-sizing: border-box;
-    width: 100%;
-    height: 166px;
-    padding: 7.7px 5px 26px 0;
+    height: 100%;
+    padding: 17px 17px 17px 17px;
+    overflow-y: scroll;
     border-radius: 5px;
-    border: 1px solid #e3e3e3;
-    background: #fafafa;
-    .ipt_ass {
-      position: absolute;
-      right: 6px;
-      bottom: 0;
-      height: 26px;
-      display: flex;
-      justify-content: flex-end;
-      text-align: right;
-      color: rgba(0, 0, 0, 0.3);
-      font-family: PingFang SC;
-      font-size: 14px;
-      font-style: normal;
-      font-weight: 400;
-      line-height: 20px;
-      .limit {
-        color: rgba(0, 0, 0, 0.3);
-        .weight {
-          color: rgba(0, 0, 0, 0.7);
-        }
-      }
-      .vertical {
-        width: 1px;
-        height: 7.2px;
-        margin: 6.88px 8.27px;
-        background: rgba(0, 0, 0, 0.3);
-      }
-      .clear_input {
-        cursor: pointer;
-        color: rgba(0, 0, 0, 0.7);
-        &:active {
-          opacity: 0.7;
-        }
-      }
+    box-shadow: 0px 4px 8px 0px rgba(0, 0, 0, 0.1);
+
+    &::-webkit-scrollbar {
+      display: none;
     }
 
-    .textarea {
+    .ipt {
+      position: relative;
       box-sizing: border-box;
       width: 100%;
-      height: 100%;
-      padding: 0 7.5px 0 12.5px;
+      height: 166px;
+      padding: 7.7px 5px 26px 0;
+      border-radius: 5px;
+      border: 1px solid #e3e3e3;
       background: #fafafa;
-      outline: none;
-      color: #333;
-      font-size: 16px;
-      border: none;
-      resize: none; /*禁止拉伸*/
-      &::placeholder {
+
+      .ipt_ass {
+        position: absolute;
+        right: 6px;
+        bottom: 0;
+        height: 26px;
+        display: flex;
+        justify-content: flex-end;
+        text-align: right;
         color: rgba(0, 0, 0, 0.3);
         font-family: PingFang SC;
-        font-size: 16px;
+        font-size: 14px;
         font-style: normal;
         font-weight: 400;
-        line-height: normal;
-      }
-      &::-webkit-scrollbar {
-        width: 3px;
+        line-height: 20px;
+
+        .limit {
+          color: rgba(0, 0, 0, 0.3);
+
+          .weight {
+            color: rgba(0, 0, 0, 0.7);
+          }
+        }
+
+        .vertical {
+          width: 1px;
+          height: 7.2px;
+          margin: 6.88px 8.27px;
+          background: rgba(0, 0, 0, 0.3);
+        }
+
+        .clear_input {
+          cursor: pointer;
+          color: rgba(0, 0, 0, 0.7);
+
+          &:active {
+            opacity: 0.7;
+          }
+        }
       }
 
-      ::-webkit-scrollbar-thumb {
-        background-color: #0003;
-        border-radius: 10px;
-        transition: all 0.2s ease-in-out;
-      }
-      ::-webkit-scrollbar-track {
-        border-radius: 10px;
-      }
-    }
-  }
+      .textarea {
+        box-sizing: border-box;
+        width: 100%;
+        height: 100%;
+        padding: 0 7.5px 0 12.5px;
+        background: #fafafa;
+        outline: none;
+        color: #333;
+        font-size: 16px;
+        border: none;
+        resize: none;
 
-  .taketry {
-    text-align: right;
-    line-height: 19.28px;
-    span {
-      color: #126cfe;
-      font-family: PingFang SC;
-      font-size: 12px;
-      font-style: normal;
-      font-weight: 400;
-      cursor: pointer;
-      user-select: none;
-    }
-  }
+        /*禁止拉伸*/
+        &::placeholder {
+          color: rgba(0, 0, 0, 0.3);
+          font-family: PingFang SC;
+          font-size: 16px;
+          font-style: normal;
+          font-weight: 400;
+          line-height: normal;
+        }
 
-  .title2 {
-    margin-top: 30.49px;
-    margin-bottom: 15.3px;
-    display: flex;
-    align-items: center;
-    color: #000;
-    text-align: right;
-    font-family: PingFang SC;
-    font-size: 20px;
-    font-style: normal;
-    font-weight: 600;
-    line-height: 28px;
-    .title2-n {
-      margin-right: 8px;
-    }
-    .title2-t {
-      display: flex;
-      align-items: center;
-      svg {
-        width: 12px;
-        height: 12px;
+        &::-webkit-scrollbar {
+          width: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+          background-color: #0003;
+          border-radius: 10px;
+          transition: all 0.2s ease-in-out;
+        }
+
+        ::-webkit-scrollbar-track {
+          border-radius: 10px;
+        }
       }
-      .tip_ {
-        margin-left: 7.3px;
-        color: rgba(0, 0, 0, 0.3);
+    }
+
+    .taketry {
+      text-align: right;
+      line-height: 19.28px;
+
+      span {
+        color: #126cfe;
         font-family: PingFang SC;
         font-size: 12px;
         font-style: normal;
         font-weight: 400;
-        line-height: normal;
+        cursor: pointer;
+        user-select: none;
       }
-    }
-  }
-
-  .upload {
-    width: 89px;
-    height: 89px;
-    border: 1px dashed #e3e3e3;
-    margin-top: 15.4px;
-    background-color: #fafafa;
-    border-radius: 5px;
-    user-select: none;
-    cursor: pointer;
-    overflow: hidden;
-    &:active {
-      border: 3px dotted #5e9dfe;
     }
 
-    .upload-loading {
-      position: relative;
+    .title2 {
+      margin-top: 30.49px;
+      margin-bottom: 15.3px;
       display: flex;
-      flex-direction: column;
       align-items: center;
-      justify-content: center;
-      width: 100%;
-      height: 100%;
-      border-radius: 5px;
-      .loading-img {
-        width: 59px;
-        height: 59px;
+      color: #000;
+      text-align: right;
+      font-family: PingFang SC;
+      font-size: 20px;
+      font-style: normal;
+      font-weight: 600;
+      line-height: 28px;
+
+      .title2-n {
+        margin-right: 8px;
       }
-      .loading-text {
-        position: absolute;
-        top: 53.5px;
-        left: 50%;
-        width: calc(100% / 0.56);
-        color: rgba(0, 0, 0, 0.3);
-        text-align: center;
-        font-family: PingFang SC;
-        font-size: 18px;
-        font-style: normal;
-        font-weight: 400;
-        transform: translate(-50%, 0) scale(0.56);
-      }
-    }
-    .upload-none {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      width: 100%;
-      height: 100%;
-      border-radius: 5px;
-      svg {
-        margin-top: 25px;
-        margin-bottom: 15px;
-      }
-      .none-text {
-        width: calc(100% / 0.67);
-        color: rgba(0, 0, 0, 0.3);
-        text-align: center;
-        font-family: PingFang SC;
-        font-size: 18px;
-        font-style: normal;
-        font-weight: 400;
-        line-height: 18px; /* 120% */
-        transform: scale(0.67);
-      }
-    }
-    .cover {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      border-radius: 5px;
-      .clear_img {
-        position: absolute;
-        top: -14.15px;
-        right: -14.15px;
+
+      .title2-t {
         display: flex;
         align-items: center;
-        width: 28.3px;
-        height: 28.3px;
-        background-color: #464646;
-        transform-origin: center;
-        transform: rotate(-45deg);
+
         svg {
-          width: 5px;
-          height: 5px;
+          width: 12px;
+          height: 12px;
+        }
+
+        .tip_ {
+          margin-left: 7.3px;
+          color: rgba(0, 0, 0, 0.3);
+          font-family: PingFang SC;
+          font-size: 12px;
+          font-style: normal;
+          font-weight: 400;
+          line-height: normal;
+        }
+      }
+    }
+
+    .upload {
+      width: 89px;
+      height: 89px;
+      border: 1px dashed #e3e3e3;
+      margin-top: 15.4px;
+      background-color: #fafafa;
+      border-radius: 5px;
+      user-select: none;
+      cursor: pointer;
+      overflow: hidden;
+
+      &:active {
+        border: 3px dotted #5e9dfe;
+      }
+
+      .upload-loading {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+        border-radius: 5px;
+
+        .loading-img {
+          width: 59px;
+          height: 59px;
+        }
+
+        .loading-text {
+          position: absolute;
+          top: 53.5px;
+          left: 50%;
+          width: calc(100% / 0.56);
+          color: rgba(0, 0, 0, 0.3);
+          text-align: center;
+          font-family: PingFang SC;
+          font-size: 18px;
+          font-style: normal;
+          font-weight: 400;
+          transform: translate(-50%, 0) scale(0.56);
+        }
+      }
+
+      .upload-none {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+        border-radius: 5px;
+
+        svg {
+          margin-top: 25px;
+          margin-bottom: 15px;
+        }
+
+        .none-text {
+          width: calc(100% / 0.67);
+          color: rgba(0, 0, 0, 0.3);
+          text-align: center;
+          font-family: PingFang SC;
+          font-size: 18px;
+          font-style: normal;
+          font-weight: 400;
+          line-height: 18px;
+          /* 120% */
+          transform: scale(0.67);
+        }
+      }
+
+      .cover {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        border-radius: 5px;
+
+        .clear_img {
+          position: absolute;
+          top: -14.15px;
+          right: -14.15px;
+          display: flex;
+          align-items: center;
+          width: 28.3px;
+          height: 28.3px;
+          background-color: #464646;
           transform-origin: center;
-          transform: rotate(45deg) translate(50%, -50%);
+          transform: rotate(-45deg);
+
+          svg {
+            width: 5px;
+            height: 5px;
+            transform-origin: center;
+            transform: rotate(45deg) translate(50%, -50%);
+          }
+        }
+      }
+    }
+
+    .quality {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+
+      .quality-item {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 89px;
+        height: 29px;
+        border-radius: 5px;
+        border: 0.7px dashed #848484;
+        color: #848484;
+        font-family: PingFang SC;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: normal;
+        user-select: none;
+        cursor: pointer;
+      }
+
+      .quality-item_active {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 89px;
+        height: 29px;
+        border-radius: 5px;
+        border: 0.7px solid #126cfe;
+        color: #126cfe;
+        font-family: PingFang SC;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 600;
+        line-height: normal;
+        user-select: none;
+      }
+    }
+
+    .scale {
+      display: grid;
+      grid-template-rows: 31px;
+      grid-template-columns: 91px 91px 91px;
+      grid-row-gap: 12.67px;
+      grid-column-gap: 37.32px;
+      width: 100%;
+
+      .scale-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 89px;
+        height: 29px;
+        border-radius: 5px;
+        border: 0.7px dashed #848484;
+        color: #848484;
+        text-align: center;
+        user-select: none;
+        cursor: pointer;
+
+        .t1 {
+          font-family: PingFang SC;
+          font-size: 14px;
+          font-style: normal;
+          font-weight: 400;
+          line-height: 14px;
+        }
+
+        .t2 {
+          width: 132px;
+          font-family: PingFang SC;
+          font-size: 12px;
+          font-style: normal;
+          font-weight: 400;
+          line-height: 12px;
+          transform: scale(0.67);
+        }
+      }
+
+      .scale-item_active {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 89px;
+        height: 29px;
+        border-radius: 5px;
+        border: 0.7px solid #126cfe;
+        color: #126cfe;
+        text-align: center;
+        user-select: none;
+
+        .t1 {
+          font-family: PingFang SC;
+          font-size: 14px;
+          font-style: normal;
+          font-weight: 400;
+          line-height: 14px;
+        }
+
+        .t2 {
+          width: 132px;
+          font-family: PingFang SC;
+          font-size: 12px;
+          font-style: normal;
+          font-weight: 400;
+          line-height: 12px;
+          transform: scale(0.67);
+        }
+      }
+    }
+
+    .drawstyle {
+      display: grid;
+      grid-template-rows: 80px;
+      grid-template-columns: 80px 80px 80px 80px;
+      grid-row-gap: 12.67px;
+      grid-column-gap: 9px;
+      width: 100%;
+
+      .drawstyle-item {
+        position: relative;
+        width: 80px;
+        height: 80px;
+        border-radius: 5px;
+
+        img {
+          width: 100%;
+          height: 100%;
+          cursor: pointer;
+        }
+
+        .mask {
+          z-index: 1;
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          box-sizing: border-box;
+          border-radius: 5px;
+          background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.3));
+          cursor: pointer;
+          user-select: none;
+        }
+
+        .mask-active {
+          z-index: 1;
+          position: absolute;
+          top: -1px;
+          left: -1px;
+          width: 82px;
+          height: 82px;
+          box-sizing: border-box;
+          border: 3px solid rgba(18, 108, 254, 1);
+          border-radius: 5px;
+          background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.3));
+        }
+
+        .style_title {
+          z-index: 2;
+          position: absolute;
+          bottom: 4px;
+          left: 0;
+          width: calc(100% / 0.67);
+          text-align: center;
+          font-family: PingFang SC;
+          font-size: 18px;
+          font-weight: 400;
+          line-height: 25.37px;
+          color: rgba(255, 255, 255, 1);
+          transform-origin: left bottom;
+          transform: scale(0.67);
+          cursor: pointer;
+          user-select: none;
         }
       }
     }
   }
 
-  .quality {
+  .btnWrapper {
     display: flex;
-    justify-content: space-between;
+    position: absolute;
     width: 100%;
-    .quality-item {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 89px;
-      height: 29px;
-      border-radius: 5px;
-      border: 0.7px dashed #848484;
-      color: #848484;
-      font-family: PingFang SC;
-      font-size: 14px;
-      font-style: normal;
-      font-weight: 400;
-      line-height: normal;
-      user-select: none;
-      cursor: pointer;
-    }
-    .quality-item_active {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 89px;
-      height: 29px;
-      border-radius: 5px;
-      border: 0.7px solid #126cfe;
-      color: #126cfe;
-      font-family: PingFang SC;
-      font-size: 14px;
-      font-style: normal;
-      font-weight: 600;
-      line-height: normal;
-      user-select: none;
-    }
-  }
-  .scale {
-    display: grid;
-    grid-template-rows: 31px;
-    grid-template-columns: 91px 91px 91px;
-    grid-row-gap: 12.67px;
-    grid-column-gap: 37.32px;
-    width: 100%;
-    .scale-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      width: 89px;
-      height: 29px;
-      border-radius: 5px;
-      border: 0.7px dashed #848484;
-      color: #848484;
-      text-align: center;
-      user-select: none;
-      cursor: pointer;
-
-      .t1 {
-        font-family: PingFang SC;
-        font-size: 14px;
-        font-style: normal;
-        font-weight: 400;
-        line-height: 14px;
-      }
-      .t2 {
-        width: 132px;
-        font-family: PingFang SC;
-        font-size: 12px;
-        font-style: normal;
-        font-weight: 400;
-        line-height: 12px;
-        transform: scale(0.67);
-      }
-    }
-    .scale-item_active {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      width: 89px;
-      height: 29px;
-      border-radius: 5px;
-      border: 0.7px solid #126cfe;
-      color: #126cfe;
-      text-align: center;
-      user-select: none;
-      .t1 {
-        font-family: PingFang SC;
-        font-size: 14px;
-        font-style: normal;
-        font-weight: 400;
-        line-height: 14px;
-      }
-      .t2 {
-        width: 132px;
-        font-family: PingFang SC;
-        font-size: 12px;
-        font-style: normal;
-        font-weight: 400;
-        line-height: 12px;
-        transform: scale(0.67);
-      }
-    }
-  }
-  .drawstyle {
-    display: grid;
-    grid-template-rows: 80px;
-    grid-template-columns: 80px 80px 80px 80px;
-    grid-row-gap: 12.67px;
-    grid-column-gap: 9px;
-    width: 100%;
-    .drawstyle-item {
-      position: relative;
-      width: 80px;
-      height: 80px;
-      border-radius: 5px;
-      img {
-        width: 100%;
-        height: 100%;
-        cursor: pointer;
-      }
-      .mask {
-        z-index: 1;
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        box-sizing: border-box;
-        border-radius: 5px;
-        background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.3));
-        cursor: pointer;
-        user-select: none;
-      }
-      .mask-active {
-        z-index: 1;
-        position: absolute;
-        top: -1px;
-        left: -1px;
-        width: 82px;
-        height: 82px;
-        box-sizing: border-box;
-        border: 3px solid rgba(18, 108, 254, 1);
-        border-radius: 5px;
-        background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.3));
-      }
-      .style_title {
-        z-index: 2;
-        position: absolute;
-        bottom: 4px;
-        left: 0;
-        width: calc(100% / 0.67);
-        text-align: center;
-        font-family: PingFang SC;
-        font-size: 18px;
-        font-weight: 400;
-        line-height: 25.37px;
-        color: rgba(255, 255, 255, 1);
-        transform-origin: left bottom;
-        transform: scale(0.67);
-        cursor: pointer;
-        user-select: none;
-      }
-    }
-  }
-  .action-btn {
-    display: flex;
+    bottom: 45px;
+    // z-index: 999;
     align-items: center;
     justify-content: center;
-    width: 100%;
-    height: 46px;
-    margin-top: 48px;
-    margin-bottom: 30px;
-    border-radius: 5px;
-    background-color: rgba(18, 108, 254, 1);
-    color: rgba(243, 243, 250, 1);
-    font-family: PingFang SC;
-    font-size: 19px;
-    font-weight: 600;
-    cursor: pointer;
-    user-select: none;
-    &:active {
-      opacity: 0.7;
+    background-color: white;
+    padding-top: 22px;
+    padding-bottom: 22px;
+
+    .action-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 343px;
+      height: 46px;
+      border-radius: 5px;
+      background-color: rgba(18, 108, 254, 1);
+      color: rgba(243, 243, 250, 1);
+      font-family: PingFang SC;
+      font-size: 19px;
+      font-weight: 600;
+      cursor: pointer;
+      user-select: none;
+
+      &:active {
+        opacity: 0.7;
+      }
     }
-  }
-  .action-btn_disabled {
-    opacity: 0.7;
-    cursor: auto;
+
+    .action-btn_disabled {
+      opacity: 0.7;
+      cursor: auto;
+    }
   }
 }
 </style>
