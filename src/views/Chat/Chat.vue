@@ -978,7 +978,10 @@ onMounted(() => {
       background: #126cfe;
       margin: auto;
       cursor: pointer;
-
+      svg {
+        width: 14px;
+        height: 14px;
+      }
       span {
         margin-left: 11px;
       }
@@ -1005,7 +1008,10 @@ onMounted(() => {
       margin: auto;
       cursor: auto;
       opacity: 0.5;
-
+      svg {
+        width: 14px;
+        height: 14px;
+      }
       span {
         margin-left: 11px;
       }

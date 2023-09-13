@@ -6,13 +6,6 @@
     </div>
     <div class="container-body" v-else ref="tagListScroll" @scroll="onScroll">
       <div class="page" ref="tagListPage">
-        <div class="listloading" v-show="tagList.loading">
-          <img
-            src="https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile-listloading-white-icon.png"
-            alt=""
-          />
-          <span>加载中</span>
-        </div>
         <div
           class="item"
           v-for="item in tagList.list"
@@ -27,9 +20,35 @@
             @click.stop="handDeleteTag(item)"
           />
         </div>
+        <div class="listloading" v-show="tagList.loading">
+          <img
+            src="https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile-listloading-white-icon.png"
+            alt=""
+          />
+          <span>加载中</span>
+        </div>
       </div>
     </div>
-    <div class="fix"></div>
+    <div class="newchat" @click="handNewChat">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="14"
+        height="14"
+        viewBox="0 0 14 14"
+        fill="none"
+      >
+        <rect y="6" width="14" height="2" fill="white" />
+        <rect
+          x="6"
+          y="14"
+          width="14"
+          height="2"
+          transform="rotate(-90 6 14)"
+          fill="white"
+        />
+      </svg>
+      <span>新建聊天</span>
+    </div>
 
     <my-dialog
       v-model:show="removeVisible"
@@ -49,11 +68,13 @@ import { ref, reactive, watch, onUpdated, nextTick } from "vue";
 import api from "@/http/api";
 import request from "@/http/index";
 import { useRouter } from "vue-router";
+import { useUserStore } from "@/store/user";
 import { useChatStore } from "@/store/chat";
 import MyDialog from "@/components/mobile/MyDialog.vue";
 
 const router = useRouter();
 const chatStore = useChatStore();
+const userStore = useUserStore();
 const tagList = reactive({
   list: [],
   loading: false, // 左侧历史列表的loading
@@ -161,7 +182,14 @@ const getHistory = () => {
 // 对话列表不满一屏 加载
 getHistory();
 onUpdated(() => {
-  if (tagListPage.value.offsetHeight <= tagListScroll.value.offsetHeight) {
+  const page = document.querySelector(".page");
+  const style = window.getComputedStyle(page, null);
+  const bottom = parseFloat(style.getPropertyValue("padding-bottom"));
+
+  if (
+    tagListPage.value.offsetHeight - bottom <=
+    tagListScroll.value.offsetHeight
+  ) {
     console.log("对话列表不满一屏,加载");
     getHistory();
   }
@@ -170,6 +198,18 @@ onUpdated(() => {
 // 去聊天页
 const handGoChat = (item) => {
   chatStore.saveActiveTagId(item.id);
+  router.push({
+    path: "/chat",
+  });
+};
+
+// 新增聊天
+const handNewChat = () => {
+  if (userStore.residueQAQuantity == 0) {
+    return showToast("您的问答次数已用尽，请联系客服购买");
+  }
+
+  chatStore.saveActiveTagId(0);
   router.push({
     path: "/chat",
   });
@@ -186,11 +226,12 @@ const handGoChat = (item) => {
     overflow-y: scroll;
     .page {
       color: #ffffff;
-      padding: 12px 20px 92px 20px;
+      padding: 20px 20px 92px 20px;
       .listloading {
         display: flex;
         align-items: center;
         justify-content: center;
+        padding-top: 12px;
         padding-bottom: 12px;
         @keyframes round {
           0% {
@@ -250,6 +291,9 @@ const handGoChat = (item) => {
           }
         }
       }
+      .item:nth-last-child(1) {
+        margin-bottom: 0;
+      }
     }
   }
 
@@ -268,6 +312,40 @@ const handGoChat = (item) => {
       line-height: 20px;
       text-align: center;
       transform: translate(0, -200%);
+    }
+  }
+
+  .newchat {
+    position: fixed;
+    bottom: 39px;
+    left: 50%;
+    transform: translate(-50%, 0);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 335px;
+    height: 40px;
+    color: #fff;
+    font-family: PingFang SC;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    border-radius: 5px;
+    background: #126cfe;
+    margin: auto;
+    cursor: pointer;
+    svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    span {
+      margin-left: 7px;
+    }
+
+    &:active {
+      opacity: 0.8;
     }
   }
 }

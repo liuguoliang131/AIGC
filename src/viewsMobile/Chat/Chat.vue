@@ -120,7 +120,15 @@
           maxlength="800"
           v-model="newQuestion"
         />
-        <div class="send" @click="onSend">发送</div>
+        <div
+          :class="[
+            'send',
+            userStore.residueQAQuantity == 0 ? 'send-disabled' : '',
+          ]"
+          @click="onSend"
+        >
+          发送
+        </div>
       </div>
     </div>
 
@@ -1004,6 +1012,9 @@ const onSend = () => {
         &:active {
           opacity: 0.7;
         }
+      }
+      .send-disabled {
+        filter: grayscale(100%);
       }
     }
   }
