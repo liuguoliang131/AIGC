@@ -26,21 +26,6 @@
                 <img class="show_image-a" :src="detailData.pictureUrl" alt="" />
                 <template v-if="detailData.pictureUrl && !detailData.isFail">
                   <div class="show_image-b">
-                    <div class="show_image-b-1" v-if="detailData.pictureType === 1">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="21" height="26" viewBox="0 0 21 26" fill="none">
-                        <g clip-path="url(#clip0_57_513)">
-                          <path
-                            d="M10.5 22.1646C11.0021 22.1646 11.4091 22.5715 11.4091 23.0737V24.8918C11.4091 25.394 11.0021 25.8009 10.5 25.8009C9.99787 25.8009 9.59091 25.394 9.59091 24.8918V23.0737C9.59091 22.5715 9.99787 22.1646 10.5 22.1646ZM14.1364 22.1646C14.6385 22.1646 15.0455 22.5715 15.0455 23.0737V24.8918C15.0455 25.394 14.6381 25.8009 14.1364 25.8009C13.6342 25.8009 13.2273 25.394 13.2273 24.8918V23.0737C13.2273 22.5715 13.6342 22.1646 14.1364 22.1646ZM6.86364 22.1646C7.36577 22.1646 7.77273 22.5715 7.77273 23.0737V24.8918C7.77273 25.394 7.36577 25.8009 6.86364 25.8009C6.36151 25.8009 5.95455 25.394 5.95455 24.8918V23.0737C5.95455 22.5715 6.36151 22.1646 6.86364 22.1646ZM10.5 0.337158C14.1044 0.337158 17.6783 3.92629 17.6783 10.6227V10.7537C19.4237 11.6291 20.5 13.34 20.5 15.2693C20.5 17.1202 19.63 18.601 17.8899 19.7111C17.6591 19.8585 17.3736 19.894 17.1136 19.8077C16.8537 19.721 16.6463 19.5222 16.5497 19.2658L16.4332 18.9565C16.3263 18.6717 16.0827 18.46 15.7852 18.3943C15.4879 18.3283 15.1776 18.4171 14.9602 18.6305L13.7564 19.8123C13.4165 20.1454 12.9595 20.3315 12.4837 20.3315H8.51811C8.03977 20.3315 7.58097 20.1429 7.24077 19.807L6.04723 18.628C5.83487 18.4181 5.52947 18.3311 5.23828 18.3979C4.94709 18.4646 4.70987 18.6756 4.61009 18.9572L4.50533 19.2509C4.413 19.5101 4.20774 19.7136 3.9478 19.8041C3.68786 19.8947 3.40057 19.8624 3.16726 19.7164C1.3892 18.6046 0.5 17.1227 0.5 15.269C0.5 13.3499 1.56712 11.5999 3.23615 10.7526V10.6209C3.23615 3.11521 6.8956 0.337158 10.5 0.337158ZM10.5 2.15534C7.31108 2.15534 5.05469 4.85349 5.05469 10.6209V11.8681L4.0593 12.3734C3 12.9107 2.31818 14.0346 2.31818 15.269C2.31818 16.1774 2.63104 16.9199 3.3299 17.5698C3.80611 16.9732 4.51314 16.6067 5.27486 16.5616C6.03693 16.5165 6.78232 16.797 7.32528 17.3333L8.51882 18.5122H12.4844L13.6879 17.3315C14.2351 16.7945 14.9833 16.5137 15.7482 16.5577C16.5135 16.6017 17.2244 16.9668 17.706 17.563C18.3789 16.9174 18.6815 16.1756 18.6815 15.2686C18.6815 14.036 18.0014 12.9497 16.8633 12.3787L15.8597 11.8759V10.6223C15.8601 5.35527 13.38 2.15534 10.5 2.15534ZM10.5 4.88261C12.5053 4.88261 14.1364 6.51365 14.1364 8.51898C14.1364 10.5247 12.5053 12.1553 10.5 12.1553C8.49432 12.1553 6.86364 10.5243 6.86364 8.51898C6.86364 6.51365 8.49432 4.88261 10.5 4.88261ZM10.5 6.7008C9.49822 6.7008 8.68182 7.5172 8.68182 8.51898C8.68182 9.52075 9.49822 10.3372 10.5 10.3372C11.5018 10.3372 12.3182 9.52075 12.3182 8.51898C12.3182 7.5172 11.5018 6.7008 10.5 6.7008Z"
-                            fill="#126CFE" />
-                        </g>
-                        <defs>
-                          <clipPath id="clip0_57_513">
-                            <rect width="20" height="25.4638" fill="white" transform="translate(0.5 0.337158)" />
-                          </clipPath>
-                        </defs>
-                      </svg>
-                      升级图片，完美细节并生成单张大图
-                    </div>
                     <div class="show_image-b-2">
                       <div class="dl" @click="handDownload">
                         <svg xmlns="http://www.w3.org/2000/svg" width="25" height="21" viewBox="0 0 25 21" fill="none">
@@ -78,6 +63,21 @@
                         删除
                       </div>
                     </div>
+                  </div>
+                  <div class="show_image-b-1" v-if="detailData.pictureType === 1">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="21" height="26" viewBox="0 0 21 26" fill="none">
+                      <g clip-path="url(#clip0_57_513)">
+                        <path
+                          d="M10.5 22.1646C11.0021 22.1646 11.4091 22.5715 11.4091 23.0737V24.8918C11.4091 25.394 11.0021 25.8009 10.5 25.8009C9.99787 25.8009 9.59091 25.394 9.59091 24.8918V23.0737C9.59091 22.5715 9.99787 22.1646 10.5 22.1646ZM14.1364 22.1646C14.6385 22.1646 15.0455 22.5715 15.0455 23.0737V24.8918C15.0455 25.394 14.6381 25.8009 14.1364 25.8009C13.6342 25.8009 13.2273 25.394 13.2273 24.8918V23.0737C13.2273 22.5715 13.6342 22.1646 14.1364 22.1646ZM6.86364 22.1646C7.36577 22.1646 7.77273 22.5715 7.77273 23.0737V24.8918C7.77273 25.394 7.36577 25.8009 6.86364 25.8009C6.36151 25.8009 5.95455 25.394 5.95455 24.8918V23.0737C5.95455 22.5715 6.36151 22.1646 6.86364 22.1646ZM10.5 0.337158C14.1044 0.337158 17.6783 3.92629 17.6783 10.6227V10.7537C19.4237 11.6291 20.5 13.34 20.5 15.2693C20.5 17.1202 19.63 18.601 17.8899 19.7111C17.6591 19.8585 17.3736 19.894 17.1136 19.8077C16.8537 19.721 16.6463 19.5222 16.5497 19.2658L16.4332 18.9565C16.3263 18.6717 16.0827 18.46 15.7852 18.3943C15.4879 18.3283 15.1776 18.4171 14.9602 18.6305L13.7564 19.8123C13.4165 20.1454 12.9595 20.3315 12.4837 20.3315H8.51811C8.03977 20.3315 7.58097 20.1429 7.24077 19.807L6.04723 18.628C5.83487 18.4181 5.52947 18.3311 5.23828 18.3979C4.94709 18.4646 4.70987 18.6756 4.61009 18.9572L4.50533 19.2509C4.413 19.5101 4.20774 19.7136 3.9478 19.8041C3.68786 19.8947 3.40057 19.8624 3.16726 19.7164C1.3892 18.6046 0.5 17.1227 0.5 15.269C0.5 13.3499 1.56712 11.5999 3.23615 10.7526V10.6209C3.23615 3.11521 6.8956 0.337158 10.5 0.337158ZM10.5 2.15534C7.31108 2.15534 5.05469 4.85349 5.05469 10.6209V11.8681L4.0593 12.3734C3 12.9107 2.31818 14.0346 2.31818 15.269C2.31818 16.1774 2.63104 16.9199 3.3299 17.5698C3.80611 16.9732 4.51314 16.6067 5.27486 16.5616C6.03693 16.5165 6.78232 16.797 7.32528 17.3333L8.51882 18.5122H12.4844L13.6879 17.3315C14.2351 16.7945 14.9833 16.5137 15.7482 16.5577C16.5135 16.6017 17.2244 16.9668 17.706 17.563C18.3789 16.9174 18.6815 16.1756 18.6815 15.2686C18.6815 14.036 18.0014 12.9497 16.8633 12.3787L15.8597 11.8759V10.6223C15.8601 5.35527 13.38 2.15534 10.5 2.15534ZM10.5 4.88261C12.5053 4.88261 14.1364 6.51365 14.1364 8.51898C14.1364 10.5247 12.5053 12.1553 10.5 12.1553C8.49432 12.1553 6.86364 10.5243 6.86364 8.51898C6.86364 6.51365 8.49432 4.88261 10.5 4.88261ZM10.5 6.7008C9.49822 6.7008 8.68182 7.5172 8.68182 8.51898C8.68182 9.52075 9.49822 10.3372 10.5 10.3372C11.5018 10.3372 12.3182 9.52075 12.3182 8.51898C12.3182 7.5172 11.5018 6.7008 10.5 6.7008Z"
+                          fill="#126CFE" />
+                      </g>
+                      <defs>
+                        <clipPath id="clip0_57_513">
+                          <rect width="20" height="25.4638" fill="white" transform="translate(0.5 0.337158)" />
+                        </clipPath>
+                      </defs>
+                    </svg>
+                    升级图片，完美细节并生成单张大图
                   </div>
                   <div class="show-image-c" v-if="detailData.pictureType === 1">
                     <el-tooltip popper-class="popper_style2" effect="dark" content="升级左侧上方图为单张大图"
@@ -124,6 +124,13 @@
                         U4
                       </div>
                     </el-tooltip>
+                  </div>
+                  <div class="newDraw" @click="handNewDraw">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
+                      <rect y="6" width="14" height="2" fill="white" />
+                      <rect x="6" y="14" width="14" height="2" transform="rotate(-90 6 14)" fill="white" />
+                    </svg>
+                    <span>新建绘画</span>
                   </div>
                 </template>
               </div>
@@ -181,6 +188,21 @@ const userStore = useUserStore();
 
 // 图片详情信息
 const detailData = ref({
+  // "pictureId": 905,
+  // "pictureIdea": "draw a dog",
+  // "pictureUrl": "https://achilles-file.hanhoukeji.com/mj-generate/1701890606021742592.jpg",
+  // "bgImageUrl": "",
+  // "isFail": false,
+  // "pictureRatio": 1,
+  // "picturePx": 1,
+  // "pictureStyle": 1,
+  // "pictureType": 1,
+  // "PictureArea": {
+  //   "upLeft": false,
+  //   "upRight": false,
+  //   "downLeft": false,
+  //   "downRight": false
+  // }
   pictureId: null,
   pictureIdea: null,
   pictureUrl: null,
@@ -195,6 +217,13 @@ const detailData = ref({
 const handGoHome = () => {
   router.push({
     path: "/",
+  });
+};
+
+// 去创建
+const handNewDraw = () => {
+  router.push({
+    path: "/draw",
   });
 };
 
@@ -341,6 +370,33 @@ onUnmounted(() => {
 });
 </script>
 
+<style lang="less">
+.el-popper {
+  background-color: #666666 !important;
+  border: none !important;
+  font-family: PingFang SC !important;
+  line-height: 19px !important;
+  height: 19px;
+  align-items: center;
+  padding: 4px 10px;
+  display: flex;
+
+  span {
+    font-family: PingFang SC !important;
+    font-size: 12px;
+  }
+
+  .el-popper__arrow::before {
+    width: 12px;
+    height: 12px;
+    background-color: #666666 !important;
+    border: none !important;
+    left: -5.2px;
+    top: -5px;
+  }
+}
+</style>
+
 <style scoped lang="less">
 .container {
   position: relative;
@@ -348,6 +404,7 @@ onUnmounted(() => {
   height: 100%;
   overflow: hidden;
   background: #F6F6F6;
+
   .navbar {
     position: relative;
     z-index: 8;
@@ -514,12 +571,12 @@ onUnmounted(() => {
       }
 
       .show_image {
-        width: 850px;
-        margin: 60px auto 60px auto;
+        width: 343px;
+        margin: 16px;
         text-align: center;
 
         .show_image-a {
-          width: 850px;
+          width: 343px;
           height: auto;
           margin: auto;
         }
@@ -529,24 +586,6 @@ onUnmounted(() => {
           align-items: center;
           justify-content: space-between;
           flex-wrap: wrap;
-          margin-top: 15.57px;
-
-          .show_image-b-1 {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            color: #126cfe;
-            font-family: PingFang SC;
-            font-size: 14px;
-            font-style: normal;
-            font-weight: 600;
-            line-height: normal;
-            text-align: left;
-
-            svg {
-              margin-right: 8.5px;
-            }
-          }
 
           .show_image-b-2 {
             flex: 1;
@@ -555,10 +594,11 @@ onUnmounted(() => {
             justify-content: flex-end;
             color: #636363;
             font-family: PingFang SC;
-            font-size: 16px;
+            font-size: 12px;
             font-style: normal;
             font-weight: 400;
             line-height: normal;
+            margin-top: 3px;
 
             .dl {
               display: flex;
@@ -573,8 +613,28 @@ onUnmounted(() => {
 
               svg {
                 margin-right: 10px;
+                width: 19px;
+                height: 19px;
               }
             }
+          }
+        }
+
+        .show_image-b-1 {
+          flex: 1;
+          display: flex;
+          align-items: center;
+          color: #126cfe;
+          margin-top: 14px;
+          font-family: PingFang SC;
+          font-size: 14px;
+          font-style: normal;
+          font-weight: 600;
+          line-height: normal;
+          text-align: left;
+
+          svg {
+            margin-right: 8.5px;
           }
         }
 
@@ -587,10 +647,10 @@ onUnmounted(() => {
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 111px;
-            height: 35px;
-            margin-top: 16.53px;
-            margin-right: 18.38px;
+            width: 70px;
+            height: 30px;
+            margin-top: 16px;
+            margin-right: 4px;
             border-radius: 5px;
             background: #126cfe;
             color: #fff;
@@ -609,6 +669,41 @@ onUnmounted(() => {
 
           .u-btn_disabled {
             background-color: rgba(0, 34, 89, 1);
+          }
+        }
+
+        .newDraw {
+          position: fixed;
+          bottom: 21px;
+          left: 50%;
+          transform: translate(-50%, 0);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 335px;
+          height: 40px;
+          color: #fff;
+          font-family: PingFang SC;
+          font-size: 18px;
+          font-style: normal;
+          font-weight: 400;
+          line-height: normal;
+          border-radius: 5px;
+          background: #126cfe;
+          margin: auto;
+          cursor: pointer;
+
+          svg {
+            width: 14px;
+            height: 14px;
+          }
+
+          span {
+            margin-left: 7px;
+          }
+
+          &:active {
+            opacity: 0.8;
           }
         }
       }
