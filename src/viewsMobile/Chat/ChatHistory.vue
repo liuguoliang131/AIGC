@@ -29,9 +29,7 @@
         </div>
       </div>
     </div>
-    <!-- <div class="fix">
-      
-    </div> -->
+    <div class="fix"></div>
 
     <my-dialog
       v-model:show="removeVisible"

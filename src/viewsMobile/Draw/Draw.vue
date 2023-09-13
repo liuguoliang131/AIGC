@@ -1,17 +1,22 @@
 <template>
   <div class="container">
     <div class="navbar">
-      <img @click="slideVisible = true" class="call_left"
-        src="https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile-chat-navmenu.svg" alt="" />
+      <img
+        @click="slideVisible = true"
+        class="call_left"
+        src="https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile-chat-navmenu.svg"
+        alt=""
+      />
       <div class="center" @click="visible = true">AI绘图</div>
       <img @click="handGoHome" src="@/assets/logo.png" alt="" class="go_home" />
     </div>
     <div class="formWrapper">
       <data-tab
-       ref="dataTabRef"
-       @create-success="createSuccess"
-       :detailData="detailData"
-       v-model:madeDisabled="madeDisabled" />
+        ref="dataTabRef"
+        @create-success="createSuccess"
+        :detailData="detailData"
+        v-model:madeDisabled="madeDisabled"
+      />
     </div>
     <transition>
       <slide-bar v-model:visible="slideVisible"></slide-bar>
@@ -24,7 +29,7 @@ import DataTab from "./components/DataTab.vue";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import SlideBar from "@/components/mobile/SlideBar.vue";
-import {useDrawStore} from "@/store/draw.js";
+import { useDrawStore } from "@/store/draw.js";
 
 const router = useRouter();
 const visible = ref(false);
@@ -45,7 +50,6 @@ const detailData = ref({
   pictureType: null,
   isFail: null,
 });
-
 
 const madePicture4 = () => {
   router.push({
@@ -81,14 +85,11 @@ const createSuccess = (data) => {
   position: relative;
   box-sizing: border-box;
   height: 100%;
-  padding-top: 44px;
   overflow: hidden;
   background: #f6f6f6;
 
   .navbar {
-    position: fixed;
-    top: 0;
-    left: 0;
+    position: relative;
     z-index: 8;
     width: 100%;
     height: 44px;
@@ -121,11 +122,10 @@ const createSuccess = (data) => {
     }
   }
 
-  .formWrapper{
-    // position: relative;
-    // box-sizing: border-box;
+  .formWrapper {
     width: 100%;
     height: calc(100% - 44px);
+    overflow-y: scroll;
   }
 }
 </style>
