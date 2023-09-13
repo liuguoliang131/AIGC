@@ -1,9 +1,18 @@
 <template>
   <div class="container">
     <nav-bar></nav-bar>
-    <div class="empty" v-if="tagList.isNull">空</div>
+    <div class="empty" v-if="tagList.isNull">
+      <div class="empty-center">暂无历史记录</div>
+    </div>
     <div class="container-body" v-else ref="tagListScroll" @scroll="onScroll">
       <div class="page" ref="tagListPage">
+        <div class="listloading" v-show="tagList.loading">
+          <img
+            src="https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile-listloading-white-icon.png"
+            alt=""
+          />
+          <span>加载中</span>
+        </div>
         <div
           class="item"
           v-for="item in tagList.list"
@@ -20,6 +29,10 @@
         </div>
       </div>
     </div>
+    <!-- <div class="fix">
+      
+    </div> -->
+
     <my-dialog
       v-model:show="removeVisible"
       title="温馨提示"
@@ -175,7 +188,36 @@ const handGoChat = (item) => {
     overflow-y: scroll;
     .page {
       color: #ffffff;
-      padding: 20px;
+      padding: 12px 20px 92px 20px;
+      .listloading {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding-bottom: 12px;
+        @keyframes round {
+          0% {
+            transform: rotate(0deg);
+          }
+          100% {
+            transform: rotate(360deg);
+          }
+        }
+        img {
+          width: 24px;
+          height: 24px;
+          margin-right: 6px;
+          transform-origin: center;
+          animation: round 0.8s infinite linear;
+        }
+        span {
+          color: rgba(255, 255, 255, 0.9);
+          font-family: PingFang SC;
+          font-size: 12px;
+          font-style: normal;
+          font-weight: 400;
+          line-height: 20px;
+        }
+      }
       .item {
         position: relative;
         display: flex;
@@ -210,6 +252,24 @@ const handGoChat = (item) => {
           }
         }
       }
+    }
+  }
+
+  .empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: calc(100% - 44px);
+    .empty-center {
+      color: rgba(255, 255, 255, 0.4);
+      font-family: PingFang SC;
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 20px;
+      text-align: center;
+      transform: translate(0, -200%);
     }
   }
 }

@@ -17,6 +17,13 @@
     </div>
     <div class="container-body" @scroll="onScroll" ref="chatScrollView">
       <div class="chat-list" ref="chatScrollPage">
+        <div class="listloading" v-show="chatList.loading">
+          <img
+            src="https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile-listloading-icon.png"
+            alt=""
+          />
+          <span>加载中</span>
+        </div>
         <template v-for="(item, idx) in chatList.list" :key="idx">
           <div
             class="question chat-item"
@@ -637,6 +644,35 @@ const onSend = () => {
     overflow-y: scroll;
     .chat-list {
       padding: 12px 16px 300px 16px;
+      .listloading {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding-bottom: 12px;
+        @keyframes round {
+          0% {
+            transform: rotate(0deg);
+          }
+          100% {
+            transform: rotate(360deg);
+          }
+        }
+        img {
+          width: 24px;
+          height: 24px;
+          margin-right: 6px;
+          transform-origin: center;
+          animation: round 0.8s infinite linear;
+        }
+        span {
+          color: rgba(0, 0, 0, 0.9);
+          font-family: PingFang SC;
+          font-size: 12px;
+          font-style: normal;
+          font-weight: 400;
+          line-height: 20px;
+        }
+      }
       .question {
         display: flex;
         justify-content: flex-end;
