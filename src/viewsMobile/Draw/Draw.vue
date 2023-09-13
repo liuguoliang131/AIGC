@@ -125,7 +125,7 @@ const createSuccess = (data) => {
   .formWrapper {
     width: 100%;
     height: calc(100% - 44px);
-    overflow-y: scroll;
+    // overflow-y: scroll;
   }
 }
 </style>
