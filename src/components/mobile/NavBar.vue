@@ -16,7 +16,7 @@
           stroke-width="1.5"
         />
       </svg>
-      <span class="title nowrap">{{ props.title || route.meta.title || "Hanhou·AI" }}</span>
+      <span class="title nowrap">{{ props.title || route.meta.title || "憨猴·AI" }}</span>
     </div>
   </div>
 </template>

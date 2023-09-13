@@ -3,7 +3,7 @@
     <div class="float">
       <div class="logo" @click="goHome">
         <img src="@/assets/logo.png" class="img" />
-        <span class="name"> Hanhou·AI </span>
+        <span class="name"> 憨猴·AI </span>
       </div>
       <template v-if="userStore.userInfo">
         <div class="rslot">

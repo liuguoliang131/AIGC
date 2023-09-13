@@ -39,6 +39,6 @@ router.beforeEach((to, from, next) => {
   }
 })
 
-document.title = 'HANHOU·AI'
+document.title = '憨猴·AI'
 
 export default router
