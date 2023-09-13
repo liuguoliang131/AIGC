@@ -108,18 +108,26 @@
         </div>
       </div>
     </van-overlay>
+
+    <my-dialog
+      v-model:show="exitVisible"
+      title="退出提醒"
+      message="是否要退出登录"
+      showCancelButton
+      @confirm="confirmExit"
+    >
+    </my-dialog>
   </div>
 </template>
 
 <script setup>
-import { ElRow, ElCol } from "element-plus";
 import { ref, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { showDialog, showToast, Overlay as VanOverlay } from "vant";
+import { showToast, closeToast, Overlay as VanOverlay } from "vant";
 import request from "@/http/index";
 import api from "@/http/api";
 import { useUserStore } from "@/store/user";
-import MyDialog from "@/components/MyDialog.vue";
+import MyDialog from "@/components/mobile/MyDialog.vue";
 import { useChatStore } from "@/store/chat";
 const userStore = useUserStore(); // 用户信息
 const chatStore = useChatStore(); // ai对话
@@ -137,6 +145,7 @@ const route = useRoute();
 const router = useRouter();
 const from = route.path.includes("/chat"); // true对话 false绘画
 const serviceVisible = ref(false); // 显示客服二维码弹窗
+const exitVisible = ref(false);
 
 // 隐藏当前组件
 const handHide = () => {
@@ -209,7 +218,14 @@ const handGoLearnIndex = () => {
 
 // 确认退出登录
 const confirmExit = () => {
+  showToast({
+    duration: 0,
+    forbidClick: true,
+    type: "loading",
+    message: "加载中",
+  });
   request.get(api.user_logout, {}).then((res) => {
+    closeToast();
     if (res.code == 200) {
       userStore.clearLog();
       router.push({
@@ -224,20 +240,7 @@ const confirmExit = () => {
 
 // 点击退出
 const handExit = () => {
-  showDialog({
-    title: "退出提醒",
-    message: "是否要退出登录",
-    showConfirmButton: true,
-    showCancelButton: true,
-    confirmButtonText: "确定",
-    confirmButtonColor: "#126cfe",
-    cancelButtonText: "取消",
-    cancelButtonColor: "#3D3D3D",
-  })
-    .then(() => {
-      confirmExit();
-    })
-    .catch(() => {});
+  exitVisible.value = true;
 };
 
 // 获取剩余绘画次数
