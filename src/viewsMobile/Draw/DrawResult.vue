@@ -9,9 +9,9 @@
     <div class="center">
       <div class="center-view">
         <!-- 选中 -->
-        <template v-if="detailData.pictureId">
+        <template v-if="detailData.pictureId|| true">
           <!-- 生成失败 -->
-          <template v-if="detailData.isFail">
+          <template v-if="detailData.isFail || true">
             <div class="fail-status">
               <img src="https://quanres.hanhoukeji.com/hanhou-ai-pc/draw-fail-status.png" alt="" class="fail-img" />
               <div class="fail-friendly">绘画的人太多啦～</div>
@@ -514,20 +514,21 @@ onUnmounted(() => {
         align-items: center;
         justify-content: center;
         flex-direction: column;
-        width: 850px;
-        height: 850px;
+        width: 343px;
+        height: 343px;
         border-radius: 5px;
         margin: 60px auto 60px auto;
         text-align: center;
 
         .fail-img {
-          width: 150px;
+          width: 110px;
         }
 
         .fail-friendly {
-          margin: 20.62px 0 11px 0;
+          margin: 4px 0 11px 0;
           font-family: PingFang SC;
           font-size: 16px;
+          color: #858585;
           font-weight: 400;
           line-height: 22px;
           letter-spacing: 0em;
@@ -542,7 +543,7 @@ onUnmounted(() => {
           height: 46px;
           background: rgba(18, 108, 254, 1);
           font-family: PingFang SC;
-          font-size: 19px;
+          font-size: 15px;
           font-weight: 600;
           border-radius: 5px;
           color: #ffff;
