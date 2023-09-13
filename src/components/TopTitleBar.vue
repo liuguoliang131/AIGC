@@ -10,7 +10,7 @@
       <div class="logoWrapper" @click="goHome">
         <img src="@/assets/logo.png" class="logo" />
         <span :class="['logoText', isBlackMode ? 'logoTextBlack' : '']">
-          Hanhou·AI
+          憨猴·AI
         </span>
       </div>
       <span

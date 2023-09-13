@@ -3,7 +3,7 @@
     <div class="background"></div>
     <div class="logoWrapper" @click="goHome">
       <img src="@/assets/logo.png" class="logo" />
-      <span :class="['logoText', 'logoTextBlack']"> Hanhou·AI </span>
+      <span :class="['logoText', 'logoTextBlack']"> 憨猴·AI </span>
     </div>
     <div></div>
     <div class="login-box">
