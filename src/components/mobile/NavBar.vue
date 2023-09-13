@@ -16,7 +16,7 @@
           stroke-width="1.5"
         />
       </svg>
-      <span class="title nowrap">{{ route.meta.title || "Hanhou·AI" }}</span>
+      <span class="title nowrap">{{ props.title || route.meta.title || "Hanhou·AI" }}</span>
     </div>
   </div>
 </template>
@@ -27,6 +27,14 @@ import { useRoute, useRouter } from "vue-router";
 
 const route = useRoute();
 const router = useRouter();
+
+const props = defineProps({
+  title: {
+    type: String,
+    default: '',
+    description: "标题栏",
+  },
+});
 
 // 退一步
 const goback = () => {

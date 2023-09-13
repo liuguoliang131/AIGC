@@ -24,12 +24,14 @@ import DataTab from "./components/DataTab.vue";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import SlideBar from "@/components/mobile/SlideBar.vue";
+import {useDrawStore} from "@/store/draw.js";
 
 const router = useRouter();
 const visible = ref(false);
 const slideVisible = ref(false); // 菜单页是否显示
 const dataTabRef = ref();
 const madeDisabled = ref(false); // 控制左侧组件立即生成按钮是否禁止点击
+const useStore = useDrawStore();
 
 // 图片详情信息
 const detailData = ref({
@@ -43,6 +45,7 @@ const detailData = ref({
   pictureType: null,
   isFail: null,
 });
+
 
 const madePicture4 = () => {
   router.push({
@@ -58,14 +61,18 @@ const handGoHome = () => {
 };
 
 const createSuccess = (data) => {
-  console.log(data);
-  // activeHistoryItem.active = {
-  //   ...data,
-  //   pictureUrl: "",
-  //   isFail: false,
-  // };
-  // madeDisabled.value = true;
-  // dataHistoryRef.value.handPutItem(activeHistoryItem.active); //向列表新增一个项
+  useStore.active = {
+    ...data,
+    pictureUrl: "",
+    isFail: false,
+  };
+  madeDisabled.value = true;
+  //todo:暂时不关注历史
+  // dataHistoryRef.value.handPutItem(useStore.activeHistoryItem.active); //向列表新增一个项
+  router.push({
+    path: "/draw/result",
+    query: {},
+  });
 };
 </script>
 

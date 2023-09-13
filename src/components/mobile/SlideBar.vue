@@ -22,7 +22,7 @@
           :src="
             from
               ? 'https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile_new_chat.png'
-              : 'https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile_new_chat.png'
+              : 'https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile_new_draw.png'
           "
           class="imgLeftTop"
         />
@@ -31,7 +31,7 @@
           :src="
             from
               ? 'https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile_my_chat.png'
-              : 'https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile_my_chat.png'
+              : 'https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile_my_draw.png'
           "
           class="imgLeftBottom"
         />
@@ -41,7 +41,7 @@
         :src="
           from
             ? 'https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile_enter_draw.png'
-            : 'https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile_enter_draw.png'
+            : 'https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile_enter_chat.png'
         "
         class="imgRightCenter"
       />
@@ -51,7 +51,7 @@
       :src="
         from
           ? 'https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile_course.png'
-          : 'https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile_course.png'
+          : 'https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile_course_draw.png'
       "
       class="imgCourse"
     />
