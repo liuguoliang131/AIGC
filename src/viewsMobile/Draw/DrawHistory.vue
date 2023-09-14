@@ -58,7 +58,14 @@
 
 <script setup>
 import NavBar from "@/components/mobile/NavBar.vue";
-import { ref, reactive, onUpdated } from "vue";
+import {
+  ref,
+  reactive,
+  onUpdated,
+  onActivated,
+  onDeactivated,
+  onMounted,
+} from "vue";
 import request from "@/http/index";
 import api from "@/http/api";
 import { useUserStore } from "@/store/user";
@@ -78,6 +85,17 @@ const history = reactive({
   list1: [],
   list2: [],
 });
+
+// 清空数据
+const initHistory = () => {
+  history.lastId = 0;
+  history.pageSize = 10;
+  history.loading = false;
+  history.finish = false;
+  history.empty = false;
+  history.list1 = [];
+  history.list2 = [];
+};
 
 // 选择图片
 const handActive = (item) => {
@@ -111,6 +129,8 @@ const timeFormat = (time) => {
 
 // 获取图片列表
 const getHistory = async () => {
+  if (history.loading) return;
+  if (history.finish) return;
   history.loading = true;
   const res = await request.get(api.picture_pictureList, {
     lastId: history.lastId,
@@ -158,14 +178,12 @@ const onScroll = async (e) => {
     e.target.scrollTop + scrolldom.offsetHeight >=
     pagedom.offsetHeight - bottom
   ) {
-    if (history.loading) return;
-    if (history.finish) return;
     getHistory();
   }
 };
 
 // 对话列表不满一屏 加载
-getHistory();
+
 onUpdated(() => {
   const pagedom = document.querySelector(".page");
   const scrolldom = document.querySelector(".container-body");
@@ -173,8 +191,50 @@ onUpdated(() => {
   const bottom = parseFloat(style.getPropertyValue("padding-bottom"));
 
   if (pagedom.offsetHeight - bottom < scrolldom.offsetHeight) {
+    console.log("不满");
     getHistory();
   }
+});
+onMounted(() => {
+  console.log("onmounted");
+});
+onActivated(() => {
+  console.log("onShow");
+  if (history.list1.length + history.list2.length === 0) {
+    initHistory();
+    getHistory();
+  } else {
+    if (historyItem.pictureId) {
+      const historyItem = drawStore.historyItem;
+      const scrolldom = document.querySelector(".container-body");
+      scrolldom.scrollTop = historyItem.scrollTop;
+
+      history.list1.forEach((item, idx) => {
+        if (item.pictureId === historyItem.pictureId) {
+          putItemIdx = idx;
+        }
+      });
+      if (putItemIdx !== null) {
+        const putItem = history.list1[putItemIdx];
+        history.list1.splice(putItemIdx, 1, { ...putItem, ...historyItem });
+      } else {
+        history.list2.forEach((item, idx) => {
+          if (item.pictureId === historyItem.pictureId) {
+            putItemIdx = idx;
+          }
+        });
+        const putItem = history.list2[putItemIdx];
+        history.list2.splice(putItemIdx, 1, { ...putItem, ...historyItem });
+      }
+    } else {
+      initHistory();
+      getHistory();
+    }
+  }
+});
+
+onDeactivated(() => {
+  console.log("onHide");
 });
 </script>
 

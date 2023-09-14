@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import utils from "../common/utils";
-
+const historyItem = utils.getStorageSync('drawHistoryItem', true)
 export const useDrawStore = defineStore({
   id: "draw",
   state: () => ({
@@ -10,7 +10,34 @@ export const useDrawStore = defineStore({
       createdAt: "",
       pictureUrl: "",
       isFail: false
-    }
+    },
+    // 绘画历史选中的图片信息
+    historyItem: historyItem || {
+      isFail: null,
+      pictureId: null,
+      pictureUrl: null,
+      scrollTop: null
+    },
   }),
-  actions: {}
+  actions: {
+    /* 暂存绘画历史列表中的一项,记录浏览位置 进入绘画详情后拿到图片数据时更新这个数据
+      从绘画详情返回到列表时读取该项数据和浏览位置
+      在详情页删除成功时要清空historyItem, 列表页读取historyItem如果不存在, 就需要重新拉列表数据
+      重新加载列表页面时要清空historyItem
+      
+    */
+    saveHistoryItem(data) {
+      this.historyItem = data
+      utils.setStorageSync('drawHistoryItem', data)
+    },
+    clearHistoryItem() {
+      this.historyItem = {
+        isFail: null,
+        pictureId: null,
+        pictureUrl: null,
+        scrollTop: null
+      }
+      utils.setStorageSync('drawHistoryItem', this.historyItem)
+    }
+  }
 });

@@ -1,10 +1,13 @@
 <template>
-  <Transition>
-    <router-view />
-  </Transition>
+  <router-view v-slot="{ Component, route }">
+    <Transition>
+      <keep-alive :include="['DrawHistory']">
+        <component :is="Component" />
+      </keep-alive>
+    </Transition>
+  </router-view>
 </template>
-<script setup>
-</script>
+<script setup></script>
 <style lang="less">
 * {
   padding: 0;

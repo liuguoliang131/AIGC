@@ -1,5 +1,5 @@
 <template>
-  <div class="history_item">
+  <div class="history_item" :data-id="item.pictureId">
     <div class="image_box">
       <template v-if="item.isFail">
         <div class="fail">
