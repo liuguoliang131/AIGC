@@ -2,9 +2,10 @@
 import { ref, reactive, watch } from "vue";
 import request from "@/http/index";
 import api from "@/http/api";
-import { ElMessage, ElDialog, ElInput, ElTooltip, ElImage } from "element-plus";
+import { ElTooltip, ElImage } from "element-plus";
 import MyUpload from "@/components/MyUpload.vue";
 import { useUserStore } from "@/store/user";
+import { showToast, closeToast } from "vant";
 
 const props = defineProps({
   detailData: {
@@ -166,16 +167,12 @@ const madePicture4 = async () => {
       return false;
     }
     if (!baseData.value.pictureIdea) {
-      return ElMessage({
-        message: "绘画描述不可为空。",
-        type: "warning",
-      });
+      showToast("绘画描述不可为空。");
+      return;
     }
     if (userStore.residuePictureQuantity == 0) {
-      return ElMessage({
-        message: "您的绘画次数已用尽，请联系客服购买。",
-        type: "warning",
-      });
+      showToast("您的绘画次数已用尽，请联系客服购买。");
+      return;
     }
     emit("update:madeDisabled", true);
     const params = {
@@ -185,10 +182,8 @@ const madePicture4 = async () => {
     const res = await request.post(api.picture_fourPalaceGrid, params);
     if (res.code !== 200) {
       emit("update:madeDisabled", false);
-      return ElMessage({
-        message: res.msg || res.message,
-        type: "error",
-      });
+      showToast(res.msg || res.message);
+      return;
     }
 
     userStore.saveResiduePictureQuantity(res.data.residuePictureQuantity);
@@ -196,7 +191,7 @@ const madePicture4 = async () => {
     emit("create-success", res.data);
   } catch (error) {
     emit("update:madeDisabled", false);
-    ElMessage(error.message);
+    showToast(error.message);
     throw error;
   }
 };
@@ -823,7 +818,7 @@ const madePicture4 = async () => {
     position: absolute;
     width: 100%;
     bottom: 0;
-    z-index: 999;
+    z-index: 8;
     align-items: center;
     justify-content: center;
     background-color: #F6F6F6;
