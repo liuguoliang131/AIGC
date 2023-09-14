@@ -456,7 +456,8 @@ const reloadDraw = async () => {
 
 // 下载图片
 const handDownload = () => {
-  saveAs(detailData.value.pictureUrl, "picture");
+  showToast("请长按图片保存");
+  // saveAs(detailData.value.pictureUrl, "picture");
 };
 
 // 生成单张大图
