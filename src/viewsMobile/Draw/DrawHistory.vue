@@ -210,15 +210,15 @@ onMounted(() => {
 });
 onActivated(() => {
   console.log("onShow");
+  const historyItem = drawStore.historyItem;
   if (history.list1.length + history.list2.length === 0) {
     initHistory();
     getHistory();
   } else {
     if (historyItem.pictureId) {
-      const historyItem = drawStore.historyItem;
       const scrolldom = document.querySelector(".container-body");
       scrolldom.scrollTop = historyItem.scrollTop;
-
+      let putItemIdx = null;
       history.list1.forEach((item, idx) => {
         if (item.pictureId === historyItem.pictureId) {
           putItemIdx = idx;
@@ -233,15 +233,19 @@ onActivated(() => {
             putItemIdx = idx;
           }
         });
-        const putItem = history.list2[putItemIdx];
-        history.list2.splice(putItemIdx, 1, { ...putItem, ...historyItem });
+        if (putItemIdx !== null) {
+          const putItem = history.list2[putItemIdx];
+          history.list2.splice(putItemIdx, 1, { ...putItem, ...historyItem });
+        } else {
+          initHistory();
+          getHistory();
+        }
       }
     } else {
       initHistory();
       getHistory();
     }
   }
-  drawStore.clearHistoryItem();
 });
 
 onDeactivated(() => {

@@ -87,4 +87,18 @@ utils.isWechat = function () {
   }
 }
 
+
+// 返回上一页
+utils.goBack = () => {
+  const routes = router.getRoutes()
+  if (routes.length < 2) {
+    router.push({
+      path: '/',
+      replace: true
+    })
+  } else {
+    router.go(-1)
+  }
+}
+
 export default utils

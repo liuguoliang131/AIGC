@@ -284,13 +284,12 @@ import api from "@/http/api";
 import SlideBar from "@/components/mobile/SlideBar.vue";
 import { saveAs } from "file-saver";
 import { nextTick } from "vue";
+import utils from "@/common/utils";
 
 const router = useRouter();
 const visible = ref(false);
 const slideVisible = ref(false); // 菜单页是否显示
-const dataTabRef = ref();
 const useStore = useDrawStore();
-const loading = ref(false);
 const removeVisible = ref(false);
 const drawingVisible = ref(false);
 const userStore = useUserStore();
@@ -298,21 +297,6 @@ const drawStore = useDrawStore();
 
 // 图片详情信息
 const detailData = ref({
-  // "pictureId": 905,
-  // "pictureIdea": "draw a dog",
-  // "pictureUrl": "https://achilles-file.hanhoukeji.com/mj-generate/1701890606021742592.jpg",
-  // "bgImageUrl": "",
-  // "isFail": false,
-  // "pictureRatio": 1,
-  // "picturePx": 1,
-  // "pictureStyle": 1,
-  // "pictureType": 1,
-  // "PictureArea": {
-  //   "upLeft": false,
-  //   "upRight": false,
-  //   "downLeft": false,
-  //   "downRight": false
-  // }
   pictureId: null,
   pictureIdea: null,
   pictureUrl: null,
@@ -322,10 +306,15 @@ const detailData = ref({
   pictureStyle: null,
   pictureType: null,
   isFail: null,
+  PictureArea: {
+    upLeft: false,
+    upRight: false,
+    downLeft: false,
+    downRight: false,
+  },
 });
 
 const handGoHome = () => {
-  useStore.pictureId = null;
   router.push({
     path: "/",
   });
@@ -333,7 +322,6 @@ const handGoHome = () => {
 
 // 去创建
 const handNewDraw = () => {
-  useStore.pictureId = null;
   router.push({
     path: "/draw",
   });
@@ -356,7 +344,7 @@ const handConfirmRemove = async () => {
       if (res.code !== 200) {
         return showToast(res.msg);
       }
-      useStore.pictureId = null;
+
       //如果从列表页进入详情页  则返回前清空列表选中数据 刷新
       drawStore.clearHistoryItem();
       router.go(-1);
@@ -441,7 +429,7 @@ const reloadDraw = async () => {
   });
 
   const res = await request.post(api.picture_resetting, {
-    pictureId: useStore.pictureId,
+    pictureId: drawStore.historyItem.pictureId,
   });
 
   closeToast();
@@ -497,7 +485,7 @@ const madePicture1 = async (position, k) => {
       message: "加载中",
     });
     const res = await request.post(api.picture_onePicture, {
-      parentPictureId: useStore.pictureId,
+      parentPictureId: drawStore.historyItem.pictureId,
       pictureArea: position,
     });
     closeToast();
@@ -509,15 +497,19 @@ const madePicture1 = async (position, k) => {
       });
       return;
     }
-
+    // 更新绘画剩余次数
     userStore.saveResiduePictureQuantity(res.data.residuePictureQuantity);
-    drawStore.pictureId;
-    useStore.pictureId = res.data.pictureId;
-    if (useStore.pictureId != null) {
-      openTimer(useStore.pictureId);
+    // 更新列表项
+    const historyItem = {
+      isFail: res.data.isFail,
+      pictureId: res.data.pictureId,
+      pictureUrl: res.data.pictureUrl,
+      scrollTop: 0,
+    };
+    drawStore.saveHistoryItem(historyItem);
+    if (drawStore.historyItem.pictureId != null) {
+      openTimer(drawStore.historyItem.pictureId);
     }
-    //向列表新增一个项改为列表刷新
-    drawStore.clearHistoryItem();
   } catch (error) {
     closeToast();
     showToast({
@@ -529,10 +521,11 @@ const madePicture1 = async (position, k) => {
 };
 
 onMounted(() => {
-  if (useStore.pictureId != null) {
-    openTimer(useStore.pictureId);
+  const historyItem = drawStore.historyItem;
+  if (historyItem.pictureId !== null) {
+    openTimer(historyItem.pictureId);
   } else {
-    console.log("---router", router.history);
+    utils.goBack();
   }
 });
 

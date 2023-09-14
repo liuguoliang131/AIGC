@@ -16,12 +16,15 @@
           stroke-width="1.5"
         />
       </svg>
-      <span class="title nowrap">{{ props.title || route.meta.title || "憨猴·AI" }}</span>
+      <span class="title nowrap">{{
+        props.title || route.meta.title || "憨猴·AI"
+      }}</span>
     </div>
   </div>
 </template>
 
 <script setup>
+import utils from "@/common/utils";
 import { showDialog, showToast } from "vant";
 import { useRoute, useRouter } from "vue-router";
 
@@ -31,14 +34,14 @@ const router = useRouter();
 const props = defineProps({
   title: {
     type: String,
-    default: '',
+    default: "",
     description: "标题栏",
   },
 });
 
 // 退一步
 const goback = () => {
-  router.go(-1);
+  utils.goBack();
 };
 </script>
 

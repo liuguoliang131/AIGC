@@ -14,7 +14,6 @@
       <data-tab
         ref="dataTabRef"
         @create-success="createSuccess"
-        :detailData="detailData"
         v-model:madeDisabled="madeDisabled"
       />
     </div>
@@ -37,26 +36,7 @@ const slideVisible = ref(false); // 菜单页是否显示
 const dataTabRef = ref();
 const madeDisabled = ref(false); // 控制左侧组件立即生成按钮是否禁止点击
 const useStore = useDrawStore();
-
-// 图片详情信息
-const detailData = ref({
-  pictureId: null,
-  pictureIdea: null,
-  pictureUrl: null,
-  bgImageUrl: null,
-  pictureRatio: null,
-  picturePx: null,
-  pictureStyle: null,
-  pictureType: null,
-  isFail: null,
-});
-
-const madePicture4 = () => {
-  router.push({
-    path: "/draw/result",
-    query: {},
-  });
-};
+const drawStore = useDrawStore();
 
 const handGoHome = () => {
   router.push({
@@ -65,10 +45,15 @@ const handGoHome = () => {
 };
 
 const createSuccess = (data) => {
-  useStore.pictureId = data.pictureId;
+  const historyItem = {
+    isFail: data.isFail,
+    pictureId: data.pictureId,
+    pictureUrl: data.pictureUrl,
+    scrollTop: 0,
+  };
+  drawStore.saveHistoryItem(historyItem);
   madeDisabled.value = true;
-  //todo:暂时不关注历史
-  // dataHistoryRef.value.handPutItem(useStore.activeHistoryItem.active); //向列表新增一个项
+
   router.push({
     path: "/draw/result",
     query: {},
@@ -82,7 +67,7 @@ const createSuccess = (data) => {
   box-sizing: border-box;
   height: 100%;
   overflow: hidden;
-  background: #F6F6F6;
+  background: #f6f6f6;
 
   .navbar {
     position: relative;
