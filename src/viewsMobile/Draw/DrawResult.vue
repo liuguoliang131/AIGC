@@ -219,6 +219,7 @@ const detailData = ref({
 });
 
 const handGoHome = () => {
+  useStore.pictureId = null;
   router.push({
     path: "/",
   });
@@ -226,6 +227,7 @@ const handGoHome = () => {
 
 // 去创建
 const handNewDraw = () => {
+  useStore.pictureId = null;
   router.push({
     path: "/draw",
   });
