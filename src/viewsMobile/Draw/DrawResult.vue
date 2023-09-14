@@ -9,9 +9,9 @@
     <div class="center">
       <div class="center-view">
         <!-- 选中 -->
-        <template v-if="detailData.pictureId|| true">
+        <template v-if="detailData.pictureId">
           <!-- 生成失败 -->
-          <template v-if="detailData.isFail || true">
+          <template v-if="detailData.isFail">
             <div class="fail-status">
               <img src="https://quanres.hanhoukeji.com/hanhou-ai-pc/draw-fail-status.png" alt="" class="fail-img" />
               <div class="fail-friendly">绘画的人太多啦～</div>
@@ -157,28 +157,32 @@
     <transition>
       <slide-bar v-model:visible="slideVisible"></slide-bar>
     </transition>
+    <my-dialog v-model:show="removeVisible" title="温馨提示" message="是否要删除此绘画信息？" showCancelButton confirm-button-text="删除"
+      @confirm="handConfirmRemove">
+    </my-dialog>
   </div>
 </template>
 
 <script setup>
+import { showToast, closeToast } from "vant";
 import { useRouter } from "vue-router";
 import { useDrawStore } from "@/store/draw.js";
 import { onMounted, onUnmounted, ref, watch } from "vue";
-import { ElMessage, ElTooltip } from "element-plus";
+import { ElTooltip } from "element-plus";
 import Sidebar from "@/components/Sidebar.vue";
-import MyDialog from "@/components/MyDialog.vue";
+import MyDialog from "@/components/mobile/MyDialog.vue";
 import DataTab from "./components/DataTab.vue";
 import { useUserStore } from "@/store/user";
 import request from "@/http/index";
 import api from "@/http/api";
 import SlideBar from "@/components/mobile/SlideBar.vue";
 import { saveAs } from "file-saver";
+import { nextTick } from "vue";
 
 const router = useRouter();
 const visible = ref(false);
 const slideVisible = ref(false); // 菜单页是否显示
 const dataTabRef = ref();
-const madeDisabled = ref(false); // 控制左侧组件立即生成按钮是否禁止点击
 const useStore = useDrawStore();
 const loading = ref(false);
 const removeVisible = ref(false);
@@ -222,6 +226,34 @@ const handGoHome = () => {
 
 // 去创建
 const handNewDraw = () => {
+  router.push({
+    path: "/draw",
+  });
+};
+
+// 确认删除图片
+const handConfirmRemove = async () => {
+  removeVisible.value = false;
+  loading.value = true;
+  clearActive();
+  loading.value = false;
+};
+
+// 清空选中图片信息
+const clearActive = () => {
+  console.log("clearActive");
+  detailData.value = {
+    pictureId: null,
+    pictureIdea: null,
+    pictureUrl: null,
+    bgImageUrl: null,
+    pictureRatio: null,
+    picturePx: null,
+    pictureStyle: null,
+    pictureType: null,
+    isFail: null,
+  };
+  useStore.pictureId = null;
   router.push({
     path: "/draw",
   });
@@ -271,16 +303,18 @@ const getDetail = async (pictureId) => {
       pictureId: pictureId,
     });
     if (res.code !== 200) {
-      return ElMessage({
+      showToast({
+        type: "fail",
         message: res.msg,
-        type: "error",
       });
+      return;
     }
     detailData.value = res.data;
+    return res.data;
   } catch (error) {
-    ElMessage({
+    showToast({
+      type: "fail",
       message: error.message,
-      type: "error",
     });
     throw error;
   }
@@ -296,14 +330,15 @@ const reloadDraw = async () => {
   });
   if (res.code !== 200) {
     loading.value = false;
-    return ElMessage({
-      type: "error",
+    showToast({
+      type: "fail",
       message: res.msg || res.message,
     });
+    return;
   }
 
   userStore.saveResiduePictureQuantity(res.data.residuePictureQuantity);
-  detailData.isFail = false;
+  detailData.value.isFail = false;
   //todo:
   // dataHistoryRef.value.handUpdateItem(activeHistoryItem.active); //更新列表中选中的数据
   loading.value = false;
@@ -311,7 +346,7 @@ const reloadDraw = async () => {
 
 // 下载图片
 const handDownload = () => {
-  saveAs(detailData.pictureUrl, "picture");
+  saveAs(detailData.value.pictureUrl, "picture");
 };
 
 
@@ -319,18 +354,20 @@ const handDownload = () => {
 const madePicture1 = async (position, k) => {
   try {
     if (loading.value) return;
-    const isUsed = detailData.PictureArea[k];
+    const isUsed = detailData.value.PictureArea[k];
     if (isUsed) {
-      return ElMessage({
-        type: "warning",
+      showToast({
+        type: "fail",
         message: "此张图片已生成过单张大图",
       });
+      return;
     }
     if (userStore.residuePictureQuantity == 0) {
-      return ElMessage({
-        type: "warning",
+      showToast({
+        type: "fail",
         message: "您的绘画次数已用尽，请联系客服购买。",
       });
+      return;
     }
 
     loading.value = true;
@@ -341,20 +378,27 @@ const madePicture1 = async (position, k) => {
 
     if (res.code !== 200) {
       loading.value = false;
-      return ElMessage({
+      showToast({
+        type: "fail",
         message: res.msg || res.message,
-        type: "error",
       });
+      return;
     }
 
     userStore.saveResiduePictureQuantity(res.data.residuePictureQuantity);
     useStore.pictureId = res.data.pictureId;
+    if (useStore.pictureId != null) {
+      openTimer(useStore.pictureId);
+    }
     //todo:
     // dataHistoryRef.value.handPutItem(activeHistoryItem.active); //向列表新增一个项
-    loading.value = false;
+    loading.value = true;
   } catch (error) {
     loading.value = false;
-    ElMessage(error.message);
+    showToast({
+      type: "fail",
+      message: error.message,
+    });
     throw error;
   }
 };
