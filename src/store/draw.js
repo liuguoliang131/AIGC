@@ -6,10 +6,10 @@ export const useDrawStore = defineStore({
   state: () => ({
     // 绘画历史选中的图片信息
     historyItem: historyItem || {
-      isFail: null,
+      isFail: false,
       pictureId: null,
-      pictureUrl: null,
-      scrollTop: null
+      pictureUrl: '',
+      scrollTop: 0
     },
     // 当前生成图片详情信息
     pictureId: null,
@@ -27,10 +27,10 @@ export const useDrawStore = defineStore({
     },
     clearHistoryItem() {
       this.historyItem = {
-        isFail: null,
+        isFail: false,
         pictureId: null,
-        pictureUrl: null,
-        scrollTop: null
+        pictureUrl: '',
+        scrollTop: 0
       }
       utils.setStorageSync('drawHistoryItem', this.historyItem)
     }

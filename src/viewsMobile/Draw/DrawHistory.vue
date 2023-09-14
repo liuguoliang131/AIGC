@@ -100,6 +100,16 @@ const initHistory = () => {
 // 选择图片
 const handActive = (item) => {
   console.log(item);
+  const historyItem = {
+    isFail: item.isFail,
+    pictureId: item.pictureId,
+    pictureUrl: item.pictureUrl,
+    scrollTop: document.querySelector(".container-body").scrollTop,
+  };
+  drawStore.saveHistoryItem(historyItem);
+  router.push({
+    path: "/draw/result",
+  });
 };
 
 // 去创建
@@ -231,6 +241,7 @@ onActivated(() => {
       getHistory();
     }
   }
+  drawStore.clearHistoryItem();
 });
 
 onDeactivated(() => {
