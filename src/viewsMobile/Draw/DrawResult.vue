@@ -273,25 +273,19 @@
 import { showToast, closeToast } from "vant";
 import { useRouter } from "vue-router";
 import { useDrawStore } from "@/store/draw.js";
+import { useUserStore } from "@/store/user";
 import { onMounted, onUnmounted, ref, watch } from "vue";
 import { ElTooltip } from "element-plus";
-import Sidebar from "@/components/Sidebar.vue";
+import SlideBar from "@/components/mobile/SlideBar.vue";
 import MyDialog from "@/components/mobile/MyDialog.vue";
-import DataTab from "./components/DataTab.vue";
-import { useUserStore } from "@/store/user";
 import request from "@/http/index";
 import api from "@/http/api";
-import SlideBar from "@/components/mobile/SlideBar.vue";
-import { saveAs } from "file-saver";
-import { nextTick } from "vue";
 import utils from "@/common/utils";
 
 const router = useRouter();
 const visible = ref(false);
 const slideVisible = ref(false); // 菜单页是否显示
-const useStore = useDrawStore();
 const removeVisible = ref(false);
-const drawingVisible = ref(false);
 const userStore = useUserStore();
 const drawStore = useDrawStore();
 

@@ -335,6 +335,7 @@ const formatNormal = (inputDateString) => {
 // 加载列表
 const getChatList = () => {
   console.log("getChatList");
+  if (chatStore.activeTagId === 0) return false;
   if (chatList.finish) return false;
   if (chatList.loading) return false;
   chatList.loading = true;

@@ -90,11 +90,10 @@ utils.isWechat = function () {
 
 // 返回上一页
 utils.goBack = () => {
-  const routes = router.getRoutes()
-  if (routes.length < 2) {
+  const backPath = window.history.state.back
+  if (backPath === null) {
     router.push({
-      path: '/',
-      replace: true
+      path: '/'
     })
   } else {
     router.go(-1)
