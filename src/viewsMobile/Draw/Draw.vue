@@ -65,11 +65,7 @@ const handGoHome = () => {
 };
 
 const createSuccess = (data) => {
-  useStore.active = {
-    ...data,
-    pictureUrl: "",
-    isFail: false,
-  };
+  useStore.pictureId = data.pictureId;
   madeDisabled.value = true;
   //todo:暂时不关注历史
   // dataHistoryRef.value.handPutItem(useStore.activeHistoryItem.active); //向列表新增一个项

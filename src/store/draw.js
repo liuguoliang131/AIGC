@@ -4,13 +4,6 @@ const historyItem = utils.getStorageSync('drawHistoryItem', true)
 export const useDrawStore = defineStore({
   id: "draw",
   state: () => ({
-    // 图片详情信息
-    active: {
-      pictureId: null,
-      createdAt: "",
-      pictureUrl: "",
-      isFail: false
-    },
     // 绘画历史选中的图片信息
     historyItem: historyItem || {
       isFail: null,
@@ -18,6 +11,8 @@ export const useDrawStore = defineStore({
       pictureUrl: null,
       scrollTop: null
     },
+    // 当前生成图片详情信息
+    pictureId: null,
   }),
   actions: {
     /* 暂存绘画历史列表中的一项,记录浏览位置 进入绘画详情后拿到图片数据时更新这个数据

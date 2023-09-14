@@ -159,6 +159,9 @@ const handCreat = () => {
     chatStore.saveActiveTagId(0);
   } else {
     // 操作pinia store
+    router.push({
+      path: "/draw",
+    });
   }
   // 隐藏本组件
   handHide();
