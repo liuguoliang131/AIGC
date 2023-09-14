@@ -56,7 +56,8 @@ const routes = [
         name: 'DrawHistory',
         component: () => import('../viewsMobile/Draw/DrawHistory.vue'),
         meta: {
-          isAuthenticated: true
+          isAuthenticated: true,
+          title: '绘画记录'
         }
       },
     ]

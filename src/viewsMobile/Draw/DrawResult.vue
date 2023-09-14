@@ -232,7 +232,7 @@
             <template v-else>
               <div class="reloading">
                 <img
-                  src="https://quanres.hanhoukeji.com/hanhou-ai-pc/drawing-loading.gif"
+                  src="https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile-drawing-loading.gif"
                   alt=""
                   class="drawing-img"
                 />
@@ -724,14 +724,14 @@ onUnmounted(() => {
         justify-content: center;
         width: 343px;
         height: 343px;
-        border: 1px dashed rgba(170, 170, 170, 1);
+        // border: 1px dashed rgba(170, 170, 170, 1);
         border-radius: 5px;
         text-align: center;
         margin: 16px;
 
         .drawing-img {
-          width: 343px;
-          height: 343px;
+          width: 200px;
+          height: 200px;
         }
       }
 

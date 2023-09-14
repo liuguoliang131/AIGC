@@ -71,6 +71,7 @@ const props = defineProps({
       background-color: #f1f2f6;
       img {
         width: 175px;
+        min-height: 98.44px;
         height: auto;
         border-radius: 4px;
       }

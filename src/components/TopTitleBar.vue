@@ -8,10 +8,18 @@
   >
     <div class="banner_left">
       <div class="logoWrapper" @click="goHome">
-        <img src="@/assets/logo.png" class="logo" />
-        <span :class="['logoText', isBlackMode ? 'logoTextBlack' : '']">
-          憨猴·AI
-        </span>
+        <img
+          v-show="isBlackMode"
+          class="logo"
+          src="https://quanres.hanhoukeji.com/hanhou-ai-pc/pc-black-hhai-logo.png"
+          alt=""
+        />
+        <img
+          v-show="!isBlackMode"
+          class="logo"
+          src="https://quanres.hanhoukeji.com/hanhou-ai-pc/pc-color-hhai-logo.png"
+          alt=""
+        />
       </div>
       <span
         :class="[
@@ -186,19 +194,8 @@ const confirmExit = () => {
       justify-content: center;
 
       .logo {
-        width: 40px;
+        width: auto;
         height: 40px;
-        margin-right: 14px;
-      }
-
-      .logoText {
-        color: #fff;
-        font-size: 28px;
-        font-weight: 600;
-      }
-
-      .logoTextBlack {
-        color: #1e1e1e;
       }
     }
 

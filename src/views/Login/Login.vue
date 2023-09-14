@@ -2,8 +2,11 @@
   <div class="container" v-loading="loading">
     <div class="background"></div>
     <div class="logoWrapper" @click="goHome">
-      <img src="@/assets/logo.png" class="logo" />
-      <span :class="['logoText', 'logoTextBlack']"> 憨猴·AI </span>
+      <img
+        class="logo"
+        src="https://quanres.hanhoukeji.com/hanhou-ai-pc/pc-black-hhai-logo.png"
+        alt=""
+      />
     </div>
     <div></div>
     <div class="login-box">
@@ -212,10 +215,9 @@ export default {
     align-items: center;
 
     .logo {
-      width: 40px;
+      width: auto;
       height: 40px;
       margin-left: 22px;
-      margin-right: 14px;
     }
 
     .logoText {

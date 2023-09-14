@@ -1,10 +1,12 @@
 <template>
   <div class="top_title_bar">
     <div class="float">
-      <div class="logo" @click="goHome">
-        <img src="@/assets/logo.png" class="img" />
-        <span class="name"> 憨猴·AI </span>
-      </div>
+      <img
+        @click="goHome"
+        class="logo"
+        src="https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile-black-hhai-logo.png"
+        alt=""
+      />
       <template v-if="userStore.userInfo">
         <div class="rslot">
           <span class="tel">{{ userStore.userInfo.tel }}</span>
@@ -96,20 +98,8 @@ const goLogin = () => {
     padding: 0 16px;
     background: #fff;
     .logo {
-      display: flex;
-      align-items: center;
-      .img {
-        width: 35px;
-        height: 35px;
-      }
-      .name {
-        margin-left: 5px;
-        font-family: PingFang SC;
-        font-size: 16px;
-        font-weight: 600;
-        letter-spacing: 0em;
-        text-align: left;
-      }
+      width: auto;
+      height: 35px;
     }
     .btn {
       display: flex;
