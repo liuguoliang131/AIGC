@@ -641,7 +641,7 @@ onUnmounted(() => {
         flex-direction: column;
         width: 343px;
         height: 343px;
-        border: 1px dashed rgba(170, 170, 170, 1);
+        // border: 1px dashed rgba(170, 170, 170, 1);
         border-radius: 5px;
         margin: 16px;
         text-align: center;
@@ -650,6 +650,8 @@ onUnmounted(() => {
           position: relative;
           width: 343px;
           height: 343px;
+          transform-origin: center;
+          transform: scale(0.58);
 
           img {
             width: 100%;
