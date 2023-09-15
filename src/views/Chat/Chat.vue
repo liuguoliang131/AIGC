@@ -893,18 +893,18 @@ watch(
   scrollPageHeight,
   (newVal, oldVal) => {
     if (!activeTag.value) return;
-    // 列表不满一屏 加载
-    if (newVal <= chatScrollView.value.offsetHeight) {
-      console.log("聊天列表不满一屏,加载");
-      return getAnswerList();
-    }
-    console.log("actionState", actionState);
     if (actionState === "1") {
-      // 动作状态为加载列表时: 触发列表加载完成后,卷轴scrollTop设定为加载之前观看的位置
-      chatScrollView.value.scrollTop = newVal - oldVal;
-      // 滑动动画:下滑一点点
-      console.log("actionState 1", chatScrollView);
-      slideAnimation(-40);
+      // 列表不满一屏 加载
+      if (newVal <= chatScrollView.value.offsetHeight) {
+        console.log("聊天列表不满一屏,加载");
+        getAnswerList();
+      } else {
+        // 动作状态为加载列表时: 触发列表加载完成后,卷轴scrollTop设定为加载之前观看的位置
+        chatScrollView.value.scrollTop = newVal - oldVal;
+        // 滑动动画:下滑一点点
+        console.log("actionState 1", chatScrollView);
+        slideAnimation(-40);
+      }
     } else if (actionState === "2") {
       // 动作状态为发送新问题时: 卷轴scrollTop设定到最底下位置
       // 滑动动画:滑到最底
