@@ -1,9 +1,18 @@
 import Home from '../viewsMobile/Home/Index.vue'
+import HanHouQA from '../viewsMobile/demo/HanHouQA.vue'
 const routes = [
   {
     path: '/',
     name: 'Home',
     component: Home,
+    meta: {
+      isAuthenticated: false
+    }
+  },
+  {
+    path: '/hanhouQA',
+    name: 'hanhouQA',
+    component: HanHouQA,
     meta: {
       isAuthenticated: false
     }

@@ -13,6 +13,14 @@ module.exports = defineConfig({
           '^/api': '/'
         }
       },
+      '/qa': {
+        // target: 'http://hhosaigcapi.yctmt.com',
+        target: 'http://121.229.145.90:18981',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/qa': '/qa'
+        }
+      },
       '/mock': {
         target: 'http://yapi.hanhoukeji.com',
         changeOrigin: true,
