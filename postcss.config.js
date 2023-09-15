@@ -10,6 +10,16 @@ if (platform === 'darwin') {
 }
 
 module.exports = ({ file }) => {
+  const os = require('os');
+
+  const platform = os.platform();  // 系统名称
+
+  let mobileList
+  if (platform === 'darwin') {
+    mobileList = [/\/mobile/, /\/viewsMobile/, /\/node_modules\/vant/]
+  } else {
+    mobileList = [/\\mobile/, /\\viewsMobile/, /\\node_modules\\vant/]
+  }
 
   const isMobile = mobileList.some(item => item.test(file))
   const rootValue = isMobile ? 37.5 : 192

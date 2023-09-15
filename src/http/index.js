@@ -31,8 +31,12 @@ instance.interceptors.request.use(async (config) => {
     ...config.headers,
     ...sign
   }
-  if (process.env.VUE_APP_ENV === 'dev' && config.mock) {
-    config.baseURL = `/mock/${config.mock}`
+  if (process.env.VUE_APP_SELF_ENV === "dev") {
+    if (config.mock) {
+      config.baseURL = `/mock/${config.mock}`;
+    } else if (config.url.startsWith("/qa")) {
+      config.baseURL = "";
+    }
   }
   if (config.method === 'get') {
     config.params = {
