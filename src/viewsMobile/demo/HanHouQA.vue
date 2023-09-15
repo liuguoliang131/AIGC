@@ -12,30 +12,25 @@
       <div class="submit" @click="answer">回答</div>
     </div>
 
-    <div class="result" :onclick="copy">{{ result }}</div>
+    <div class="result" @click="copy">{{ result }}</div>
+    <div ref="copy_text" class="clipboard_text" data-clipboard-action="copy" data-clipboard-text="copytext"></div>
   </div>
 </template>
 
 <script setup>
-import TopTitleBar from "@/components/mobile/TopTitleBar.vue";
-import MFooter from "@/components/mobile/MFooter.vue";
-import MMenu from "@/components/mobile/MMenu.vue";
-import { useRouter } from "vue-router";
 import { ref } from "vue";
 
 import request from "@/http/index";
-import utils from "@/common/utils";
-import { useUserStore } from "@/store/user";
+import Clipboard from "clipboard";
 import {
-  showLoadingToast,
-  closeToast,
-  DropdownMenu as VanDropdownMenu,
-  DropdownItem as VanDropdownItem,
-  Field as VanField,
   CellGroup as VanCellGroup,
+  DropdownItem as VanDropdownItem,
+  DropdownMenu as VanDropdownMenu,
+  Field as VanField,
+  closeToast,
+  showLoadingToast,
   showToast,
 } from "vant";
-import { functionsIn } from "lodash";
 const selectResult = ref("/qa/hanhou");
 const message = ref('');
 const showPicker = ref(false);
@@ -75,6 +70,7 @@ function answer() {
 const copy_text = ref();
 const copy = () => {
   const text1 = result.value;
+  if (text1.trim() === '') return;
   copy_text.value.setAttribute("data-clipboard-text", text1);
   initCopyClipboard();
   copy_text.value.click();
@@ -113,6 +109,14 @@ const initCopyClipboard = () => {
   display: flex;
   flex-direction: column;
   overflow: hidden;
+
+  .clipboard_text {
+    position: fixed;
+    top: -500px;
+    left: 0;
+    width: 200px;
+    height: 200px;
+  }
 
   .form {
     display: flex;
