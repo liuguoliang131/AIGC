@@ -34,7 +34,7 @@ instance.interceptors.request.use(async (config) => {
   if (process.env.VUE_APP_SELF_ENV === "dev") {
     if (config.mock) {
       config.baseURL = `/mock/${config.mock}`;
-    } else if (config.url.startsWith("/qa")) {
+    } else if (config.url.startsWith("/user/hanhouqa")) {
       config.baseURL = "";
     }
   }

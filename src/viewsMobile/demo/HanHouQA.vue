@@ -59,9 +59,13 @@ function answer() {
     forbidClick: true,
   });
   const query = encodeURIComponent(message.value);
-  request.get(`${selectResult.value}/${query}`).then((res) => {
+  request.get(`/user/hanhouqa?question=${selectResult.value}/${query}`).then((res) => {
     closeToast();
-    result.value = res;
+    if (res.code == 200) {
+      result.value = res.data;
+    } else {
+      showToast(res.msg || res.message);
+    }
   }).catch(() => {
     closeToast();
   });
