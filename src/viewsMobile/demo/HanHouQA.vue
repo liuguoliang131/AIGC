@@ -9,7 +9,10 @@
         <van-field v-model="message" rows="5" autosize type="textarea" maxlength="500" placeholder="请输入您的问题"
           show-word-limit />
       </van-cell-group>
-      <div class="submit" @click="answer">回答</div>
+      <div class="btnWrapper">
+        <div class="reset" @click="reset">重置</div>
+        <div class="submit" @click="answer">回答</div>
+      </div>
     </div>
 
     <div class="result" @click="copy">{{ result }}</div>
@@ -64,6 +67,11 @@ function answer() {
   }).catch(() => {
     closeToast();
   });
+}
+
+function reset() {
+  message.value = ''
+  result.value = ''
 }
 
 // 复制
@@ -134,26 +142,53 @@ const initCopyClipboard = () => {
     overflow-y: scroll;
   }
 
-  .submit {
+  .btnWrapper {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 120px;
-    height: 40px;
+    flex-direction: row;
     margin-top: 20px;
-    flex-shrink: 0;
-    border-radius: 5px;
-    background: #126cfe;
-    color: #fff;
-    text-align: center;
-    font-family: PingFang SC;
-    font-size: 14px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: normal;
+    .submit {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 120px;
+      height: 40px;
+      flex-shrink: 0;
+      margin-left: 10px;
+      border-radius: 5px;
+      background: #126cfe;
+      color: #fff;
+      text-align: center;
+      font-family: PingFang SC;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: normal;
 
-    &:active {
-      opacity: 0.7;
+      &:active {
+        opacity: 0.7;
+      }
+    }
+
+    .reset {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 120px;
+      height: 40px;
+      flex-shrink: 0;
+      border-radius: 5px;
+      background: #dfa634;
+      color: #fff;
+      text-align: center;
+      font-family: PingFang SC;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: normal;
+
+      &:active {
+        opacity: 0.7;
+      }
     }
   }
 }
