@@ -222,11 +222,11 @@ const handNewChat = () => {
   box-sizing: border-box;
   background-color: #222e51;
   .container-body {
-    height: calc(100% - 44px);
+    height: calc(100% - 123px);
     overflow-y: scroll;
     .page {
       color: #ffffff;
-      padding: 20px 20px 140px 20px;
+      padding: 20px;
       .listloading {
         display: flex;
         align-items: center;

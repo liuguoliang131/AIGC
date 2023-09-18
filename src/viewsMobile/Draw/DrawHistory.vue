@@ -196,6 +196,7 @@ const onScroll = async (e) => {
 
 onUpdated(() => {
   const pagedom = document.querySelector(".page");
+  if (!pagedom) return;
   const scrolldom = document.querySelector(".container-body");
   const style = window.getComputedStyle(pagedom, null);
   const bottom = parseFloat(style.getPropertyValue("padding-bottom"));
@@ -259,10 +260,10 @@ onDeactivated(() => {
   box-sizing: border-box;
   background-color: #fafafa;
   .container-body {
-    height: calc(100% - 44px);
+    height: calc(100% - 105px);
     overflow-y: scroll;
     .page {
-      padding: 8px 8px 73px 8px;
+      padding: 8px;
       .list {
         display: flex;
         justify-content: space-between;

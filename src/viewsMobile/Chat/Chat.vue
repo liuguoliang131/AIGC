@@ -322,10 +322,12 @@ const slideAnimation = (length, time = 800) => {
 // 接受答案中 如果位置在最底下时就加载动画, 如果不是则不动
 const scrollToEnd = (oldPageHeight, newPageHeight) => {
   if (
-    chatScrollView.value.scrollTop + chatScrollView.value.offsetHeight ===
-    oldPageHeight
-  )
+    oldPageHeight -
+      (chatScrollView.value.scrollTop + chatScrollView.value.offsetHeight) <=
+    30
+  ) {
     chatScrollView.value.scrollTop = newPageHeight;
+  }
 };
 
 // 监听滚动
@@ -665,7 +667,7 @@ const onSend = () => {
     overflow-y: scroll;
 
     .chat-list {
-      padding: 12px 16px 100px 16px;
+      padding: 12px 16px 200px 16px;
       .listloading {
         display: flex;
         align-items: center;
