@@ -19,6 +19,7 @@
       <span class="title nowrap">{{
         props.title || route.meta.title || "憨猴·AI"
       }}</span>
+      <img @click="handGoHome" src="@/assets/logo.png" alt="" class="go_home" v-if="showGoHome"/>
     </div>
   </div>
 </template>
@@ -37,11 +38,20 @@ const props = defineProps({
     default: "",
     description: "标题栏",
   },
+  showGoHome: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 // 退一步
 const goback = () => {
   utils.goBack();
+};
+const handGoHome = () => {
+  router.push({
+    path: "/",
+  });
 };
 </script>
 
@@ -78,6 +88,15 @@ const goback = () => {
       font-style: normal;
       font-weight: 600;
       line-height: normal;
+    }
+    .go_home {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      height: 44px;
+      object-fit: scale-down;
+      transform: translate(0, -50%);
+      width: 26px;
     }
   }
 }
