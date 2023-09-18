@@ -19,7 +19,7 @@ export const useDrawStore = defineStore({
       从绘画详情返回到列表时读取该项数据和浏览位置
       在详情页删除成功时要清空historyItem, 列表页读取historyItem如果不存在, 就需要重新拉列表数据
       重新加载列表页面时要清空historyItem
-      
+
     */
     saveHistoryItem(data) {
       this.historyItem = data
