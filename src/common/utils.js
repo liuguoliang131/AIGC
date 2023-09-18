@@ -87,6 +87,12 @@ utils.isWechat = function () {
   }
 }
 
+// 判断设备是否为ios
+utils.isIOS = function () {
+  const ua = navigator.userAgent;
+  return /iPad|iPhone|iPod/.test(ua);
+}
+
 
 // 返回上一页
 utils.goBack = () => {
