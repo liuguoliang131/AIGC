@@ -39,3 +39,12 @@ src/views/路径下为PC端页面, src/viewsMobile/路径下为移动端页面
 
 插件postcss-pxtorem rem布局:  项目中,路径带有mobile文字的会转换为移动端rem数值
 
+测试环境地址：
+http://hhosaigc.yctmt.com/
+
+线上地址：
+http://ai.hanhoukeji.cn/#/
+
+
+测试环境打包文件存放地址：瓦力部署
+http://gitlab.hanhoukeji.com/liuxu/hhos_aigc_h5_package

@@ -1,11 +1,12 @@
 <template>
   <div class="container">
-    <div class="navbar">
+    <nav-bar title="AI绘图" showGoHome="true"></nav-bar>
+    <!-- <div class="navbar">
       <img @click="slideVisible = true" class="call_left"
         src="https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile-chat-navmenu.svg" alt="" />
       <div @click="visible = true">AI绘图</div>
       <img @click="handGoHome" src="@/assets/logo.png" alt="" class="go_home" />
-    </div>
+    </div> -->
     <div class="center">
       <div class="center-view">
         <!-- 选中 -->
@@ -151,6 +152,7 @@
 </template>
 
 <script setup>
+import NavBar from "@/components/mobile/NavBar.vue";
 import { showToast, closeToast } from "vant";
 import { useRouter } from "vue-router";
 import { useDrawStore } from "@/store/draw.js";
