@@ -47,7 +47,7 @@
           fill="white"
         />
       </svg>
-      <span>新建聊天</span>
+      <span>新建AI对话</span>
     </div>
 
     <my-dialog
@@ -226,7 +226,7 @@ const handNewChat = () => {
     overflow-y: scroll;
     .page {
       color: #ffffff;
-      padding: 20px 20px 92px 20px;
+      padding: 20px 20px 140px 20px;
       .listloading {
         display: flex;
         align-items: center;

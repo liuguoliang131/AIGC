@@ -16,7 +16,7 @@
       />
     </div>
     <div class="container-body" @scroll="onScroll" ref="chatScrollView">
-      <div class="chat-list" ref="chatScrollPage">
+      <div :class="['chat-list']" ref="chatScrollPage">
         <div class="listloading" v-show="chatList.loading">
           <img
             src="https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile-listloading-icon.png"
@@ -123,7 +123,9 @@
         <div
           :class="[
             'send',
-            userStore.residueQAQuantity == 0 ? 'send-disabled' : '',
+            userStore.residueQAQuantity == 0 || sendLoading
+              ? 'send-disabled'
+              : '',
           ]"
           @click="onSend"
         >
@@ -563,6 +565,7 @@ const _getResult = async (message) => {
   source.onerror = (e) => {
     try {
       console.log(e, "onerror");
+      showToast("网络连接中断，请检查您的网络并重试。");
       chatList.list[chatList.list.length - 1].outputing = "3";
       sendLoading.value = false;
       e.target.close();
@@ -660,8 +663,9 @@ const onSend = () => {
     height: 100%;
     overflow-x: hidden;
     overflow-y: scroll;
+
     .chat-list {
-      padding: 12px 16px 300px 16px;
+      padding: 12px 16px 100px 16px;
       .listloading {
         display: flex;
         align-items: center;
@@ -730,6 +734,8 @@ const onSend = () => {
             border-radius: 15px 0 15px 15px;
             background: #fff;
             white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: break-all;
             .copy_icon {
               position: absolute;
               bottom: 6px;
@@ -790,6 +796,8 @@ const onSend = () => {
             border-radius: 0 15px 15px 15px;
             background: #fff;
             white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: break-all;
             .round {
               width: 5px;
               height: 5px;
@@ -893,6 +901,8 @@ const onSend = () => {
             border-radius: 0px 15px 15px 15px;
             background: rgba(218, 224, 245, 0.6);
             white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: break-all;
           }
           .message_state2 {
             position: relative;
@@ -912,6 +922,8 @@ const onSend = () => {
             border-radius: 0px 15px 15px 15px;
             background: rgba(218, 224, 245, 0.6);
             white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: break-all;
             .copy_icon {
               position: absolute;
               bottom: 6px;
@@ -951,10 +963,13 @@ const onSend = () => {
             border-radius: 0 15px 15px 15px;
             background: #fff;
             white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: break-all;
           }
         }
       }
     }
+
     .new_question {
       position: fixed;
       bottom: 0;
@@ -1025,6 +1040,9 @@ const onSend = () => {
       }
       .send-disabled {
         filter: grayscale(100%);
+        &:active {
+          opacity: 1;
+        }
       }
     }
   }

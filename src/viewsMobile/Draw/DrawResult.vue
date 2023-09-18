@@ -389,10 +389,7 @@ const getDetail = async (pictureId) => {
       pictureId: pictureId,
     });
     if (res.code !== 200) {
-      showToast({
-        type: "fail",
-        message: res.msg,
-      });
+      showToast(res.msg);
       return;
     }
     detailData.value = res.data;
@@ -405,10 +402,7 @@ const getDetail = async (pictureId) => {
     drawStore.saveHistoryItem(historyItem);
     return res.data;
   } catch (error) {
-    showToast({
-      type: "fail",
-      message: error.message,
-    });
+    showToast(error.message);
     throw error;
   }
 };
@@ -428,10 +422,7 @@ const reloadDraw = async () => {
 
   closeToast();
   if (res.code !== 200) {
-    showToast({
-      type: "fail",
-      message: res.msg || res.message,
-    });
+    showToast(res.msg || res.message);
     return;
   }
 
@@ -459,17 +450,11 @@ const madePicture1 = async (position, k) => {
   try {
     const isUsed = detailData.value.PictureArea[k];
     if (isUsed) {
-      showToast({
-        type: "fail",
-        message: "此张图片已生成过单张大图",
-      });
+      showToast("此张图片已生成过单张大图");
       return;
     }
     if (userStore.residuePictureQuantity == 0) {
-      showToast({
-        type: "fail",
-        message: "您的绘画次数已用尽，请联系客服购买。",
-      });
+      showToast("您的绘画次数已用尽，请联系客服购买。");
       return;
     }
 
@@ -486,10 +471,7 @@ const madePicture1 = async (position, k) => {
     closeToast();
 
     if (res.code !== 200) {
-      showToast({
-        type: "fail",
-        message: res.msg || res.message,
-      });
+      showToast(res.msg || res.message);
       return;
     }
     // 更新绘画剩余次数
@@ -507,10 +489,7 @@ const madePicture1 = async (position, k) => {
     }
   } catch (error) {
     closeToast();
-    showToast({
-      type: "fail",
-      message: error.message,
-    });
+    showToast(error.message);
     throw error;
   }
 };
