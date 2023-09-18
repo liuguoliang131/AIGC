@@ -55,7 +55,7 @@ const createSuccess = (data) => {
   madeDisabled.value = true;
 
   router.push({
-    path: "/draw/result",
+    path: "/draw/result1",
     query: {},
   });
 };
