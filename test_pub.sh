@@ -7,7 +7,8 @@ rm favicon.ico
 
 cd -
 cp -r dist/* ../hhos_aigc_h5_package/
-
+cd -
 git add .
 git commit -m 'update'
 git push
+cd -
