@@ -187,7 +187,7 @@ const madePicture4 = async () => {
           resize="none"
           maxlength="500"
           :autosize="false"
-          placeholder="请描述您想要的画面"
+          placeholder="请描述您想要的画面（目前支持中/英文输入）"
         ></textarea>
         <div class="ipt_ass" v-if="baseData.pictureIdea.length">
           <div class="limit">
