@@ -454,7 +454,7 @@ const madePicture4 = async () => {
   .data-tab {
     box-sizing: border-box;
     height: 100%;
-    padding: 16px 14px 207px 14px;
+    padding: 16px 14px 107px 14px;
     overflow-y: scroll;
     border-radius: 5px;
     box-shadow: 0px 4px 8px 0px rgba(0, 0, 0, 0.1);
