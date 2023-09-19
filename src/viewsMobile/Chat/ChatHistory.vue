@@ -64,7 +64,7 @@
 <script setup>
 import NavBar from "@/components/mobile/NavBar.vue";
 import { showToast, closeToast } from "vant";
-import { ref, reactive, watch, onUpdated, nextTick } from "vue";
+import { ref, reactive, watch, onUpdated, nextTick, onMounted } from "vue";
 import api from "@/http/api";
 import request from "@/http/index";
 import { useRouter } from "vue-router";
@@ -215,15 +215,25 @@ const handNewChat = () => {
     path: "/chat",
   });
 };
+onMounted(() => {
+  const body = document.querySelector("body").offsetHeight;
+  const app = document.querySelector("#app").offsetHeight;
+  const container = document.querySelector(".container").offsetHeight;
+  const cb = document.querySelector(".container-body").offsetHeight;
+  // alert(`${body}---${app}---${container}--${cb}`);
+});
 </script>
 
 <style scoped lang="less">
 .container {
+  box-sizing: content-box;
   height: 100%;
-  box-sizing: border-box;
+  height: calc(var(--vh, 1vh) * 100);
   background-color: #222e51;
+  overflow: hidden;
   .container-body {
-    height: calc(100% - 123px);
+    box-sizing: content-box;
+    height: calc(100% - 79px - 44px);
     overflow-y: scroll;
     .page {
       color: #ffffff;

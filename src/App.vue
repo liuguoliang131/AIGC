@@ -7,7 +7,24 @@
     </Transition>
   </router-view>
 </template>
-<script setup></script>
+<script setup>
+import { onMounted } from "vue";
+
+onMounted(() => {
+  //首先我们获得视口高度并将其乘以1%以获得1vh单位的值
+  let vh = window.innerHeight * 0.01;
+  // 然后，我们将——vh自定义属性中的值设置为文档的根
+  document.documentElement.style.setProperty("--vh", `${vh}px`);
+
+  // 我们监听resize事件 视图大小发生变化就重新计算1vh的值
+  window.addEventListener("resize", () => {
+    // 我们执行与前面相同的脚本
+    let vh = window.innerHeight * 0.01;
+    console.log(vh);
+    document.documentElement.style.setProperty("--vh", `${vh}px`);
+  });
+});
+</script>
 <style lang="less">
 * {
   padding: 0;
@@ -36,15 +53,18 @@
 
 body {
   font-size: 14px;
+  height: 100vh;
+  height: calc(var(--vh, 1vh) * 100);
+  overflow: hidden;
 }
 
 #app {
-  box-sizing: border-box;
   width: 100%;
-  height: 100vh;
+  height: 100%;
   font-family: PingFang SC;
   text-align: left;
   color: #333333;
+  overflow: hidden;
 }
 
 /*  强制一行显示 超出显示省略号 */
