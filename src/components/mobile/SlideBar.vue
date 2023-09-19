@@ -271,7 +271,7 @@ onMounted(() => {
   top: 0;
   z-index: 10;
   width: 100%;
-  height: 100%;
+  min-height: 100vh;
   box-sizing: border-box;
   background: #222e50;
   transition: left 0.5s;

@@ -45,8 +45,6 @@ body {
   font-family: PingFang SC;
   text-align: left;
   color: #333333;
-  padding-bottom: constant(safe-area-inset-bottom);
-  padding-bottom: env(safe-area-inset-bottom);
 }
 
 /*  强制一行显示 超出显示省略号 */

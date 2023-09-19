@@ -893,14 +893,15 @@ const madePicture4 = async () => {
   }
 
   .btnWrapper {
-    display: flex;
-    position: absolute;
-    width: 100%;
+    position: fixed;
     bottom: 0;
+    left: 0;
     z-index: 8;
+    display: flex;
     align-items: center;
     justify-content: center;
     background-color: #f6f6f6;
+    width: 100%;
     padding-top: 22px;
     padding-bottom: 22px;
 

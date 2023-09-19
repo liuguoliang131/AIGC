@@ -66,15 +66,18 @@ const createSuccess = (data) => {
   display: flex;
   flex-direction: column;
   background: #f6f6f6;
-  height: 100vh; /* 设置容器高度为视口高度，使内容区域占据剩余空间 */
+  padding-top: 44px;
+  // height: 100vh; /* 设置容器高度为视口高度，使内容区域占据剩余空间 */
 }
 
 .navbar {
-  flex: 0 0 auto;
+  position: fixed;
+  top: 0;
+  left: 0;
   z-index: 8;
-  flex: 0 0 auto;
   width: 100%;
   height: 44px;
+  flex: 0 0 auto;
   background-color: #fff;
   display: flex;
   flex-direction: row;
