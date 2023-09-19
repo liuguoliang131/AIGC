@@ -866,7 +866,7 @@ const madePicture4 = async () => {
           width: 82px;
           height: 82px;
           box-sizing: border-box;
-          border: 3px solid rgba(18, 108, 254, 1);
+          border: 1px solid rgba(18, 108, 254, 1);
           border-radius: 5px;
           background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.3));
         }
