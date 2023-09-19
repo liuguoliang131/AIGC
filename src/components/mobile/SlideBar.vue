@@ -56,8 +56,8 @@
       class="imgCourse"
     />
 
+    <div class="footerTitle">更多服务</div>
     <div class="footerWrapper">
-      <div class="footerTitle">更多服务</div>
       <div @click="handGoLearnIndex" class="footerItemWrapper">
         <img
           src="https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile_learn_center.png"
@@ -81,19 +81,9 @@
           class="footerItemMore"
         />
       </div>
-
-      <div class="divider"></div>
-      <div @click="handExit" class="footerItemWrapper">
-        <img
-          src="https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile_exit.png"
-          class="footerItemIcon"
-        />
-        <span class="footer_item_title">退出登录</span>
-        <img
-          src="https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile_sidebar_more.png"
-          class="footerItemMore"
-        />
-      </div>
+    </div>
+    <div @click="handExit" class="exit">
+      <span class="exit_title">退出登录</span>
     </div>
     <van-overlay :show="serviceVisible" @click="serviceVisible = false">
       <div class="service">
@@ -336,13 +326,20 @@ onMounted(() => {
   .imgCourse {
     width: 343px;
     height: 114px;
-    margin-bottom: 11px;
+    margin-bottom: 27px;
+  }
+
+  .footerTitle {
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 13px;
   }
 
   .footerWrapper {
     background-color: rgba(0, 0, 0, 0.2);
     border-radius: 4px;
-    padding: 16px 16px 0 16px;
+    padding: 0px 16px 0 16px;
     display: flex;
     flex-direction: column;
 
@@ -350,13 +347,6 @@ onMounted(() => {
       height: 0.3px;
       width: 100%;
       background-color: rgba(255, 255, 255, 0.2);
-    }
-
-    .footerTitle {
-      color: white;
-      font-size: 16px;
-      font-weight: bold;
-      margin-bottom: 4px;
     }
 
     .footerItemWrapper {
@@ -381,6 +371,25 @@ onMounted(() => {
         width: 12px;
         height: 12px;
       }
+    }
+  }
+  .exit {
+    position: absolute;
+    bottom: 16px;
+    left: 0;
+    width: calc(100% - 32px);
+    margin: 0 16px;
+    height: 43px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+
+    .exit_title {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.7);
     }
   }
 }
