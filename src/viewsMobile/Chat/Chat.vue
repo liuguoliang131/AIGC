@@ -597,7 +597,9 @@ const _getResult = async (message) => {
   source.onerror = (e) => {
     try {
       console.log(e, "onerror");
-      showToast("网络连接中断，请检查您的网络并重试。");
+      if (dialogVisible.value != true) {
+        showToast("网络连接中断，请检查您的网络并重试。");
+      }
       chatList.list[chatList.list.length - 1].outputing = "3";
       sendLoading.value = false;
       e.target.close();
