@@ -16,7 +16,8 @@ console.log('axios')
 
 const instance = axios.create({
   baseURL: process.env.VUE_APP_BASE_URL,
-  timeout: 40000,
+  timeout: 60000,
+  timeoutErrorMessage: '请求超时，请稍后再试',
   headers: {
     'x-token': ''
   }
@@ -69,14 +70,13 @@ instance.interceptors.response.use(function (response) {
 }, function (error) {
   console.log('response-error', error)
   // 对响应错误做点什么
-  if (error.response.status == 500) {
-
-    utils.isMobile() ?
-      showToast('网络连接中断，请检查您的网络并重试。')
+  if (error.response && error.response.status && error.response.status == 500) {
+    utils.isMobile()
+      ? showToast("网络连接中断，请检查您的网络并重试。")
       : ElMessage({
-        message: '网络连接中断，请检查您的网络并重试。',
-        type: 'error'
-      })
+          message: "网络连接中断，请检查您的网络并重试。",
+          type: "error",
+        });
   }
   return Promise.reject(error)
 })
