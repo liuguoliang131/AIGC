@@ -423,11 +423,32 @@ watch(
     deep: true,
   }
 );
+// 获取最后一条历史记录id
+const getLastHistory = async () => {
+  try {
+    const pageSize = 1;
+    const lastId = 0;
+    const res = await request.get(api.chat_tagList, {
+      lastId,
+      pageSize,
+    });
+    if (res.code == 200) {
+      if (res.data && res.data.list && res.data.list.length !== 0) {
+        chatStore.saveActiveTagId(res.data.list[0].id);
+        getChatList();
+      }
+    }
+  } catch (error) {
+    throw error;
+  }
+};
 
 onMounted(() => {
   handAddEvent();
   if (chatStore.activeTagId) {
     getChatList();
+  } else {
+    getLastHistory();
   }
 });
 onUnmounted(() => {});
