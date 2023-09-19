@@ -183,6 +183,7 @@ const getHistory = () => {
 getHistory();
 onUpdated(() => {
   const page = document.querySelector(".page");
+  if (!page) return;
   const style = window.getComputedStyle(page, null);
   const bottom = parseFloat(style.getPropertyValue("padding-bottom"));
 

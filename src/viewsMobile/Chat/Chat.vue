@@ -425,6 +425,7 @@ watch(
 );
 
 onMounted(() => {
+  handAddEvent();
   if (chatStore.activeTagId) {
     getChatList();
   }
@@ -615,6 +616,22 @@ const onSend = () => {
 
   _getResult(newQuestion1);
 };
+
+// 为元素添加高度变化事件
+const handAddEvent = () => {
+  const box = document.querySelector(".new_question"); // 输入栏
+  const page = document.querySelector(".chat-list"); // 卷纸
+  const scrollview = document.querySelector(".container-body"); // 卷轴视区
+  const adaptivePX = (document.documentElement.clientWidth / 375) * 16; // 下填充16px
+  const chronoTrigger = () => {
+    actionState = ""; // 设置动作状态为空
+    const scrollTop = scrollview.scrollTop;
+    page.style.paddingBottom = box.offsetHeight + adaptivePX + "px";
+    scrollview.scrollTop = scrollTop;
+  };
+  const resizeObserver = new ResizeObserver(chronoTrigger);
+  resizeObserver.observe(box);
+};
 </script>
 
 <style scoped lang="less">
@@ -667,7 +684,7 @@ const onSend = () => {
     overflow-y: scroll;
 
     .chat-list {
-      padding: 12px 16px 200px 16px;
+      padding: 12px 16px 100px 16px;
       .listloading {
         display: flex;
         align-items: center;
