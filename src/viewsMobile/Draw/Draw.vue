@@ -10,17 +10,17 @@
       <div class="center" @click="visible = true">AI绘图</div>
       <img @click="handGoHome" src="@/assets/logo.png" alt="" class="go_home" />
     </div>
-    <div class="formWrapper">
+    <div class="content">
       <data-tab
         ref="dataTabRef"
         @create-success="createSuccess"
         v-model:madeDisabled="madeDisabled"
       />
     </div>
-    <transition>
-      <slide-bar v-model:visible="slideVisible"></slide-bar>
-    </transition>
   </div>
+  <transition>
+    <slide-bar v-model:visible="slideVisible"></slide-bar>
+  </transition>
 </template>
 
 <script setup>
@@ -63,50 +63,44 @@ const createSuccess = (data) => {
 
 <style scoped lang="less">
 .container {
-  position: relative;
-  box-sizing: border-box;
-  height: 100%;
-  overflow: hidden;
+  display: flex;
+  flex-direction: column;
   background: #f6f6f6;
+  height: 100vh; /* 设置容器高度为视口高度，使内容区域占据剩余空间 */
+}
 
-  .navbar {
-    position: relative;
-    z-index: 8;
-    width: 100%;
-    height: 44px;
-    background-color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #14181f;
-    text-align: center;
-    font-family: PingFang SC;
-    font-size: 16px;
-    font-style: normal;
-    font-weight: 600;
-    line-height: normal;
+.navbar {
+  flex: 0 0 auto;
+  z-index: 8;
+  flex: 0 0 auto;
+  width: 100%;
+  height: 44px;
+  background-color: #fff;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  color: #14181f;
+  text-align: center;
+  font-family: PingFang SC;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
 
-    .call_left {
-      position: absolute;
-      left: 16px;
-      top: 50%;
-      transform: translate(0, -50%);
-      width: 24px;
-    }
-
-    .go_home {
-      position: absolute;
-      right: 16px;
-      top: 50%;
-      transform: translate(0, -50%);
-      width: 26px;
-    }
+  .call_left {
+    margin-left: 16px;
+    width: 24px;
   }
 
-  .formWrapper {
-    width: 100%;
-    height: calc(100% - 44px);
-    // overflow-y: scroll;
+  .go_home {
+    margin-right: 16px;
+    width: 26px;
   }
+}
+
+.content {
+  flex: 1 1 auto; /* 填充剩余空间，可滚动 */
+  overflow-y: auto; /* 添加垂直滚动条 */
 }
 </style>
