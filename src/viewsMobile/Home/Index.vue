@@ -15,7 +15,7 @@
           poster="https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile-page1-bg.png"
         >
           <source
-            src="https://quanres.hanhoukeji.com/hanhou-ai-pc/ai_home1_video.mp4"
+            src="https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile_ai_home.mp4"
             type="video/mp4"
           />
         </video>
