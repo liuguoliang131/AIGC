@@ -34,10 +34,13 @@ import MyDialog from "@/components/mobile/MyDialog.vue";
 import { useRouter } from "vue-router";
 import request from "@/http/index";
 import api from "@/http/api";
-import { useUserStore } from "@/store/user";
 import { ref } from "vue";
+import { useUserStore } from "@/store/user";
+import { useChatStore } from "@/store/chat";
+import { useDrawStore } from "@/store/draw";
 const userStore = useUserStore(); // 用户信息
-
+const chatStore = useChatStore();
+const drawStore = useDrawStore();
 const router = useRouter();
 
 const exitVisible = ref(false);
@@ -61,6 +64,9 @@ const confirmExit = () => {
     closeToast();
     if (res.code == 200) {
       userStore.clearLog();
+      chatStore.saveActiveTagId(0);
+      drawStore.clearHistoryItem();
+      utils.clearAll();
       router.push({
         path: "/",
         replace: true,

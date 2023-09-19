@@ -2,7 +2,7 @@ import { TOKEN, USER_INFO } from './keys'
 import router from '../router/index'
 console.log('utils')
 
-
+const keys = ['drawHistoryItem', 'residueQAQuantity', 'hanhou-ai-pc-token', 'hanhou-ai-pc-userInfo', 'activeTagId']
 
 const utils = {}
 
@@ -35,6 +35,13 @@ utils.getUserInfo = function () {
 // 储存登录接口返回信息
 utils.setUserInfo = function (param) {
   utils.setStorageSync(USER_INFO, param)
+}
+
+// 清除所有账号信息
+utils.clearAll = function () {
+  keys.forEach(k => {
+    window.localStorage.removeItem(k)
+  })
 }
 
 

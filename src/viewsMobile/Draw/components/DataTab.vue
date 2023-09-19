@@ -450,6 +450,7 @@ const madePicture4 = async () => {
   display: flex;
   flex-direction: column;
   height: 100%;
+  overflow-y: scroll;
 
   .data-tab {
     box-sizing: border-box;
@@ -902,20 +903,20 @@ const madePicture4 = async () => {
     justify-content: center;
     background-color: #f6f6f6;
     width: 100%;
-    padding-top: 22px;
-    padding-bottom: 22px;
+    padding-top: 10px;
+    padding-bottom: 10px;
 
     .action-btn {
       display: flex;
       align-items: center;
       justify-content: center;
       width: 343px;
-      height: 46px;
+      height: 40px;
       border-radius: 5px;
       background-color: rgba(18, 108, 254, 1);
       color: rgba(243, 243, 250, 1);
       font-family: PingFang SC;
-      font-size: 19px;
+      font-size: 18px;
       font-weight: 600;
       cursor: pointer;
       user-select: none;

@@ -257,10 +257,10 @@ onDeactivated(() => {
 <style scoped lang="less">
 .container {
   height: 100%;
-  box-sizing: border-box;
+  box-sizing: content-box;
   background-color: #fafafa;
   .container-body {
-    height: calc(100% - 105px);
+    height: calc(100% - 104px);
     overflow-y: scroll;
     .page {
       padding: 8px;
@@ -307,7 +307,7 @@ onDeactivated(() => {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: calc(100% - 44px);
+    height: calc(100% - 104px);
     .empty-center {
       color: #858585;
       font-family: PingFang SC;
@@ -322,7 +322,7 @@ onDeactivated(() => {
 
   .newDraw {
     position: fixed;
-    bottom: 21px;
+    bottom: 10px;
     left: 50%;
     transform: translate(-50%, 0);
     display: flex;

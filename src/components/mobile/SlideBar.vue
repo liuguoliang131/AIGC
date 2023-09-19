@@ -119,8 +119,11 @@ import api from "@/http/api";
 import { useUserStore } from "@/store/user";
 import MyDialog from "@/components/mobile/MyDialog.vue";
 import { useChatStore } from "@/store/chat";
+import { useDrawStore } from "@/store/draw";
+import utils from "@/common/utils";
 const userStore = useUserStore(); // 用户信息
 const chatStore = useChatStore(); // ai对话
+const drawStore = useDrawStore();
 
 const props = defineProps({
   visible: {
@@ -221,6 +224,9 @@ const confirmExit = () => {
     closeToast();
     if (res.code == 200) {
       userStore.clearLog();
+      chatStore.saveActiveTagId(0);
+      drawStore.clearHistoryItem();
+      utils.clearAll();
       router.push({
         path: "/",
         replace: true,

@@ -62,8 +62,7 @@ instance.interceptors.response.use(function (response) {
   // 对响应数据做点什么
   // console.log('响应拦截器', response.data)
   if (response.data.code === 1000) {
-    utils.setToken('');
-    utils.setUserInfo('');
+    utils.clearAll();
     utils.goLogin();
   }
   return response.data
@@ -74,9 +73,9 @@ instance.interceptors.response.use(function (response) {
     utils.isMobile()
       ? showToast("网络连接中断，请检查您的网络并重试。")
       : ElMessage({
-          message: "网络连接中断，请检查您的网络并重试。",
-          type: "error",
-        });
+        message: "网络连接中断，请检查您的网络并重试。",
+        type: "error",
+      });
   }
   return Promise.reject(error)
 })

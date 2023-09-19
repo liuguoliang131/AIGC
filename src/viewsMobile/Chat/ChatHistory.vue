@@ -233,7 +233,7 @@ onMounted(() => {
   overflow: hidden;
   .container-body {
     box-sizing: content-box;
-    height: calc(100% - 79px - 44px);
+    height: calc(100% - 104px);
     overflow-y: scroll;
     .page {
       color: #ffffff;
@@ -313,7 +313,7 @@ onMounted(() => {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: calc(100% - 44px);
+    height: calc(100% - 104px);
     .empty-center {
       color: rgba(255, 255, 255, 0.4);
       font-family: PingFang SC;
@@ -328,7 +328,7 @@ onMounted(() => {
 
   .newchat {
     position: fixed;
-    bottom: 39px;
+    bottom: 10px;
     left: 50%;
     transform: translate(-50%, 0);
     display: flex;

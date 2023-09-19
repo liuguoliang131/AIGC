@@ -96,15 +96,19 @@ import utils from "@/common/utils";
 import api from "@/http/api";
 import request from "@/http/index";
 import { useRouterConfigStore } from "@/store/routerConfigStore";
-import { useUserStore } from "@/store/user";
 
 import { ElButton, ElDialog, ElMessage } from "element-plus";
 import { ref, computed } from "vue";
 import { useRouter } from "vue-router";
+import { useUserStore } from "@/store/user";
+import { useChatStore } from "@/store/chat";
+import { useDrawStore } from "@/store/draw";
 const router = useRouter();
 const useRouterConfig = useRouterConfigStore();
 
 const userStore = useUserStore(); // 用户信息
+const chatStore = useChatStore();
+const drawStore = useDrawStore();
 
 const isBlackMode = computed(() => {
   return (
@@ -152,6 +156,9 @@ const confirmExit = () => {
   request.get(api.user_logout, {}).then((res) => {
     if (res.code == 200) {
       userStore.clearLog();
+      chatStore.saveActiveTagId(0);
+      drawStore.clearHistoryItem();
+      utils.clearAll();
       router.push({
         path: "/",
         replace: true,

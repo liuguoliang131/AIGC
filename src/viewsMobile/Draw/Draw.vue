@@ -66,8 +66,10 @@ const createSuccess = (data) => {
   display: flex;
   flex-direction: column;
   background: #f6f6f6;
+  box-sizing: border-box;
   padding-top: 44px;
-  // height: 100vh; /* 设置容器高度为视口高度，使内容区域占据剩余空间 */
+  height: 100vh;
+  height: calc(var(--vh, 1vh) * 100);
 }
 
 .navbar {
@@ -103,7 +105,6 @@ const createSuccess = (data) => {
 }
 
 .content {
-  flex: 1 1 auto; /* 填充剩余空间，可滚动 */
-  overflow-y: auto; /* 添加垂直滚动条 */
+  height: 100%;
 }
 </style>

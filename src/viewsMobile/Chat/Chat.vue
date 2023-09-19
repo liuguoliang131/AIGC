@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container" @click="handBlur">
     <div class="navbar">
       <img
         @click="handShowSlide"
@@ -119,6 +119,7 @@
           placeholder="问点什么吧～"
           maxlength="800"
           v-model="newQuestion"
+          @click.stop
         />
         <div
           :class="[
@@ -598,10 +599,8 @@ const _getResult = async (message) => {
   source.onerror = (e) => {
     try {
       console.log(e, "onerror");
-      if (dialogVisible.value != true) {
-        showToast("网络连接中断，请检查您的网络并重试。");
-      }
-      chatList.list[chatList.list.length - 1].outputing = "3";
+      // showToast("网络连接中断，请检查您的网络并重试。");
+      // chatList.list[chatList.list.length - 1].outputing = "3";
       sendLoading.value = false;
       e.target.close();
     } catch (error) {}
@@ -667,6 +666,10 @@ const handAddEvent = () => {
     const resizeObserver = new ResizeObserver(chronoTrigger);
     resizeObserver.observe(box);
   });
+};
+
+const handBlur = (e) => {
+  document.querySelector(".el-textarea__inner").blur();
 };
 </script>
 
@@ -1031,7 +1034,6 @@ const handAddEvent = () => {
       left: 0;
       box-sizing: border-box;
       width: 100%;
-      min-height: 83px;
       padding: 16px 0;
       display: flex;
       justify-content: center;
@@ -1040,10 +1042,11 @@ const handAddEvent = () => {
       box-shadow: 0px -1px 8px 0px rgba(0, 0, 0, 0.05);
 
       .ipt {
-        box-sizing: border-box;
+        box-sizing: content-box;
         width: 286px;
         margin-right: 7px;
         padding: 0;
+        min-height: 0 !important;
         &::placeholder {
           color: #999;
           font-family: PingFang SC;
