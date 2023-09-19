@@ -351,7 +351,7 @@ onMounted(() => {
 
     .footerItemWrapper {
       display: flex;
-      padding: 12px 0;
+      padding: 15px 0;
       flex-direction: row;
       align-items: center;
 
@@ -375,7 +375,7 @@ onMounted(() => {
   }
   .exit {
     position: absolute;
-    bottom: 16px;
+    bottom: 38px;
     left: 0;
     width: calc(100% - 32px);
     margin: 0 16px;
