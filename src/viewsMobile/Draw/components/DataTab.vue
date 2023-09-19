@@ -454,7 +454,7 @@ const madePicture4 = async () => {
   .data-tab {
     box-sizing: border-box;
     height: 100%;
-    padding: 16px 14px 207px 14px;
+    padding: 16px 14px 107px 14px;
     overflow-y: scroll;
     border-radius: 5px;
     box-shadow: 0px 4px 8px 0px rgba(0, 0, 0, 0.1);
@@ -866,7 +866,7 @@ const madePicture4 = async () => {
           width: 82px;
           height: 82px;
           box-sizing: border-box;
-          border: 1px solid rgba(18, 108, 254, 1);
+          border: 2px solid rgba(18, 108, 254, 1);
           border-radius: 5px;
           background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.3));
         }

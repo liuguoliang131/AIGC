@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <nav-bar></nav-bar>
-    <div class="empty" v-if="tagList.isNull">
+    <div class="empty" v-if="tagList.isNull || tagList.list.length == 0">
       <div class="empty-center">暂无历史记录</div>
     </div>
     <div class="container-body" v-else ref="tagListScroll" @scroll="onScroll">

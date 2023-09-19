@@ -184,6 +184,7 @@ import { _getSign } from "@/http/sign";
 import { useUserStore } from "@/store/user";
 import { useChatStore } from "@/store/chat";
 import dayjs from "dayjs";
+import { debounce } from "lodash";
 
 const router = useRouter();
 
@@ -330,6 +331,12 @@ const scrollToEnd = (oldPageHeight, newPageHeight) => {
   }
 };
 
+const scrollToEndDirectly = debounce(function () {
+  nextTick(() => {
+    slideAnimation(chatScrollPage.value.offsetHeight);
+  });
+}, 250);
+
 // 监听滚动
 const onScroll = (e) => {
   if (e.target.scrollTop === 0) {
@@ -372,6 +379,7 @@ const getChatList = () => {
         });
         chatList.list = [...res.data.list.reverse(), ...chatList.list];
         chatList.lastId = res.data.lastId;
+        scrollToEndDirectly();
 
         // 是否是最后一页
         if (res.data.list.length < pageSize) {
@@ -590,7 +598,9 @@ const _getResult = async (message) => {
   source.onerror = (e) => {
     try {
       console.log(e, "onerror");
-      showToast("网络连接中断，请检查您的网络并重试。");
+      if (dialogVisible.value != true) {
+        showToast("网络连接中断，请检查您的网络并重试。");
+      }
       chatList.list[chatList.list.length - 1].outputing = "3";
       sendLoading.value = false;
       e.target.close();
