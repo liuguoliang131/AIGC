@@ -378,9 +378,12 @@ const getChatList = () => {
         res.data.list.forEach((item) => {
           item.createdAt = formatNormal(item.createdAt);
         });
+        const isNeedScrollToEnd = chatList.list.length == 0;
         chatList.list = [...res.data.list.reverse(), ...chatList.list];
         chatList.lastId = res.data.lastId;
-        scrollToEndDirectly();
+        if (isNeedScrollToEnd) {//第一次加载滚动
+          scrollToEndDirectly();
+        }
 
         // 是否是最后一页
         if (res.data.list.length < pageSize) {
