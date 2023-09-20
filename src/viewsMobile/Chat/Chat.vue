@@ -191,7 +191,7 @@ import { _getSign } from "@/http/sign";
 import { useUserStore } from "@/store/user";
 import { useChatStore } from "@/store/chat";
 import dayjs from "dayjs";
-import { debounce } from "lodash";
+import debounce from "lodash/debounce";
 
 const router = useRouter();
 

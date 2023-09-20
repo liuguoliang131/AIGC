@@ -283,7 +283,7 @@ import utils from "@/common/utils";
 import Sidebar from "@/components/Sidebar.vue";
 import MyDialog from "@/components/MyDialog.vue";
 import { useUserStore } from "@/store/user";
-import { debounce } from "lodash";
+import debounce from "lodash/debounce";
 
 const userStore = useUserStore(); //用户信息
 
