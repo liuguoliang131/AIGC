@@ -111,16 +111,22 @@
         </template>
       </div>
       <div class="new_question">
-        <el-input
+        <div class="inputWrapper">
+          <el-input
           resize="none"
           :autosize="{ minRows: 1, maxRows: 6 }"
           type="textarea"
           class="ipt"
-          placeholder="问点什么吧～"
+          placeholder=""
           maxlength="800"
           v-model="newQuestion"
+          @compositionstart="onchange"
+          @compositionupdate="onchange"
+          @compositionend="compositionend"
           @click.stop
         />
+        <span v-if="newQuestion.length <= 0 && composition.length <=0 ">问点什么吧～</span>
+        </div>
         <div
           :class="[
             'send',
@@ -214,6 +220,16 @@ const chatScrollView = ref();
 const chatScrollPage = ref(null);
 // 聊天列表高度
 const scrollPageHeight = ref(0);
+
+const composition = ref("");//for ios
+
+const onchange = (str) => {
+  composition.value = str.data;
+};
+
+const compositionend = (str) => {
+  composition.value = '';
+}
 
 // 过滤换行符方法  使用``包裹的换行符不会被替换
 const reString = (str) => {
@@ -353,14 +369,14 @@ const formatNormal = (inputDateString) => {
 };
 
 // 加载列表
-const getChatList = () => {
+const getChatList = async () => {
   console.log("getChatList");
   if (chatStore.activeTagId === 0 || chatStore.activeTagId === -1) return false;
   if (chatList.finish) return false;
   if (chatList.loading) return false;
   chatList.loading = true;
   const pageSize = 10;
-  request
+  await request
     .get(api.chat_answerList, {
       tagId: chatStore.activeTagId,
       lastId: chatList.lastId,
@@ -447,7 +463,7 @@ const getLastHistory = async () => {
     if (res.code == 200) {
       if (res.data && res.data.list && res.data.list.length !== 0) {
         chatStore.saveActiveTagId(res.data.list[0].id);
-        getChatList();
+        await getChatList();
       }
     }
   } catch (error) {
@@ -468,7 +484,9 @@ onMounted(async () => {
     getLastHistory();
   }
 });
-onUnmounted(() => {});
+onUnmounted(() => {
+  window.removeEventListener("resize", onWindowResize);
+});
 
 watch(
   () => chatStore.activeTagId,
@@ -673,8 +691,14 @@ const handAddEvent = () => {
     };
     const resizeObserver = new ResizeObserver(chronoTrigger);
     resizeObserver.observe(box);
+
+    window.addEventListener("resize", onWindowResize);
   });
 };
+
+const onWindowResize = () => {
+  scrollToEndDirectly();
+}
 
 const handBlur = (e) => {
   document.querySelector(".el-textarea__inner").blur();
@@ -1049,7 +1073,23 @@ const handBlur = (e) => {
       background: #fff;
       box-shadow: 0px -1px 8px 0px rgba(0, 0, 0, 0.05);
 
-      .ipt {
+      .inputWrapper {
+        position: relative;
+        span{
+          user-select: none;
+          pointer-events: none;
+          position: absolute;
+          left: 12px;
+          color: #999;
+          font-family: PingFang SC;
+          font-size: 13px;
+          font-style: normal;
+          font-weight: 400;
+          line-height: normal;
+          top: 50%;
+          transform: translateY(-50%);
+        }
+        .ipt {
         box-sizing: content-box;
         width: 286px;
         margin-right: 7px;
@@ -1084,6 +1124,7 @@ const handBlur = (e) => {
         /deep/.el-textarea__inner::-webkit-scrollbar {
           display: none;
         }
+      }
       }
       .send {
         display: flex;
