@@ -5,7 +5,7 @@ const activeTagId = utils.getStorageSync('activeTagId')
 export const useChatStore = defineStore({
   id: "chat",
   state: () => ({
-    activeTagId: Number(activeTagId || 0), // 被选中的对话历史id
+    activeTagId: Number(activeTagId || 0), // 被选中的对话历史id，-1代表新建对话
   }),
   actions: {
     saveActiveTagId(id) {

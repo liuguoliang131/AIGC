@@ -355,7 +355,7 @@ const formatNormal = (inputDateString) => {
 // 加载列表
 const getChatList = () => {
   console.log("getChatList");
-  if (chatStore.activeTagId === 0) return false;
+  if (chatStore.activeTagId === 0 || chatStore.activeTagId === -1) return false;
   if (chatList.finish) return false;
   if (chatList.loading) return false;
   chatList.loading = true;
@@ -455,6 +455,10 @@ const getLastHistory = async () => {
 onMounted(async () => {
   await handAddEvent();
   actionState = "1";
+  if (chatStore.activeTagId == -1) {
+    //新建会话不拉数据
+    return;
+  }
   if (chatStore.activeTagId) {
     getChatList();
   } else {
@@ -466,7 +470,7 @@ onUnmounted(() => {});
 watch(
   () => chatStore.activeTagId,
   (next, prev) => {
-    if (next === 0) {
+    if (next === 0 || next === -1) {
       clearChatList();
     }
   }
@@ -487,11 +491,12 @@ const clearChatList = () => {
 const _getResult = async (message) => {
   // 配置网络
   let resultSign = await _getSign({});
+  const tagId = chatStore.activeTagId == -1 ? 0 : chatStore.activeTagId;
 
   const source = new EventSourcePolyfill(
     `${process.env.VUE_APP_BASE_URL}${
       api.chat_qa
-    }?question=${encodeURIComponent(message)}&tagId=${chatStore.activeTagId}`,
+    }?question=${encodeURIComponent(message)}&tagId=${tagId}`,
     {
       headers: {
         ...resultSign,
@@ -564,7 +569,7 @@ const _getResult = async (message) => {
       chatList.lastId = chatList.list[0].id;
 
       // 如果tagId==0说明是第一次会话，把新的会话第一条添加到side
-      if (chatStore.activeTagId == 0) {
+      if (chatStore.activeTagId == 0 || chatStore.activeTagId == -1) {
         let h = {
           id: qd.tagId,
           title: qd.tagTitle,

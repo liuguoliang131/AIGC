@@ -71,6 +71,7 @@ import { useRouter } from "vue-router";
 import { useUserStore } from "@/store/user";
 import { useChatStore } from "@/store/chat";
 import MyDialog from "@/components/mobile/MyDialog.vue";
+import utils from "@/common/utils";
 
 const router = useRouter();
 const chatStore = useChatStore();
@@ -210,7 +211,7 @@ const handNewChat = () => {
     return showToast("您的问答次数已用尽，请联系客服购买");
   }
 
-  chatStore.saveActiveTagId(0);
+  chatStore.saveActiveTagId(-1);
   router.push({
     path: "/chat",
   });
