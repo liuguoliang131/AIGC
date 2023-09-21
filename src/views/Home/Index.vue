@@ -257,11 +257,11 @@
     </el-scrollbar>
     <div class="memberFeeWrapper">
       <img
-        src="https://quanres.hanhoukeji.com/hanhou-ai-pc/tobe_memeber.png"
+        src="https://quanres.hanhoukeji.com/hanhou-ai-pc/tobe_memeber.png?t=1"
         style="
            {
             width: 200px;
-            height: 360px;
+            height: 158px;
           }
         "
       />
@@ -342,7 +342,7 @@ function showWeCard() {
   .memberFeeWrapper {
     position: absolute;
     right: 39px;
-    bottom: 170px;
+    bottom: 400px;
     display: flex;
     flex-direction: column;
   }

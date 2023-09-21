@@ -26,13 +26,13 @@
             alt=""
           />
         </div>
-        <div class="r2">
+        <!-- <div class="r2">
           <img
             src="https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile-vip-code2.png"
             alt=""
           />
           <span>长按保存二维码<br />扫码添加购买会员</span>
-        </div>
+        </div> -->
         <div class="r3" @click="handVisible">
           <img
             src="https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile-close1-icon.svg"
@@ -137,7 +137,7 @@ const handHide = () => {
         height: 32px;
         border: 2px solid #ffff;
         border-radius: 50%;
-        margin: 27px auto 0 auto;
+        margin: 59px auto 0 auto;
         img {
           width: 12px;
           height: 12px;
