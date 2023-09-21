@@ -407,6 +407,8 @@ const reloadDraw = async () => {
     isFail: detailData.value.isFail,
   };
   drawStore.saveHistoryItem(historyItem);
+
+  openTimer(drawStore.historyItem.pictureId);
 };
 
 // 下载图片
