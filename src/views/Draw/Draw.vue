@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, reactive, ref, watch } from "vue";
+import { onMounted, onUnmounted, reactive, ref, watch } from "vue";
 import { ElMessage, ElTooltip } from "element-plus";
 import Sidebar from "@/components/Sidebar.vue";
 import MyDialog from "@/components/MyDialog.vue";
@@ -8,6 +8,7 @@ import DataHistory from "./components/DataHistory.vue";
 import { useUserStore } from "@/store/user";
 import request from "@/http/index";
 import api from "@/http/api";
+import data from "@/common/data";
 import { saveAs } from "file-saver";
 
 const userStore = useUserStore(); //用户信息
@@ -18,6 +19,11 @@ const drawingVisible = ref(false);
 const dataHistoryRef = ref(); // 右侧组件ref
 const dataTabRef = ref(); //左侧组件ref
 const madeDisabled = ref(false); // 控制左侧组件立即生成按钮是否禁止点击
+
+const jokes = data.getJokeList();
+const randomNumber = Math.floor(Math.random() * jokes.length);
+const jokeIndex = ref(randomNumber);
+
 // 选中的图片的id
 const activeHistoryItem = reactive({
   active: {
@@ -30,6 +36,7 @@ const activeHistoryItem = reactive({
 
 // 图片详情信息
 const detailData = ref({
+  pictureStatus: 0,
   pictureId: null,
   pictureIdea: null,
   pictureUrl: null,
@@ -64,26 +71,35 @@ const clearActive = () => {
   madeDisabled.value = false;
 };
 
-// 获取图片详情
-const getDetail = async () => {
-  try {
-    const res = await request.get(api.picture_pictureDetail, {
-      pictureId: activeHistoryItem.active.pictureId,
-    });
-    if (res.code !== 200) {
-      return ElMessage({
-        message: res.msg,
-        type: "error",
-      });
-    }
-    detailData.value = res.data;
-  } catch (error) {
-    ElMessage({
-      message: error.message,
-      type: "error",
-    });
-    throw error;
+let jokerTimer = null;
+// 开始轮询详情
+const openJokerTimer = () => {
+  // console.log("openJokeTimer");
+
+  const sideFn = () => {
+    jokeIndex.value = (jokeIndex.value + 1) % jokes.length;
+    // console.log('Joke', jokeIndex.value);
+  };
+
+  if (jokerTimer) {
+    clearInterval(jokerTimer);
   }
+  jokerTimer = null;
+
+  jokerTimer = setInterval(() => {
+    sideFn();
+  }, 15000); //15秒查询一次
+
+  sideFn();
+};
+
+// 停止轮询详情
+const stopJokerTimer = () => {
+  // console.log("stopJokeTimer");
+  if (jokerTimer) {
+    clearInterval(jokerTimer);
+  }
+  jokerTimer = null;
 };
 
 // 创建四格图片成功 data:{图片id}
@@ -96,6 +112,7 @@ const createSuccess = (data) => {
   };
   madeDisabled.value = true;
   dataHistoryRef.value.handPutItem(activeHistoryItem.active); //向列表新增一个项
+  openJokerTimer();
 };
 
 // 确认删除图片
@@ -147,6 +164,7 @@ const madePicture1 = async (position, k) => {
     };
     dataHistoryRef.value.handPutItem(activeHistoryItem.active); //向列表新增一个项
     loading.value = false;
+    openJokerTimer();
   } catch (error) {
     loading.value = false;
     ElMessage(error.message);
@@ -167,7 +185,10 @@ const onPostDetail = (data) => {
     madeDisabled.value = false;
     getResidueQuantity();
   } else {
-    madeDisabled.value = data.pictureUrl ? false : true;
+    madeDisabled.value = data.pictureStatus == 2 || data.pictureStatus == 3 ? false : true;
+  }
+  if (data.pictureUrl) {
+    stopJokerTimer();
   }
 };
 
@@ -192,6 +213,7 @@ const reloadDraw = async () => {
   activeHistoryItem.active.isFail = false;
   dataHistoryRef.value.handUpdateItem(activeHistoryItem.active); //更新列表中选中的数据
   loading.value = false;
+  openJokerTimer();
 };
 
 // 获取剩余绘画次数
@@ -217,6 +239,10 @@ const getResidueQuantity = () => {
 
 onMounted(() => {
   getResidueQuantity();
+});
+
+onUnmounted(() => {
+  stopJokerTimer();
 });
 </script>
 
@@ -328,7 +354,7 @@ onMounted(() => {
                     :src="detailData.pictureUrl"
                     alt=""
                   />
-                  <template v-if="detailData.pictureUrl && !detailData.isFail">
+                  <template v-if="detailData.pictureUrl && detailData.pictureStatus == 2">
                     <div class="show_image-b">
                       <div
                         class="show_image-b-1"
@@ -517,6 +543,7 @@ onMounted(() => {
                     alt=""
                     class="drawing-img"
                   />
+                  <div class="joke" v-html="jokes[jokeIndex]"></div>
                 </div>
               </template>
             </template>
@@ -586,7 +613,7 @@ onMounted(() => {
   }
 }
 </style>
-<style scoped lang="less" >
+<style scoped lang="less">
 .container {
   height: 100vh;
   overflow: hidden;
@@ -755,6 +782,7 @@ onMounted(() => {
           }
         }
         .reloading {
+          position: relative;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -768,6 +796,18 @@ onMounted(() => {
             width: 320px;
             height: 320px;
           }
+
+          .joke {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 600px;
+            margin-top: 170px;
+            transform: translate(-50%, 0%);
+            color: #aaaaaa;
+            font-size: 20px;
+            text-align: left;
+         }
         }
 
         .show_image {

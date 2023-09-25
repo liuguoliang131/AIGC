@@ -23,7 +23,12 @@
             <template v-if="detailData.pictureUrl">
               <div class="show_image">
                 <img class="show_image-a" :src="detailData.pictureUrl" alt="" />
-                <template v-if="detailData.pictureUrl && !detailData.isFail">
+                <template
+                  v-if="
+                    detailData.pictureUrl &&
+                    detailData.pictureStatus == 2
+                  "
+                >
                   <div>
                     <div class="show_image-b">
                       <div class="show_image-b-2">
@@ -206,6 +211,7 @@
                   alt=""
                   class="drawing-img"
                 />
+                <div class="joke" v-html="jokes[jokeIndex]"></div>
               </div>
             </template>
           </template>
@@ -251,6 +257,7 @@ import MyDialog from "@/components/mobile/MyDialog.vue";
 import request from "@/http/index";
 import api from "@/http/api";
 import utils from "@/common/utils";
+import data from "@/common/data";
 
 const router = useRouter();
 const visible = ref(false);
@@ -259,8 +266,13 @@ const removeVisible = ref(false);
 const userStore = useUserStore();
 const drawStore = useDrawStore();
 
+const jokes = data.getJokeList();
+const randomNumber = Math.floor(Math.random() * jokes.length);
+const jokeIndex = ref(randomNumber);
+
 // 图片详情信息
 const detailData = ref({
+  pictureStatus: 0,
   pictureId: null,
   pictureIdea: null,
   pictureUrl: null,
@@ -277,12 +289,6 @@ const detailData = ref({
     downRight: false,
   },
 });
-
-const handGoHome = () => {
-  router.push({
-    path: "/",
-  });
-};
 
 // 去创建
 const handNewDraw = () => {
@@ -318,6 +324,7 @@ const handConfirmRemove = async () => {
 let timer = null;
 // 开始轮询详情
 const openTimer = (pictureId) => {
+  openJokerTimer();
   // return console.log("openTimer");
 
   const sideFn = (pictureId) => {
@@ -327,11 +334,11 @@ const openTimer = (pictureId) => {
       } else {
         // activeItem.pictureUrl = result.pictureUrl;
         // activeItem.isFail = result.isFail;
-        if (result.isFail) {
-          return clearInterval(timer);
-        }
-        if (result.pictureUrl) {
-          console.log("if (result.pictureUrl) 关闭定时器");
+        // if (result.isFail) {
+        //   return clearInterval(timer);
+        // }
+        if (result.pictureStatus == 2 || result.pictureStatus == 3) {
+          console.log(result.pictureStatus, "关闭定时器");
           return clearInterval(timer);
         }
       }
@@ -349,7 +356,40 @@ const openTimer = (pictureId) => {
 
 // 停止轮询详情
 const stopTimer = () => {
+  stopJokerTimer();
   clearInterval(timer);
+};
+
+
+let jokerTimer = null;
+// 开始轮询详情
+const openJokerTimer = () => {
+  // console.log("openJokeTimer");
+
+  const sideFn = () => {
+    jokeIndex.value = (jokeIndex.value + 1) % jokes.length;
+    // console.log('Joke', jokeIndex.value);
+  };
+
+  if (jokerTimer) {
+    clearInterval(jokerTimer);
+  }
+  jokerTimer = null;
+
+  jokerTimer = setInterval(() => {
+    sideFn();
+  }, 15000); //15秒查询一次
+
+  sideFn();
+};
+
+// 停止轮询详情
+const stopJokerTimer = () => {
+  // console.log("stopJokeTimer");
+  if (jokerTimer) {
+    clearInterval(jokerTimer);
+  }
+  jokerTimer = null;
 };
 
 // 获取图片详情
@@ -362,6 +402,7 @@ const getDetail = async (pictureId) => {
       showToast(res.msg);
       return;
     }
+    res.data.isFail = res.data.pictureStatus == 3;
     detailData.value = res.data;
     const historyItem = {
       ...drawStore.historyItem,
@@ -667,6 +708,7 @@ onUnmounted(() => {
       }
 
       .reloading {
+        position: relative;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -680,6 +722,18 @@ onUnmounted(() => {
         .drawing-img {
           width: 200px;
           height: 200px;
+        }
+
+        .joke {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          width: 300px;
+          margin-top: 110px;
+          transform: translate(-50%, 0%);
+          color: #aaaaaa;
+          font-size: 13px;
+          text-align: left;
         }
       }
 

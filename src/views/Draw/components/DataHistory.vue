@@ -47,12 +47,11 @@ const openTimer = (active) => {
         clearInterval(timer);
       } else {
         activeItem.pictureUrl = result.pictureUrl;
-        activeItem.isFail = result.isFail;
-        if (result.isFail) {
-          return clearInterval(timer);
-        }
-        if (result.pictureUrl) {
-          console.log("if (result.pictureUrl) 关闭定时器");
+        activeItem.isFail = result.pictureStatus == 3;
+        console.log('图片渐进进度：', result.percentage);
+        //成功或者失败才终止
+        if (result.pictureStatus == 2 || result.pictureStatus == 3) {
+          console.log(result.pictureStatus, "关闭定时器");
           return clearInterval(timer);
         }
       }
