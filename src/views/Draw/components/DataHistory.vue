@@ -295,7 +295,7 @@ defineExpose({
               <el-image
                 v-if="item.pictureUrl"
                 style="width: 100%; height: 100%"
-                :src="item.pictureUrl"
+                :src="item.pictureUrl  + '?imageView2/2/format/jpg'"
                 fit="cover"
               ></el-image>
               <div class="making-img" v-else>
