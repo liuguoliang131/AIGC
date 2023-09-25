@@ -39,16 +39,20 @@ utils.setUserInfo = function (param) {
 
 // 清除所有账号信息
 utils.clearAll = function () {
-  keys.forEach(k => {
-    window.localStorage.removeItem(k)
-  })
-  const { useUserStore, useChatStore, useDrawStore } = window.piniaStore
-  const userStore = useUserStore()
-  const chatStore = useChatStore()
-  const drawStore = useDrawStore()
-  userStore.clearLog()
-  chatStore.saveActiveTagId(0)
-  drawStore.clearHistoryItem()
+  try {
+    keys.forEach(k => {
+      window.localStorage.removeItem(k)
+    })
+    const { useUserStore, useChatStore, useDrawStore } = window.piniaStore
+    const userStore = useUserStore()
+    const chatStore = useChatStore()
+    const drawStore = useDrawStore()
+    userStore.clearLog()
+    chatStore.saveActiveTagId(0)
+    drawStore.clearHistoryItem()
+  } catch (error) {
+    throw error
+  }
 }
 
 
@@ -120,18 +124,5 @@ utils.goBack = () => {
   }
 }
 
-// test
-utils.test = () => {
-  const { useUserStore, useChatStore, useDrawStore } = window.piniaStore
-  const userStore = useUserStore()
-  const chatStore = useChatStore()
-  const drawStore = useDrawStore()
-  console.log('token', userStore.token)
-  console.log('chatStore.activeTagId', chatStore.activeTagId)
-  console.log('drawStore.historyItem', drawStore.historyItem)
-  chatStore.saveActiveTagId(0)
-  console.log('chatStore.activeTagId change', chatStore.activeTagId)
-
-}
 
 export default utils
