@@ -351,7 +351,7 @@ onUnmounted(() => {
                 <div class="show_image">
                   <img
                     class="show_image-a"
-                    :src="detailData.pictureUrl"
+                    :src="detailData.pictureUrl + '?imageView2/2/format/jpg/q/90!'"
                     alt=""
                   />
                   <template v-if="detailData.pictureUrl && detailData.pictureStatus == 2">

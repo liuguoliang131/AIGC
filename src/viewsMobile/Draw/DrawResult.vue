@@ -22,7 +22,7 @@
             <!-- 生成完成 -->
             <template v-if="detailData.pictureUrl">
               <div class="show_image">
-                <img class="show_image-a" :src="detailData.pictureUrl" alt="" />
+                <img class="show_image-a" :src="detailData.pictureUrl + '?imageView2/2/format/jpg/q/90!'" alt="" />
                 <template
                   v-if="
                     detailData.pictureUrl &&
