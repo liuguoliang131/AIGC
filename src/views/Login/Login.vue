@@ -2,8 +2,11 @@
   <div class="container" v-loading="loading">
     <div class="background"></div>
     <div class="logoWrapper" @click="goHome">
-      <img src="@/assets/logo.png" class="logo" />
-      <span :class="['logoText', 'logoTextBlack']"> Hanhou·AI </span>
+      <img
+        class="logo"
+        src="https://quanres.hanhoukeji.com/hanhou-ai-pc/pc-black-hhai-logo.png"
+        alt=""
+      />
     </div>
     <div></div>
     <div class="login-box">
@@ -152,6 +155,7 @@ export default {
       userLogin(this.phone, this.code).then((res) => {
         if (res.code == 200) {
           this.loading = false;
+          this.userStore.saveResidueQAQuantity(res.data.residueQAQuantity);
           this.userStore.loginBackPage(res.data);
         } else {
           this.loading = false;
@@ -211,10 +215,9 @@ export default {
     align-items: center;
 
     .logo {
-      width: 40px;
+      width: auto;
       height: 40px;
       margin-left: 22px;
-      margin-right: 14px;
     }
 
     .logoText {

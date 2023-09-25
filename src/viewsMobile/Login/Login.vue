@@ -131,6 +131,7 @@ const login = () => {
   userLogin(formData.value.phone, formData.value.code).then((res) => {
     if (res.code == 200) {
       closeToast();
+      userStore.saveResidueQAQuantity(res.data.residueQAQuantity);
       userStore.loginBackPage(res.data);
     } else {
       closeToast();

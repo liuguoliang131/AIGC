@@ -13,6 +13,14 @@ module.exports = defineConfig({
           '^/api': '/'
         }
       },
+      '/qa': {
+        // target: 'http://hhosaigcapi.yctmt.com',
+        target: 'http://121.229.145.90:18981',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/qa': '/qa'
+        }
+      },
       '/mock': {
         target: 'http://yapi.hanhoukeji.com',
         changeOrigin: true,
@@ -39,6 +47,7 @@ module.exports = defineConfig({
           name: 'common',
           chunks: 'all',
           minChunks: 2,
+          priority: -20
         },
         // 将 node_modules 中的依赖拆分成一个独立的 chunk
         vendors: {//vendor 是导入的 npm 包

@@ -1,4 +1,5 @@
 import Home from '../viewsMobile/Home/Index.vue'
+import HanHouQA from '../viewsMobile/demo/HanHouQA.vue'
 const routes = [
   {
     path: '/',
@@ -9,20 +10,66 @@ const routes = [
     }
   },
   {
-    path: '/aigc/chat',
-    name: 'Chat',
-    component: () => import('../views/AIGC/Chat.vue'),
+    path: '/hanhouQA',
+    name: 'hanhouQA',
+    component: HanHouQA,
     meta: {
-      isAuthenticated: true
+      isAuthenticated: false
     }
   },
   {
-    path: '/aigc/draw',
+    path: '/chat',
+    name: 'Chat',
+    children: [
+      {
+        path: '/chat',
+        name: 'Chat',
+        component: () => import('../viewsMobile/Chat/Chat.vue'),
+        meta: {
+          isAuthenticated: true
+        }
+      },
+      {
+        path: '/chat/history',
+        name: 'ChatHistory',
+        component: () => import('../viewsMobile/Chat/ChatHistory.vue'),
+        meta: {
+          isAuthenticated: true,
+          title: '我的对话'
+        }
+      },
+    ]
+  },
+  {
+    path: '/draw',
     name: 'Draw',
-    component: () => import('../views/AIGC/Draw.vue'),
-    meta: {
-      isAuthenticated: true
-    }
+    children: [
+      {
+        path: '/draw',
+        name: 'Draw',
+        component: () => import('../viewsMobile/Draw/Draw.vue'),
+        meta: {
+          isAuthenticated: true
+        }
+      },
+      {
+        path: '/draw/result',
+        name: 'DrawResult',
+        component: () => import('../viewsMobile/Draw/DrawResult.vue'),
+        meta: {
+          isAuthenticated: true
+        }
+      },
+      {
+        path: '/draw/history',
+        name: 'DrawHistory',
+        component: () => import('../viewsMobile/Draw/DrawHistory.vue'),
+        meta: {
+          isAuthenticated: true,
+          title: '绘画记录'
+        }
+      },
+    ]
   },
   {
     path: '/login',

@@ -8,10 +8,18 @@
   >
     <div class="banner_left">
       <div class="logoWrapper" @click="goHome">
-        <img src="@/assets/logo.png" class="logo" />
-        <span :class="['logoText', isBlackMode ? 'logoTextBlack' : '']">
-          Hanhou·AI
-        </span>
+        <img
+          v-show="isBlackMode"
+          class="logo"
+          src="https://quanres.hanhoukeji.com/hanhou-ai-pc/pc-black-hhai-logo.png"
+          alt=""
+        />
+        <img
+          v-show="!isBlackMode"
+          class="logo"
+          src="https://quanres.hanhoukeji.com/hanhou-ai-pc/pc-color-hhai-logo.png"
+          alt=""
+        />
       </div>
       <span
         :class="[
@@ -88,15 +96,19 @@ import utils from "@/common/utils";
 import api from "@/http/api";
 import request from "@/http/index";
 import { useRouterConfigStore } from "@/store/routerConfigStore";
-import { useUserStore } from "@/store/user";
 
 import { ElButton, ElDialog, ElMessage } from "element-plus";
 import { ref, computed } from "vue";
 import { useRouter } from "vue-router";
+import { useUserStore } from "@/store/user";
+import { useChatStore } from "@/store/chat";
+import { useDrawStore } from "@/store/draw";
 const router = useRouter();
 const useRouterConfig = useRouterConfigStore();
 
 const userStore = useUserStore(); // 用户信息
+const chatStore = useChatStore();
+const drawStore = useDrawStore();
 
 const isBlackMode = computed(() => {
   return (
@@ -144,6 +156,9 @@ const confirmExit = () => {
   request.get(api.user_logout, {}).then((res) => {
     if (res.code == 200) {
       userStore.clearLog();
+      chatStore.saveActiveTagId(0);
+      drawStore.clearHistoryItem();
+      utils.clearAll();
       router.push({
         path: "/",
         replace: true,
@@ -186,19 +201,8 @@ const confirmExit = () => {
       justify-content: center;
 
       .logo {
-        width: 40px;
+        width: auto;
         height: 40px;
-        margin-right: 14px;
-      }
-
-      .logoText {
-        color: #fff;
-        font-size: 28px;
-        font-weight: 600;
-      }
-
-      .logoTextBlack {
-        color: #1e1e1e;
       }
     }
 

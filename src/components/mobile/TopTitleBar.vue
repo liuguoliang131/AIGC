@@ -1,10 +1,12 @@
 <template>
   <div class="top_title_bar">
     <div class="float">
-      <div class="logo" @click="goHome">
-        <img src="@/assets/logo.png" class="img" />
-        <span class="name"> Hanhou·AI </span>
-      </div>
+      <img
+        @click="goHome"
+        class="logo"
+        src="https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile-black-hhai-logo.png"
+        alt=""
+      />
       <template v-if="userStore.userInfo">
         <div class="rslot">
           <span class="tel">{{ userStore.userInfo.tel }}</span>
@@ -15,18 +17,33 @@
         <div class="btn" @click="goLogin">登录/注册</div>
       </template>
     </div>
+    <my-dialog
+      v-model:show="exitVisible"
+      title="退出提醒"
+      message="是否要退出登录"
+      showCancelButton
+      @confirm="confirmExit"
+    >
+    </my-dialog>
   </div>
 </template>
 
 <script setup>
-import { showDialog, showToast } from "vant";
+import { showToast, closeToast } from "vant";
+import MyDialog from "@/components/mobile/MyDialog.vue";
 import { useRouter } from "vue-router";
 import request from "@/http/index";
 import api from "@/http/api";
+import { ref } from "vue";
 import { useUserStore } from "@/store/user";
+import { useChatStore } from "@/store/chat";
+import { useDrawStore } from "@/store/draw";
 const userStore = useUserStore(); // 用户信息
-
+const chatStore = useChatStore();
+const drawStore = useDrawStore();
 const router = useRouter();
+
+const exitVisible = ref(false);
 
 // 去首页
 const goHome = () => {
@@ -37,9 +54,19 @@ const goHome = () => {
 
 // 确认退出登录
 const confirmExit = () => {
+  showToast({
+    duration: 0,
+    forbidClick: true,
+    type: "loading",
+    message: "加载中",
+  });
   request.get(api.user_logout, {}).then((res) => {
+    closeToast();
     if (res.code == 200) {
       userStore.clearLog();
+      chatStore.saveActiveTagId(0);
+      drawStore.clearHistoryItem();
+      utils.clearAll();
       router.push({
         path: "/",
         replace: true,
@@ -52,20 +79,7 @@ const confirmExit = () => {
 
 // 点击退出
 const handExit = () => {
-  showDialog({
-    title: "退出提醒",
-    message: "是否要退出登录",
-    showConfirmButton: true,
-    showCancelButton: true,
-    confirmButtonText: "确定",
-    confirmButtonColor: "#126cfe",
-    cancelButtonText: "取消",
-    cancelButtonColor: "#3D3D3D",
-  })
-    .then(() => {
-      confirmExit();
-    })
-    .catch(() => {});
+  exitVisible.value = true;
 };
 
 // 去往登录页 记录当前路由
@@ -90,20 +104,8 @@ const goLogin = () => {
     padding: 0 16px;
     background: #fff;
     .logo {
-      display: flex;
-      align-items: center;
-      .img {
-        width: 35px;
-        height: 35px;
-      }
-      .name {
-        margin-left: 5px;
-        font-family: PingFang SC;
-        font-size: 16px;
-        font-weight: 600;
-        letter-spacing: 0em;
-        text-align: left;
-      }
+      width: auto;
+      height: 35px;
     }
     .btn {
       display: flex;

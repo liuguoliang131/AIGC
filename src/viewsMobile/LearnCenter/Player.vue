@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <NavBar />
+    <NavBar :title="title"/>
     <div class="container-body" ref="scrollView">
       <div class="group_list" ref="scrollPage">
         <div class="group_item" v-for="item in playList" :key="item.id">
@@ -62,6 +62,7 @@ const activeVideoDom = ref(null);
 const playList = ref(
   playData.find((item) => item.group == route.query.group).children
 );
+const title = ref(playData.find((item) => item.group == route.query.group).name);
 const active = ref(playList.value[0]);
 
 // video indexDB数据库

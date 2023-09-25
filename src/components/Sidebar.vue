@@ -44,14 +44,14 @@ const confirmExit = () => {
 // 去往ai对话
 const handGoChat = () => {
   router.push({
-    path: "/aigc/chat",
+    path: "/chat",
   });
 };
 
 // 去往ai绘画
 const handGoDraw = () => {
   router.push({
-    path: "/aigc/draw",
+    path: "/draw",
   });
 };
 
@@ -77,7 +77,7 @@ const handGoHome = () => {
         src="https://quanres.hanhoukeji.com/hanhou-ai-pc/hanhou-logo.png"
         alt=""
       />
-      Hanhou·AI
+      憨猴·AI
     </div>
     <div class="sidebar-slot">
       <slot></slot>
@@ -85,7 +85,7 @@ const handGoHome = () => {
     <div class="sidebar-foo">
       <div class="splitline"></div>
       <div
-        v-if="route.path === '/aigc/draw'"
+        v-if="route.path.includes('/draw')"
         class="menu-item"
         @click="handGoChat"
       >

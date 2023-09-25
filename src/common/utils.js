@@ -2,7 +2,7 @@ import { TOKEN, USER_INFO } from './keys'
 import router from '../router/index'
 console.log('utils')
 
-
+const keys = ['drawHistoryItem', 'residueQAQuantity', 'hanhou-ai-pc-token', 'hanhou-ai-pc-userInfo', 'activeTagId']
 
 const utils = {}
 
@@ -35,6 +35,13 @@ utils.getUserInfo = function () {
 // 储存登录接口返回信息
 utils.setUserInfo = function (param) {
   utils.setStorageSync(USER_INFO, param)
+}
+
+// 清除所有账号信息
+utils.clearAll = function () {
+  keys.forEach(k => {
+    window.localStorage.removeItem(k)
+  })
 }
 
 
@@ -84,6 +91,25 @@ utils.isWechat = function () {
     return true
   } else {
     return false
+  }
+}
+
+// 判断设备是否为ios
+utils.isIOS = function () {
+  const ua = navigator.userAgent;
+  return /iPad|iPhone|iPod/.test(ua);
+}
+
+
+// 返回上一页
+utils.goBack = () => {
+  const backPath = window.history.state.back
+  if (backPath === null) {
+    router.push({
+      path: '/'
+    })
+  } else {
+    router.go(-1)
   }
 }
 

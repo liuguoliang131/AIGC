@@ -3,9 +3,10 @@ import routesMobile from './routesMobile'
 import routesPC from './routesPC'
 import utils from '@/common/utils'
 import { useRouterConfigStore } from '@/store/routerConfigStore';
+import { closeToast, showToast } from 'vant';
 console.log('Router')
-
-const routes = utils.isMobile() ? routesMobile : routesPC
+const isMoBible = utils.isMobile()
+const routes = isMoBible ? routesMobile : routesPC
 console.log('routes', routes)
 const router = createRouter({
   history: createWebHashHistory(),
@@ -15,6 +16,15 @@ const router = createRouter({
 
 // 路由守卫
 router.beforeEach((to, from, next) => {
+  if (isMoBible) {
+    showToast({
+      duration: 0,
+      forbidClick: true,
+      type: "loading",
+      message: "加载中",
+    });
+  }
+
   const useRouterConfig = useRouterConfigStore();
   useRouterConfig.saveConfig({
     titleBar: to.meta.titleBar || false,
@@ -39,6 +49,12 @@ router.beforeEach((to, from, next) => {
   }
 })
 
-document.title = 'HANHOU·AI'
+router.afterEach(() => {
+  if (isMoBible) {
+    closeToast()
+  }
+})
+
+document.title = '憨猴·AI'
 
 export default router

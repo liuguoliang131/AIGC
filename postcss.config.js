@@ -1,9 +1,29 @@
+const os = require('os');
+
+const platform = os.platform();  // 系统名称
+
+let mobileList
+if (platform === 'darwin') {
+  mobileList = [/\/mobile/, /\/viewsMobile/, /\/node_modules\/vant/]
+} else {
+  mobileList = [/\\mobile/, /\\viewsMobile/, /\\node_modules\\vant/]
+}
+
 module.exports = ({ file }) => {
+  const os = require('os');
 
+  const platform = os.platform();  // 系统名称
 
-  const mobileList = [/\\mobile/, /\\viewsMobile/, /\\node_modules\\vant/]
+  let mobileList
+  if (platform === 'darwin') {
+    mobileList = [/\/mobile/, /\/viewsMobile/, /\/node_modules\/vant/]
+  } else {
+    mobileList = [/\\mobile/, /\\viewsMobile/, /\\node_modules\\vant/]
+  }
+
   const isMobile = mobileList.some(item => item.test(file))
   const rootValue = isMobile ? 37.5 : 192
+
   return {
     plugins: {
       autoprefixer: {

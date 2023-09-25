@@ -16,7 +16,8 @@ console.log('axios')
 
 const instance = axios.create({
   baseURL: process.env.VUE_APP_BASE_URL,
-  timeout: 20000,
+  timeout: 60000,
+  timeoutErrorMessage: '请求超时，请稍后再试',
   headers: {
     'x-token': ''
   }
@@ -31,8 +32,12 @@ instance.interceptors.request.use(async (config) => {
     ...config.headers,
     ...sign
   }
-  if (process.env.VUE_APP_ENV === 'dev' && config.mock) {
-    config.baseURL = `/mock/${config.mock}`
+  if (process.env.VUE_APP_SELF_ENV === "dev") {
+    if (config.mock) {
+      config.baseURL = `/mock/${config.mock}`;
+    } else if (config.url.startsWith("/user/hanhouqa")) {
+      config.baseURL = "";
+    }
   }
   if (config.method === 'get') {
     config.params = {
@@ -57,22 +62,20 @@ instance.interceptors.response.use(function (response) {
   // 对响应数据做点什么
   // console.log('响应拦截器', response.data)
   if (response.data.code === 1000) {
-    utils.setToken('');
-    utils.setUserInfo('');
+    utils.clearAll();
     utils.goLogin();
   }
   return response.data
 }, function (error) {
   console.log('response-error', error)
   // 对响应错误做点什么
-  if (error.response.status == 500) {
-
-    utils.isMobile() ?
-      showToast('网络连接中断，请检查您的网络并重试。')
+  if (error.response && error.response.status && error.response.status == 500) {
+    utils.isMobile()
+      ? showToast("网络连接中断，请检查您的网络并重试。")
       : ElMessage({
-        message: '网络连接中断，请检查您的网络并重试。',
-        type: 'error'
-      })
+        message: "网络连接中断，请检查您的网络并重试。",
+        type: "error",
+      });
   }
   return Promise.reject(error)
 })

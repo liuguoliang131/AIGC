@@ -16,21 +16,42 @@
           stroke-width="1.5"
         />
       </svg>
-      <span class="title nowrap">{{ route.meta.title || "Hanhou·AI" }}</span>
+      <span class="title nowrap">{{
+        props.title || route.meta.title || "憨猴·AI"
+      }}</span>
+      <img @click="handGoHome" src="@/assets/logo.png" alt="" class="go_home" v-if="showGoHome"/>
     </div>
   </div>
 </template>
 
 <script setup>
+import utils from "@/common/utils";
 import { showDialog, showToast } from "vant";
 import { useRoute, useRouter } from "vue-router";
 
 const route = useRoute();
 const router = useRouter();
 
-// 去首页
+const props = defineProps({
+  title: {
+    type: String,
+    default: "",
+    description: "标题栏",
+  },
+  showGoHome: {
+    type: Boolean,
+    default: false,
+  },
+});
+
+// 退一步
 const goback = () => {
-  router.go(-1);
+  utils.goBack();
+};
+const handGoHome = () => {
+  router.push({
+    path: "/",
+  });
 };
 </script>
 
@@ -67,6 +88,15 @@ const goback = () => {
       font-style: normal;
       font-weight: 600;
       line-height: normal;
+    }
+    .go_home {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      height: 44px;
+      object-fit: scale-down;
+      transform: translate(0, -50%);
+      width: 26px;
     }
   }
 }

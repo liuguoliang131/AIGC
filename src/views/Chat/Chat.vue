@@ -101,7 +101,7 @@
 
     <div class="container-body">
       <div class="body-top">
-        <span>您的免费问答次数：{{ residueQAQuantity }}次</span>
+        <span>您的免费问答次数：{{ userStore.residueQAQuantity }}次</span>
       </div>
       <div class="body-content">
         <div class="chat_box">
@@ -280,10 +280,10 @@ import api from "@/http/api";
 import Clipboard from "clipboard";
 import { _getSign } from "@/http/sign";
 import utils from "@/common/utils";
-import Sidebar from "./components/Sidebar.vue";
+import Sidebar from "@/components/Sidebar.vue";
 import MyDialog from "@/components/MyDialog.vue";
 import { useUserStore } from "@/store/user";
-import { debounce } from "lodash";
+import debounce from "lodash/debounce";
 
 const userStore = useUserStore(); //用户信息
 
@@ -295,9 +295,7 @@ const userStore = useUserStore(); //用户信息
 // 路由
 const router = useRouter();
 // 剩余提问次数
-const userInfo = utils.getUserInfo() || { residueQAQuantity: 0 };
-
-const residueQAQuantity = ref(Number(userInfo.residueQAQuantity || 0));
+const userInfo = utils.getUserInfo() || {};
 
 // 弹层关闭事件
 const dialogClose = () => {};
@@ -561,9 +559,7 @@ const _getResult = async (message, tagId) => {
     // 非常抱歉，您的问答次数已用尽
     if (err.data.code == 30104) {
       // 减少提问次数
-      residueQAQuantity.value = 0;
-      userInfo.residueQAQuantity = residueQAQuantity.value;
-      utils.setUserInfo(userInfo);
+      userStore.saveResidueQAQuantity(0);
       // 移除列表中最后一对
       chatList.list.splice(chatList.list.length - 2, 2);
       ElMessage({
@@ -577,9 +573,7 @@ const _getResult = async (message, tagId) => {
     if (err.data.code == 30108) {
       //   "您的免费问答次数已用尽，开通会员享1000次/月问答权益!";
       // 减少提问次数
-      residueQAQuantity.value = 0;
-      userInfo.residueQAQuantity = residueQAQuantity.value;
-      utils.setUserInfo(userInfo);
+      userStore.saveResidueQAQuantity(0);
       // 移除列表中最后一对
       chatList.list.splice(chatList.list.length - 2, 2);
       ElMessage({
@@ -616,9 +610,7 @@ const _getResult = async (message, tagId) => {
       let qd = JSON.parse(event.data);
 
       // 减少提问次数
-      residueQAQuantity.value = Number(qd.residueQAQuantity);
-      userInfo.residueQAQuantity = residueQAQuantity.value;
-      utils.setUserInfo(userInfo);
+      userStore.saveResidueQAQuantity(Number(qd.residueQAQuantity));
 
       chatList.list[chatList.list.length - 1].id = qd.aId;
       chatList.list[chatList.list.length - 1].tagId = qd.tagId;
@@ -774,7 +766,7 @@ const handConfirmDeleteTag = () => {
 
 // 新增聊天
 const handNewChat = () => {
-  if (residueQAQuantity.value == 0) {
+  if (userStore.residueQAQuantity == 0) {
     return ElMessage({
       message: "您的问答次数已用尽，请联系客服购买",
       type: "info",
@@ -817,7 +809,7 @@ const handleSend = () => {
       type: "warning",
     });
   }
-  if (residueQAQuantity.value === 0) {
+  if (userStore.residueQAQuantity == 0) {
     return ElMessage({
       message: "您的问答次数已用尽，请联系客服购买",
       type: "warning",
@@ -886,7 +878,6 @@ const slideAnimation = (length, time = 800) => {
       if (length1 <= 0) {
         clearInterval(slideTimer);
         slideTimer = null;
-        chatScrollTop;
       }
     }
   }, interval);
@@ -902,18 +893,18 @@ watch(
   scrollPageHeight,
   (newVal, oldVal) => {
     if (!activeTag.value) return;
-    // 列表不满一屏 加载
-    if (newVal <= chatScrollView.value.offsetHeight) {
-      console.log("聊天列表不满一屏,加载");
-      return getAnswerList();
-    }
-    console.log("actionState", actionState);
     if (actionState === "1") {
-      // 动作状态为加载列表时: 触发列表加载完成后,卷轴scrollTop设定为加载之前观看的位置
-      chatScrollView.value.scrollTop = newVal - oldVal;
-      // 滑动动画:下滑一点点
-      console.log("actionState 1", chatScrollView);
-      slideAnimation(-40);
+      // 列表不满一屏 加载
+      if (newVal <= chatScrollView.value.offsetHeight) {
+        console.log("聊天列表不满一屏,加载");
+        getAnswerList();
+      } else {
+        // 动作状态为加载列表时: 触发列表加载完成后,卷轴scrollTop设定为加载之前观看的位置
+        chatScrollView.value.scrollTop = newVal - oldVal;
+        // 滑动动画:下滑一点点
+        console.log("actionState 1", chatScrollView);
+        slideAnimation(-40);
+      }
     } else if (actionState === "2") {
       // 动作状态为发送新问题时: 卷轴scrollTop设定到最底下位置
       // 滑动动画:滑到最底
@@ -987,7 +978,10 @@ onMounted(() => {
       background: #126cfe;
       margin: auto;
       cursor: pointer;
-
+      svg {
+        width: 14px;
+        height: 14px;
+      }
       span {
         margin-left: 11px;
       }
@@ -1014,7 +1008,10 @@ onMounted(() => {
       margin: auto;
       cursor: auto;
       opacity: 0.5;
-
+      svg {
+        width: 14px;
+        height: 14px;
+      }
       span {
         margin-left: 11px;
       }
