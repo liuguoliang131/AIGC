@@ -54,3 +54,9 @@ export const useUserStore = defineStore({
     }
   },
 });
+
+
+window.piniaStore = {
+  ...window.piniaStore,
+  useUserStore
+}

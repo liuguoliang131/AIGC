@@ -36,3 +36,8 @@ export const useDrawStore = defineStore({
     }
   }
 });
+
+window.piniaStore = {
+  ...window.piniaStore,
+  useDrawStore
+}
