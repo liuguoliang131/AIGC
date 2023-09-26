@@ -801,11 +801,11 @@ onUnmounted(() => {
             position: absolute;
             top: 50%;
             left: 50%;
-            width: 600px;
-            margin-top: 170px;
-            transform: translate(-50%, 0%);
+            max-width: 476px;
+            margin-top: 245px;
+            transform: translate(-50%, -50%);
             color: #aaaaaa;
-            font-size: 20px;
+            font-size: 14px;
             text-align: left;
          }
         }

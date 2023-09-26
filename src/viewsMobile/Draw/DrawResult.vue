@@ -633,7 +633,7 @@ onUnmounted(() => {
         text-align: center;
 
         .none-img {
-          position: relative;
+          // position: relative;
           width: 343px;
           height: 343px;
           transform-origin: center;
@@ -646,14 +646,14 @@ onUnmounted(() => {
 
           .none-desc {
             position: absolute;
-            bottom: 60px;
+            bottom: 0px;
             left: 50%;
             transform: translate(-50%, 0);
             width: 100%;
             color: #999;
             text-align: center;
             font-family: PingFang SC;
-            font-size: 18px;
+            font-size: 13px;
             font-style: normal;
             font-weight: 600;
             line-height: normal;
@@ -728,8 +728,8 @@ onUnmounted(() => {
           position: absolute;
           top: 50%;
           left: 50%;
-          width: 300px;
-          margin-top: 110px;
+          margin-top: 187px;
+          width: 287px;
           transform: translate(-50%, 0%);
           color: #aaaaaa;
           font-size: 13px;

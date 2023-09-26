@@ -3,12 +3,12 @@
     <top-title-bar />
     <div class="container-body">
       <img
-        src="https://quanres.hanhoukeji.com/hanhou-ai-pc/ai-chat-card.png"
+        src="https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile_ai-chat-card.png"
         class="card-image"
         @click="navToItem(1)"
       />
       <img
-        src="https://quanres.hanhoukeji.com/hanhou-ai-pc/ai-draw-card.png"
+        src="https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile_ai-draw-card.png"
         class="card-image"
         @click="navToItem(2)"
       />
@@ -52,8 +52,9 @@ const navToItem = (value) => {
       url("https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile-product_center-bg.png")
       0 0 / cover;
     .card-image {
-      width: 297px;
-      height: 392px;
+      width: 375px;
+      height: 200px;
+      object-fit: contain;
       margin: auto;
       &:active {
         opacity: 0.7;
