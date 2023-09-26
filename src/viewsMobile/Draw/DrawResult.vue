@@ -22,7 +22,10 @@
             <!-- 生成完成 -->
             <template v-if="detailData.pictureUrl">
               <div class="show_image">
-                <img class="show_image-a" :src="detailData.pictureUrl + '?imageView2/2/format/jpg/q/90!'" alt="" />
+                <div class="showImageWrapper">
+                  <img class="show_image-a" :src="detailData.pictureUrl + '?imageView2/2/format/jpg/q/90!'" alt="" />
+                  <div class="image_loading" v-if="detailData.percentage != 100">{{ '图片绘制中 ' + detailData.percentage + '%' }}</div>
+                </div>
                 <template
                   v-if="
                     detailData.pictureUrl &&
@@ -349,7 +352,7 @@ const openTimer = (pictureId) => {
 
   timer = setInterval(() => {
     sideFn(pictureId);
-  }, 20000); //20秒查询一次
+  }, 15000); //15秒查询一次
 
   sideFn(pictureId);
 };
@@ -742,10 +745,29 @@ onUnmounted(() => {
         margin: 16px;
         text-align: center;
 
-        .show_image-a {
-          width: 343px;
-          height: auto;
-          margin: auto;
+        .showImageWrapper {
+            position: relative;
+            width: 343px;
+            .image_loading {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                border-radius: 40px;
+                transform: translate(-50%, -50%);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background-color: rgba(0, 0, 0, 0.5);
+                font-size: 13px;
+                color: white;
+                width: 200px;
+                height: 40px;
+              }
+            .show_image-a {
+              width: 343px;
+              height: auto;
+              margin: auto;
+            }
         }
 
         .show_image-b {

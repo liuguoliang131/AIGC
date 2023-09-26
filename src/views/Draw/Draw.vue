@@ -36,6 +36,7 @@ const activeHistoryItem = reactive({
 
 // 图片详情信息
 const detailData = ref({
+  percentage: 0,
   pictureStatus: 0,
   pictureId: null,
   pictureIdea: null,
@@ -349,11 +350,14 @@ onUnmounted(() => {
               <!-- 生成完成 -->
               <template v-if="detailData.pictureUrl">
                 <div class="show_image">
-                  <img
+                  <div class="showImageWrapper">
+                    <img
                     class="show_image-a"
                     :src="detailData.pictureUrl + '?imageView2/2/format/jpg/q/90!'"
                     alt=""
-                  />
+                    />
+                    <div class="image_loading" v-if="detailData.percentage != 100">{{ '图片绘制中 ' + detailData.percentage + '%' }}</div>
+                  </div>
                   <template v-if="detailData.pictureUrl && detailData.pictureStatus == 2">
                     <div class="show_image-b">
                       <div
@@ -814,10 +818,29 @@ onUnmounted(() => {
           width: 850px;
           margin: 60px auto 60px auto;
           text-align: center;
-          .show_image-a {
-            width: 850px;
-            height: auto;
-            margin: auto;
+
+          .showImageWrapper {
+            position: relative;
+              .image_loading {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                padding: 0 34px;
+                border-radius: 46px;
+                transform: translate(-50%, -50%);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background-color: rgba(0, 0, 0, 0.5);
+                font-size: 18px;
+                color: white;
+                height: 46px;
+              }
+              .show_image-a {
+                width: 850px;
+                height: auto;
+                margin: auto;
+              }
           }
           .show_image-b {
             display: flex;

@@ -65,7 +65,7 @@ const openTimer = (active) => {
 
   timer = setInterval(() => {
     sideFn(activeItem);
-  }, 20000); //20秒查询一次
+  }, 15000); //15秒查询一次
 
   sideFn(activeItem);
 };
