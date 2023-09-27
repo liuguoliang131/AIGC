@@ -47,12 +47,11 @@ const openTimer = (active) => {
         clearInterval(timer);
       } else {
         activeItem.pictureUrl = result.pictureUrl;
-        activeItem.isFail = result.isFail;
-        if (result.isFail) {
-          return clearInterval(timer);
-        }
-        if (result.pictureUrl) {
-          console.log("if (result.pictureUrl) 关闭定时器");
+        activeItem.isFail = result.pictureStatus == 3;
+        console.log('图片渐进进度：', result.percentage);
+        //成功或者失败才终止
+        if (result.pictureStatus == 2 || result.pictureStatus == 3) {
+          console.log(result.pictureStatus, "关闭定时器");
           return clearInterval(timer);
         }
       }
@@ -66,7 +65,7 @@ const openTimer = (active) => {
 
   timer = setInterval(() => {
     sideFn(activeItem);
-  }, 20000); //20秒查询一次
+  }, 15000); //15秒查询一次
 
   sideFn(activeItem);
 };
@@ -296,7 +295,7 @@ defineExpose({
               <el-image
                 v-if="item.pictureUrl"
                 style="width: 100%; height: 100%"
-                :src="item.pictureUrl"
+                :src="item.pictureUrl  + '?imageView2/2/format/jpg'"
                 fit="cover"
               ></el-image>
               <div class="making-img" v-else>

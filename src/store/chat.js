@@ -14,3 +14,7 @@ export const useChatStore = defineStore({
     }
   },
 });
+window.piniaStore = {
+  ...window.piniaStore,
+  useChatStore
+}

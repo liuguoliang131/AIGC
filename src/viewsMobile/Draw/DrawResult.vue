@@ -22,8 +22,16 @@
             <!-- 生成完成 -->
             <template v-if="detailData.pictureUrl">
               <div class="show_image">
-                <img class="show_image-a" :src="detailData.pictureUrl" alt="" />
-                <template v-if="detailData.pictureUrl && !detailData.isFail">
+                <div class="showImageWrapper">
+                  <img class="show_image-a" :src="detailData.pictureUrl + '?imageView2/2/format/jpg/q/90!'" alt="" />
+                  <div class="image_loading" v-if="detailData.percentage != 100">{{ '图片绘制中 ' + detailData.percentage + '%' }}</div>
+                </div>
+                <template
+                  v-if="
+                    detailData.pictureUrl &&
+                    detailData.pictureStatus == 2
+                  "
+                >
                   <div>
                     <div class="show_image-b">
                       <div class="show_image-b-2">
@@ -206,6 +214,7 @@
                   alt=""
                   class="drawing-img"
                 />
+                <div class="joke" v-html="jokes[jokeIndex]"></div>
               </div>
             </template>
           </template>
@@ -251,6 +260,7 @@ import MyDialog from "@/components/mobile/MyDialog.vue";
 import request from "@/http/index";
 import api from "@/http/api";
 import utils from "@/common/utils";
+import data from "@/common/data";
 
 const router = useRouter();
 const visible = ref(false);
@@ -259,8 +269,13 @@ const removeVisible = ref(false);
 const userStore = useUserStore();
 const drawStore = useDrawStore();
 
+const jokes = data.getJokeList();
+const randomNumber = Math.floor(Math.random() * jokes.length);
+const jokeIndex = ref(randomNumber);
+
 // 图片详情信息
 const detailData = ref({
+  pictureStatus: 0,
   pictureId: null,
   pictureIdea: null,
   pictureUrl: null,
@@ -277,12 +292,6 @@ const detailData = ref({
     downRight: false,
   },
 });
-
-const handGoHome = () => {
-  router.push({
-    path: "/",
-  });
-};
 
 // 去创建
 const handNewDraw = () => {
@@ -318,6 +327,7 @@ const handConfirmRemove = async () => {
 let timer = null;
 // 开始轮询详情
 const openTimer = (pictureId) => {
+  openJokerTimer();
   // return console.log("openTimer");
 
   const sideFn = (pictureId) => {
@@ -327,11 +337,11 @@ const openTimer = (pictureId) => {
       } else {
         // activeItem.pictureUrl = result.pictureUrl;
         // activeItem.isFail = result.isFail;
-        if (result.isFail) {
-          return clearInterval(timer);
-        }
-        if (result.pictureUrl) {
-          console.log("if (result.pictureUrl) 关闭定时器");
+        // if (result.isFail) {
+        //   return clearInterval(timer);
+        // }
+        if (result.pictureStatus == 2 || result.pictureStatus == 3) {
+          console.log(result.pictureStatus, "关闭定时器");
           return clearInterval(timer);
         }
       }
@@ -342,14 +352,47 @@ const openTimer = (pictureId) => {
 
   timer = setInterval(() => {
     sideFn(pictureId);
-  }, 20000); //20秒查询一次
+  }, 15000); //15秒查询一次
 
   sideFn(pictureId);
 };
 
 // 停止轮询详情
 const stopTimer = () => {
+  stopJokerTimer();
   clearInterval(timer);
+};
+
+
+let jokerTimer = null;
+// 开始轮询详情
+const openJokerTimer = () => {
+  // console.log("openJokeTimer");
+
+  const sideFn = () => {
+    jokeIndex.value = (jokeIndex.value + 1) % jokes.length;
+    // console.log('Joke', jokeIndex.value);
+  };
+
+  if (jokerTimer) {
+    clearInterval(jokerTimer);
+  }
+  jokerTimer = null;
+
+  jokerTimer = setInterval(() => {
+    sideFn();
+  }, 15000); //15秒查询一次
+
+  sideFn();
+};
+
+// 停止轮询详情
+const stopJokerTimer = () => {
+  // console.log("stopJokeTimer");
+  if (jokerTimer) {
+    clearInterval(jokerTimer);
+  }
+  jokerTimer = null;
 };
 
 // 获取图片详情
@@ -362,6 +405,7 @@ const getDetail = async (pictureId) => {
       showToast(res.msg);
       return;
     }
+    res.data.isFail = res.data.pictureStatus == 3;
     detailData.value = res.data;
     const historyItem = {
       ...drawStore.historyItem,
@@ -592,7 +636,7 @@ onUnmounted(() => {
         text-align: center;
 
         .none-img {
-          position: relative;
+          // position: relative;
           width: 343px;
           height: 343px;
           transform-origin: center;
@@ -605,14 +649,14 @@ onUnmounted(() => {
 
           .none-desc {
             position: absolute;
-            bottom: 60px;
+            bottom: 0px;
             left: 50%;
             transform: translate(-50%, 0);
             width: 100%;
             color: #999;
             text-align: center;
             font-family: PingFang SC;
-            font-size: 18px;
+            font-size: 13px;
             font-style: normal;
             font-weight: 600;
             line-height: normal;
@@ -667,6 +711,7 @@ onUnmounted(() => {
       }
 
       .reloading {
+        position: relative;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -681,6 +726,18 @@ onUnmounted(() => {
           width: 200px;
           height: 200px;
         }
+
+        .joke {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          margin-top: 187px;
+          width: 287px;
+          transform: translate(-50%, 0%);
+          color: #aaaaaa;
+          font-size: 13px;
+          text-align: left;
+        }
       }
 
       .show_image {
@@ -688,10 +745,29 @@ onUnmounted(() => {
         margin: 16px;
         text-align: center;
 
-        .show_image-a {
-          width: 343px;
-          height: auto;
-          margin: auto;
+        .showImageWrapper {
+            position: relative;
+            width: 343px;
+            .image_loading {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                border-radius: 40px;
+                transform: translate(-50%, -50%);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background-color: rgba(0, 0, 0, 0.5);
+                font-size: 13px;
+                color: white;
+                width: 200px;
+                height: 40px;
+              }
+            .show_image-a {
+              width: 343px;
+              height: auto;
+              margin: auto;
+            }
         }
 
         .show_image-b {

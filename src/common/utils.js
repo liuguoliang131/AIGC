@@ -1,6 +1,6 @@
 import { TOKEN, USER_INFO } from './keys'
 import router from '../router/index'
-console.log('utils')
+
 
 const keys = ['drawHistoryItem', 'residueQAQuantity', 'hanhou-ai-pc-token', 'hanhou-ai-pc-userInfo', 'activeTagId']
 
@@ -39,9 +39,20 @@ utils.setUserInfo = function (param) {
 
 // 清除所有账号信息
 utils.clearAll = function () {
-  keys.forEach(k => {
-    window.localStorage.removeItem(k)
-  })
+  try {
+    keys.forEach(k => {
+      window.localStorage.removeItem(k)
+    })
+    const { useUserStore, useChatStore, useDrawStore } = window.piniaStore
+    const userStore = useUserStore()
+    const chatStore = useChatStore()
+    const drawStore = useDrawStore()
+    userStore.clearLog()
+    chatStore.saveActiveTagId(0)
+    drawStore.clearHistoryItem()
+  } catch (error) {
+    throw error
+  }
 }
 
 
@@ -112,5 +123,6 @@ utils.goBack = () => {
     router.go(-1)
   }
 }
+
 
 export default utils

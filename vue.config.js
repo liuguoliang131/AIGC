@@ -13,12 +13,12 @@ module.exports = defineConfig({
           '^/api': '/'
         }
       },
-      '/qa': {
+      '/user/hanhouqa': {
         // target: 'http://hhosaigcapi.yctmt.com',
-        target: 'http://121.229.145.90:18981',
+        target: 'http://aigcapi.yctmt.com',
         changeOrigin: true,
         pathRewrite: {
-          '^/qa': '/qa'
+          '^/user/hanhouqa': '/user/hanhouqa'
         }
       },
       '/mock': {

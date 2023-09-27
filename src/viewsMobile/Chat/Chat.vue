@@ -113,19 +113,21 @@
       <div class="new_question">
         <div class="inputWrapper">
           <el-input
-          resize="none"
-          :autosize="{ minRows: 1, maxRows: 6 }"
-          type="textarea"
-          class="ipt"
-          placeholder=""
-          maxlength="800"
-          v-model="newQuestion"
-          @compositionstart="onchange"
-          @compositionupdate="onchange"
-          @compositionend="compositionend"
-          @click.stop
-        />
-        <span v-if="newQuestion.length <= 0 && composition.length <=0 ">问点什么吧～</span>
+            resize="none"
+            :autosize="{ minRows: 1, maxRows: 6 }"
+            type="textarea"
+            class="ipt"
+            placeholder=""
+            maxlength="800"
+            v-model="newQuestion"
+            @compositionstart="onchange"
+            @compositionupdate="onchange"
+            @compositionend="compositionend"
+            @click.stop
+          />
+          <span v-if="newQuestion.length <= 0 && composition.length <= 0"
+            >问点什么吧～</span
+          >
         </div>
         <div
           :class="[
@@ -221,15 +223,15 @@ const chatScrollPage = ref(null);
 // 聊天列表高度
 const scrollPageHeight = ref(0);
 
-const composition = ref("");//for ios
+const composition = ref(""); //for ios
 
 const onchange = (str) => {
   composition.value = str.data;
 };
 
 const compositionend = (str) => {
-  composition.value = '';
-}
+  composition.value = "";
+};
 
 // 过滤换行符方法  使用``包裹的换行符不会被替换
 const reString = (str) => {
@@ -397,7 +399,8 @@ const getChatList = async () => {
         const isNeedScrollToEnd = chatList.list.length == 0;
         chatList.list = [...res.data.list.reverse(), ...chatList.list];
         chatList.lastId = res.data.lastId;
-        if (isNeedScrollToEnd) {//第一次加载滚动
+        if (isNeedScrollToEnd) {
+          //第一次加载滚动
           scrollToEndDirectly();
         }
 
@@ -471,7 +474,22 @@ const getLastHistory = async () => {
   }
 };
 
+// 获取对话剩余次数
+const getChatResidueQuantity = async () => {
+  try {
+    const res = await request.get(api.chat_residueQuantity);
+    if (res.code !== 200) {
+      return showToast(res.msg);
+    }
+    userStore.saveResidueQAQuantity(res.data.residueQAQuantity);
+  } catch (error) {
+    throw error;
+  }
+};
+
 onMounted(async () => {
+  // 更新对话剩余次数
+  getChatResidueQuantity();
   await handAddEvent();
   actionState = "1";
   if (chatStore.activeTagId == -1) {
@@ -698,7 +716,7 @@ const handAddEvent = () => {
 
 const onWindowResize = () => {
   scrollToEndDirectly();
-}
+};
 
 const handBlur = (e) => {
   document.querySelector(".el-textarea__inner").blur();
@@ -1075,7 +1093,7 @@ const handBlur = (e) => {
 
       .inputWrapper {
         position: relative;
-        span{
+        span {
           user-select: none;
           pointer-events: none;
           position: absolute;
@@ -1090,41 +1108,41 @@ const handBlur = (e) => {
           transform: translateY(-50%);
         }
         .ipt {
-        box-sizing: content-box;
-        width: 286px;
-        margin-right: 7px;
-        padding: 0;
-        min-height: 0 !important;
-        &::placeholder {
-          color: #999;
-          font-family: PingFang SC;
-          font-size: 13px;
-          font-style: normal;
-          font-weight: 400;
-          line-height: normal;
-        }
+          box-sizing: content-box;
+          width: 286px;
+          margin-right: 7px;
+          padding: 0;
+          min-height: 0 !important;
+          &::placeholder {
+            color: #999;
+            font-family: PingFang SC;
+            font-size: 13px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: normal;
+          }
 
-        /deep/.el-textarea__inner {
-          padding: 5px 12px;
-          min-height: 33px;
-          box-sizing: border-box;
-          width: 100%;
-          border-radius: 3px;
-          border: 1px solid #dcdcdc;
-          background: #fff;
-          outline: none;
-          color: #333;
-          font-family: PingFang SC;
-          font-size: 13px;
-          line-height: 23px;
-          resize: none;
-          /*禁止拉伸*/
-        }
+          /deep/.el-textarea__inner {
+            padding: 5px 12px;
+            min-height: 33px;
+            box-sizing: border-box;
+            width: 100%;
+            border-radius: 3px;
+            border: 1px solid #dcdcdc;
+            background: #fff;
+            outline: none;
+            color: #333;
+            font-family: PingFang SC;
+            font-size: 13px;
+            line-height: 23px;
+            resize: none;
+            /*禁止拉伸*/
+          }
 
-        /deep/.el-textarea__inner::-webkit-scrollbar {
-          display: none;
+          /deep/.el-textarea__inner::-webkit-scrollbar {
+            display: none;
+          }
         }
-      }
       }
       .send {
         display: flex;

@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import utils from "../common/utils";
-const historyItem = utils.getStorageSync('drawHistoryItem', true)
+const historyItem = utils.getStorageSync("drawHistoryItem", true);
 export const useDrawStore = defineStore({
   id: "draw",
   state: () => ({
@@ -36,3 +36,8 @@ export const useDrawStore = defineStore({
     }
   }
 });
+
+window.piniaStore = {
+  ...window.piniaStore,
+  useDrawStore
+}

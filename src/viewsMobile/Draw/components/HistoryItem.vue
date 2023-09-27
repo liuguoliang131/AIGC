@@ -11,7 +11,7 @@
       </template>
       <template v-else>
         <div v-if="item.pictureUrl" class="complete">
-          <img :src="item.pictureUrl" alt="" />
+          <img :src="item.pictureUrl + '?imageView2/2/format/jpg'" alt="" />
         </div>
         <div v-else class="making">
           <img
