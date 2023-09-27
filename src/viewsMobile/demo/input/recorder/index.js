@@ -13,8 +13,8 @@
  *
  */
 
-import CryptoJS from './hmac-sha256'
-import './enc-base64-min'
+import CryptoJS from '../../core/hmac-sha256'
+import '../../core/enc-base64-min'
 import recordWorker from './transform.pcm.worker'
 import createWorker from '../create-worker'
 import locales from '../mixins/locales.json'
@@ -182,6 +182,7 @@ class IatRecorder {
       return null
     }
     this.ws.onopen = (e) => {
+      console.log(e)
       if (!this.mediaStream || !this.recorder) {
         return
       }
@@ -194,14 +195,17 @@ class IatRecorder {
       this.config.onStart && this.config.onStart(e)
     }
     this.ws.onmessage = (e) => {
+      console.log(e)
       this.config.onMessage && this.config.onMessage(e)
       this.wsOnMessage(e)
     }
     this.ws.onerror = (e) => {
+      console.log(e)
       this.stop()
       this.config.onError && this.config.onError(e)
     }
     this.ws.onclose = (e) => {
+      console.log(e)
       this.stop()
       this.config.onClose && this.config.onClose(e)
     }

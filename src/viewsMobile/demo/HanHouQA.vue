@@ -22,7 +22,6 @@
         appId="57fe6cc5"
         apiKey="0bf1bd1b6e154aea50622ef5bf4257c6"
         apiSecret="MTI4MjVjNmQxMjBkYTZiZjI3N2U5MjBi"
-        v-model="result"
         @record="showResult"
         @record-start="recordStart"
         @record-stop="recordStop"
@@ -35,6 +34,7 @@
       >
         <template slot="no-speak">没听清您说的什么</template>
       </voice-input-button>
+      <voice-output-button :message="result"></voice-output-button>
       <div class="submit" @click="answer">手动<br>提问</div>
       </div>
     </div>
@@ -54,6 +54,7 @@ import { ref } from "vue";
 
 import request from "@/http/index";
 import voiceInputButton from "./input/voice-input-button.vue";
+import voiceOutputButton from "./tts/tts.vue";
 
 import Clipboard from "clipboard";
 import {
@@ -67,17 +68,11 @@ import {
 } from "vant";
 const selectResult = ref("/qa/hanhou");
 const message = ref("");
-const showPicker = ref(false);
 const columns = [
   { text: "憨猴", value: "/qa/hanhou" },
   { text: "流浪地球", value: "/qa/lldq" },
   { text: "中山", value: "/qa/zhongshan" },
 ];
-
-const onConfirm = ({ selectedOptions }) => {
-  selectResult.value = selectedOptions[0]?.value;
-  showPicker.value = false;
-};
 
 const result = ref("");
 
@@ -107,6 +102,7 @@ function recordReady() {
 }
 function recordStart() {
   console.info("录音开始");
+  message.value = '';
 }
 function showResult(text) {
   message.value = text;
