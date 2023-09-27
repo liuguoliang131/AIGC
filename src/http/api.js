@@ -11,6 +11,7 @@ export default {
   chat_answerList: "/chat/answerList", // 问答列表
   chat_qa: "/chat/qa", // 问答
   chat_delAnswer: "/chat/delAnswer", // 删除问答Tag
+  chat_residueQuantity: '/chat/residueQuantity', // 获取对话次数
 
   // ai绘画
   picture_pictureList: '/picture/pictureList',  // 右侧绘画列表
