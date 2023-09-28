@@ -64,6 +64,7 @@ export default class TTSRecorder {
     text = "",
     tte = "UTF8",
     defaultText = "请输入您要合成的文本",
+    onWillStatusChange,
   } = {}) {
     this.speed = speed;
     this.voice = voice;
@@ -77,6 +78,7 @@ export default class TTSRecorder {
     this.rawAudioData = [];
     this.audioDataOffset = 0;
     this.status = "init";
+    this.onWillStatusChange = onWillStatusChange,
     myworker.onmessage = (e) => {
       console.log("onmessage in master");
       this.audioData.push(...e.data.data);
@@ -85,8 +87,8 @@ export default class TTSRecorder {
   }
   // 修改录音听写状态
   setStatus(status) {
-    this.onWillStatusChange && this.onWillStatusChange(this.status, status);
     this.status = status;
+    this.onWillStatusChange && this.onWillStatusChange(this.status, status);
   }
   // 设置合成相关参数
   setParams({ speed, voice, pitch, text, voiceName, tte }) {

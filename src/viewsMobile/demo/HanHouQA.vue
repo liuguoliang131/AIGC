@@ -6,46 +6,30 @@
       </van-dropdown-menu>
 
       <van-cell-group inset>
-        <van-field
-          v-model="message"
-          rows="5"
-          autosize
-          type="textarea"
-          maxlength="500"
-          placeholder="请输入您的问题"
-          show-word-limit
-        />
+        <van-field v-model="message" rows="5" autosize type="textarea" maxlength="500" placeholder="请输入您的问题"
+          show-word-limit />
       </van-cell-group>
       <div class="btnWrapper">
         <div class="reset" @click="reset">重置</div>
-        <voice-input-button
-        appId="57fe6cc5"
-        apiKey="0bf1bd1b6e154aea50622ef5bf4257c6"
-        apiSecret="MTI4MjVjNmQxMjBkYTZiZjI3N2U5MjBi"
-        @record="showResult"
-        @record-start="recordStart"
-        @record-stop="recordStop"
-        @record-blank="recordNoResult"
-        @record-failed="recordFailed"
-        @record-ready="recordReady"
-        @record-complete="recordComplete"
-        interactiveMode="press"
-        tipPosition="top"
-      >
-        <template slot="no-speak">没听清您说的什么</template>
-      </voice-input-button>
-      <voice-output-button :message="result"></voice-output-button>
-      <div class="submit" @click="answer">手动<br>提问</div>
+        <voice-input-button appId="57fe6cc5" apiKey="0bf1bd1b6e154aea50622ef5bf4257c6"
+          apiSecret="MTI4MjVjNmQxMjBkYTZiZjI3N2U5MjBi" @record="showResult" @record-start="recordStart"
+          @record-stop="recordStop" @record-blank="recordNoResult" @record-failed="recordFailed"
+          @record-ready="recordReady" @record-complete="recordComplete" interactiveMode="press" tipPosition="top">
+          <template slot="no-speak">没听清您说的什么</template>
+        </voice-input-button>
+        <voice-output-button :message="result" @speaker-start="isSpeaking = true"
+        @speaker-end="isSpeaking = false"></voice-output-button>
+        <div class="submit" @click="answer">手动<br>提问</div>
       </div>
     </div>
 
     <div class="result" @click="copy">{{ result }}</div>
-    <div
-      ref="copy_text"
-      class="clipboard_text"
-      data-clipboard-action="copy"
-      data-clipboard-text="copytext"
-    ></div>
+    <div ref="copy_text" class="clipboard_text" data-clipboard-action="copy" data-clipboard-text="copytext"></div>
+    <div class="floatPerson">
+      <anim_listen v-if="isListening"></anim_listen>
+      <anim_speak v-else-if="isSpeaking"></anim_speak>
+      <anim_normal v-else></anim_normal>
+    </div>
   </div>
 </template>
 
@@ -54,6 +38,9 @@ import { ref } from "vue";
 
 import request from "@/http/index";
 import voiceInputButton from "./input/voice-input-button.vue";
+import anim_listen from "./anim_listen.vue";
+import anim_normal from "./anim_normal.vue";
+import anim_speak from "./anim_speak.vue";
 import voiceOutputButton from "./tts/tts.vue";
 
 import Clipboard from "clipboard";
@@ -74,6 +61,8 @@ const columns = [
   { text: "中山", value: "/qa/zhongshan" },
 ];
 
+const isListening = ref(false);
+const isSpeaking = ref(false);
 const result = ref("");
 
 function answer() {
@@ -103,6 +92,7 @@ function recordReady() {
 function recordStart() {
   console.info("录音开始");
   message.value = '';
+  isListening.value = true;
 }
 function showResult(text) {
   message.value = text;
@@ -110,6 +100,7 @@ function showResult(text) {
 }
 function recordStop() {
   console.info("录音结束");
+  isListening.value = false;
 }
 function recordNoResult() {
   console.info("没有录到什么，请重试");
@@ -126,6 +117,7 @@ function recordFailed(error) {
 function reset() {
   message.value = "";
   result.value = "";
+  isListening.value = false;
 }
 
 // 复制
@@ -172,6 +164,12 @@ const initCopyClipboard = () => {
   flex-direction: column;
   overflow: hidden;
 
+  .floatPerson {
+    position: absolute;
+    bottom: 80px;
+    right: -10px;
+  }
+
   .clipboard_text {
     position: fixed;
     top: -500px;
@@ -201,6 +199,7 @@ const initCopyClipboard = () => {
     flex-direction: row;
     margin-top: 20px;
     align-items: center;
+
     .submit {
       display: flex;
       align-items: center;
