@@ -20,7 +20,7 @@
         <voice-output-button :message="result" @speaker-start="isSpeaking = true" v-if="columns.length > 1"
           @speaker-end="isSpeaking = false"></voice-output-button>
         <div :class="['submit', columns.length <= 1 ? 'largeBtn' : '']" @click="answer"
-          v-html="columns.length <= 1 ? '提问q' : '手动<br>提问'"></div>
+          v-html="columns.length <= 1 ? '提问' : '手动<br>提问'"></div>
       </div>
     </div>
 
