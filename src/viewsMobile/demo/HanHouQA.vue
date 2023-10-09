@@ -1,8 +1,8 @@
 <template>
   <div class="container">
     <div class="form">
-      <van-dropdown-menu>
-        <van-dropdown-item v-model="selectResult" :options="columns" />
+      <van-dropdown-menu v-if="columns.length > 0">
+        <van-dropdown-item v-model="selectResult" :disabled="columns.length <= 1" :options="columns" />
       </van-dropdown-menu>
 
       <van-cell-group inset>
@@ -10,25 +10,27 @@
           show-word-limit />
       </van-cell-group>
       <div class="btnWrapper">
-        <div class="reset" @click="reset">重置</div>
-        <voice-input-button appId="57fe6cc5" apiKey="0bf1bd1b6e154aea50622ef5bf4257c6"
+        <div :class="['reset', columns.length <= 1 ? 'largeBtn' : '']" @click="reset">重置</div>
+        <voice-input-button v-if="columns.length > 1" appId="57fe6cc5" apiKey="0bf1bd1b6e154aea50622ef5bf4257c6"
           apiSecret="MTI4MjVjNmQxMjBkYTZiZjI3N2U5MjBi" @record="showResult" @record-start="recordStart"
           @record-stop="recordStop" @record-blank="recordNoResult" @record-failed="recordFailed"
           @record-ready="recordReady" @record-complete="recordComplete" interactiveMode="press" tipPosition="top">
           <template slot="no-speak">没听清您说的什么</template>
         </voice-input-button>
-        <voice-output-button :message="result" @speaker-start="isSpeaking = true"
-        @speaker-end="isSpeaking = false"></voice-output-button>
-        <div class="submit" @click="answer">手动<br>提问</div>
+        <voice-output-button :message="result" @speaker-start="isSpeaking = true" v-if="columns.length > 1"
+          @speaker-end="isSpeaking = false"></voice-output-button>
+        <div :class="['submit', columns.length <= 1 ? 'largeBtn' : '']" @click="answer"
+          v-html="columns.length <= 1 ? '提问q' : '手动<br>提问'"></div>
       </div>
     </div>
 
-    <div class="result" @click="copy">{{ result }}</div>
+    <div class=" result" @click="copy">{{ result }}</div>
     <div ref="copy_text" class="clipboard_text" data-clipboard-action="copy" data-clipboard-text="copytext"></div>
     <div class="floatPerson">
-      <anim_listen v-if="isListening"></anim_listen>
+      <!-- <Person :message="result"></Person> -->
+      <!-- <anim_listen v-if="isListening"></anim_listen>
       <anim_speak v-else-if="isSpeaking"></anim_speak>
-      <anim_normal v-else></anim_normal>
+      <anim_normal v-else></anim_normal> -->
     </div>
   </div>
 </template>
@@ -37,10 +39,8 @@
 import { ref } from "vue";
 
 import request from "@/http/index";
+import { useRouter } from "vue-router";
 import voiceInputButton from "./input/voice-input-button.vue";
-import anim_listen from "./anim_listen.vue";
-import anim_normal from "./anim_normal.vue";
-import anim_speak from "./anim_speak.vue";
 import voiceOutputButton from "./tts/tts.vue";
 
 import Clipboard from "clipboard";
@@ -53,17 +53,47 @@ import {
   showLoadingToast,
   showToast,
 } from "vant";
-const selectResult = ref("/qa/hanhou");
+import { reactive } from "vue";
+const selectResult = ref("");
 const message = ref("");
-const columns = [
-  { text: "憨猴", value: "/qa/hanhou" },
-  { text: "流浪地球", value: "/qa/lldq" },
-  { text: "中山", value: "/qa/zhongshan" },
-];
+const columns = reactive([
+  // { text: "憨猴", value: "/qa/hanhou" },
+  // { text: "流浪地球", value: "/qa/lldq" },
+  // { text: "中山", value: "/qa/zhongshan" },
+  // { text: "龙铭鹤", value: "/qa/lmh" },
+]);
 
 const isListening = ref(false);
 const isSpeaking = ref(false);
 const result = ref("");
+const router = useRouter();
+
+const name = router.currentRoute.value.name;
+if (name === 'hsQA') {
+  document.title = '憨猴·AI'
+  columns.push({ text: "憨猴", value: "/qa/hanhou" });
+  selectResult.value = "/qa/hanhou";
+} else if (name === 'lldqQA') {
+  document.title = '流浪地球·AI'
+  columns.push({ text: "流浪地球", value: "/qa/lldq" });
+  selectResult.value = "/qa/lldq";
+} else if (name === 'zsQA') {
+  document.title = '中山·AI'
+  columns.push({ text: "中山", value: "/qa/zhongshan" });
+  selectResult.value = "/qa/zhongshan";
+} else if (name === 'lmhQA') {
+  document.title = '龙铭鹤·AI'
+  columns.push({ text: "龙铭鹤", value: "/qa/lmh" });
+  selectResult.value = "/qa/lmh";
+} else {
+  document.title = '憨猴·AI'
+  columns.push({ text: "憨猴", value: "/qa/hanhou" });
+  columns.push({ text: "流浪地球", value: "/qa/lldq" });
+  columns.push({ text: "中山", value: "/qa/zhongshan" });
+  columns.push({ text: "龙铭鹤", value: "/qa/lmh" });
+  selectResult.value = "/qa/hanhou";
+}
+console.log(router.currentRoute.value.name, name, columns, 'yk3372');
 
 function answer() {
   showLoadingToast({
@@ -151,6 +181,13 @@ const initCopyClipboard = () => {
   width: 100%;
 }
 
+/deep/.van-dropdown-menu__item--disabled .van-dropdown-menu__title {
+  color: black !important;
+  &::after {
+    border-color: transparent !important;
+  }
+}
+
 .van-cell-group {
   width: 100%;
   border: 1px solid rgba(0, 0, 0, 0.1);
@@ -166,8 +203,8 @@ const initCopyClipboard = () => {
 
   .floatPerson {
     position: absolute;
-    bottom: 80px;
-    right: -10px;
+    bottom: 0px;
+    right: 0px;
   }
 
   .clipboard_text {
@@ -243,6 +280,11 @@ const initCopyClipboard = () => {
       &:active {
         opacity: 0.7;
       }
+    }
+
+    .largeBtn {
+      width: 120px;
+      height: 60px;
     }
   }
 }

@@ -18,6 +18,38 @@ const routes = [
     }
   },
   {
+    path: '/hsQA',
+    name: 'hsQA',
+    component: HanHouQA,
+    meta: {
+      isAuthenticated: false
+    }
+  },
+  {
+    path: '/lldqQA',
+    name: 'lldqQA',
+    component: HanHouQA,
+    meta: {
+      isAuthenticated: false
+    }
+  },
+  {
+    path: '/zsQA',
+    name: 'zsQA',
+    component: HanHouQA,
+    meta: {
+      isAuthenticated: false
+    }
+  },
+  {
+    path: '/lmhQA',
+    name: 'lmhQA',
+    component: HanHouQA,
+    meta: {
+      isAuthenticated: false
+    }
+  },
+  {
     path: '/chat',
     name: 'Chat',
     children: [

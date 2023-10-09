@@ -1,5 +1,6 @@
 #将hhos_aigc_h5_package和项目放在一个目录里即可
 yarn build--test
+# yarn build--prod
 cd ../hhos_aigc_h5_package
 git pull
 rm -rf static

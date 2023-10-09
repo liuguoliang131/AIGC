@@ -248,6 +248,7 @@ export default class TTSRecorder {
         nowBuffering[i] = audioData[i];
       }
     }
+    console.log('yk3372before', audioBuffer.duration);
     let bufferSource = (this.bufferSource =
       this.audioContext.createBufferSource());
     bufferSource.buffer = audioBuffer;
