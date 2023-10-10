@@ -6,9 +6,10 @@
 
 <script setup>
 import TTSRecorder from "./onlineTTS";
-import { ref, onMounted, watch} from "vue";
+import { ref, onMounted, watch } from "vue";
 
 const ttsRecorder = ref(null);
+const emit = defineEmits(['speakerStart', 'speakerStart']);
 
 const props = defineProps({
   message: {
@@ -24,7 +25,17 @@ watch(() => props.message, (newValue, oldValue) => {
 });
 
 onMounted(() => {
-  ttsRecorder.value = new TTSRecorder();
+  ttsRecorder.value = new TTSRecorder(
+    {
+      onWillStatusChange: (newStatus) => {
+        if (ttsRecorder.value?.status == 'play') {
+          emit("speakerStart");
+        } else if (['init', 'endPlay', 'errorTTS'].indexOf(ttsRecorder.value?.status) > -1) {
+          emit("speakerEnd");
+        }
+      }
+    }
+  );
 });
 
 function handlePlay() {
@@ -51,12 +62,12 @@ function handlePlay() {
 
 .speaker {
   position: absolute;
-  bottom: 100px;
+  bottom: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
-  right: 10px;
+  right: 30px;
   width: 50px;
   height: 50px;
   border-radius: 50px;

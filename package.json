@@ -16,6 +16,7 @@
     "clipboard": "^2.0.11",
     "core-js": "^3.8.3",
     "dayjs": "^1.11.9",
+    "duix-guiji": "^2.0.1",
     "element-plus": "^2.3.8",
     "event-source-polyfill": "^1.0.31",
     "file-saver": "^2.0.5",
