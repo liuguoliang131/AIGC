@@ -17,8 +17,8 @@
           @record-ready="recordReady" @record-complete="recordComplete" interactiveMode="press" tipPosition="top">
           <template slot="no-speak">没听清您说的什么</template>
         </voice-input-button>
-        <voice-output-button :message="result" @speaker-start="isSpeaking = true" v-if="columns.length > 1"
-          @speaker-end="isSpeaking = false"></voice-output-button>
+        <!-- <voice-output-button :message="result" @speaker-start="isSpeaking = true" v-if="columns.length > 1"
+          @speaker-end="isSpeaking = false"></voice-output-button> -->
         <div :class="['submit', columns.length <= 1 ? 'largeBtn' : '']" @click="answer"
           v-html="columns.length <= 1 ? '提问' : '手动<br>提问'"></div>
       </div>
@@ -27,7 +27,7 @@
     <div class=" result" @click="copy">{{ result }}</div>
     <div ref="copy_text" class="clipboard_text" data-clipboard-action="copy" data-clipboard-text="copytext"></div>
     <div class="floatPerson">
-      <!-- <Person :message="result"></Person> -->
+      <Person :message="result"></Person>
       <!-- <anim_listen v-if="isListening"></anim_listen>
       <anim_speak v-else-if="isSpeaking"></anim_speak>
       <anim_normal v-else></anim_normal> -->
@@ -42,6 +42,7 @@ import request from "@/http/index";
 import { useRouter } from "vue-router";
 import voiceInputButton from "./input/voice-input-button.vue";
 import voiceOutputButton from "./tts/tts.vue";
+import Person from "./person_xf.vue";
 
 import Clipboard from "clipboard";
 import {

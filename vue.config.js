@@ -1,8 +1,12 @@
 const { defineConfig } = require('@vue/cli-service')
 const TerserPlugin = require('terser-webpack-plugin');
+const NodePolyfillPlugin = require('node-polyfill-webpack-plugin')
 module.exports = defineConfig({
   transpileDependencies: ["*"],
   lintOnSave: false,
+  configureWebpack: {
+    plugins: [new NodePolyfillPlugin()]
+  },
   devServer: {
     proxy: {
       '/api': {
@@ -20,6 +24,27 @@ module.exports = defineConfig({
         pathRewrite: {
           '^/user/hanhouqa': '/user/hanhouqa'
         }
+      },
+      '/vmss': {
+        target: 'https://vms.cn-huadong-1.xf-yun.com',
+        changeOrigin: true,
+        secure: false,
+        pathRewrite: {
+          '^/vmss': ''
+        }
+        // rewrite: (path) => path.replace(/^\/vmss/, '')
+      },
+      '/vms3dPrefix': {
+        target: 'http://vms.cn-huadong-1.xf-yun.com',
+        changeOrigin: true,
+        secure: false,
+        pathRewrite: {
+          '^/vms3dPrefix': ''
+        }
+      },
+      '/individuation': {
+        target: 'http://evo-hu.xf-yun.com',
+        changeOrigin: true
       },
       '/mock': {
         target: 'http://yapi.hanhoukeji.com',
