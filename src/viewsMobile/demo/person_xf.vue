@@ -1,18 +1,15 @@
 <template>
   <div class="person_wrapper">
-    <div class="clipped-div">
-      <canvas id="canvas" width="1080" height="1080" />
-    </div>
+    <canvas id="canvas" width="1080" height="1080" />
     <div :class="['remote-container']" id="remote_stream">
-
     </div>
-    <div class="oper_row">
-      <div @click="say" class="reSpeaker">重读</div>
+    <!-- <div class="oper_row">
+      <div @click="say" class="reSpeaker">重读</div> -->
 
-      <!--更新背景-->
-      <!-- <input className="excle-file" type="file" title="" name="fileUploaderBg" accept=".jpg,.png" id="fileUploaderBg"
+    <!--更新背景-->
+    <!-- <input className="excle-file" type="file" title="" name="fileUploaderBg" accept=".jpg,.png" id="fileUploaderBg"
         :onChange=upload /> -->
-    </div>
+    <!-- </div> -->
   </div>
   <my-dialog v-model:show="removeVisible" title="温馨提示" message="ios兼容性问题，请点击确认按钮恢复虚拟人" @confirm="confirm">
   </my-dialog>
@@ -79,11 +76,15 @@ window.addEventListener('beforeunload', function (event) {
   console.log("beforeunload");
   stop();
 });
+window.addEventListener('unload', function (event) {
+  console.log("unload");
+  stop();
+});
 var stream;
 function confirm() {
   removeVisible.value = false;
   stream && stream.resume();
-  detectVideo();
+  setTimeout(() => detectVideo(), 0);
 }
 const init = async () => {
   VMS.start({
@@ -121,6 +122,13 @@ function detectVideo() {
   let video;
   if (videos.length > 0) {
     video = videos[0];
+    video.addEventListener(
+      "play",
+      () => {
+        showPerson(video);
+      },
+      false,
+    );
     showPerson(video);
   } else {
     setTimeout(() => { detectVideo(); }, 1500);
@@ -139,14 +147,14 @@ function showPerson(video) {
     }
 
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-    const frame = ctx.getImageData(200, 0, canvas.width, canvas.height);
+    const frame = ctx.getImageData(0, 0, canvas.width, canvas.height);
     const data = frame.data;
 
     for (let i = 0; i < data.length; i += 4) {
       const red = data[i + 0];
       const green = data[i + 1];
       const blue = data[i + 2];
-      if (green > 250 && red > 250 && blue > 250) {
+      if (green >= 255 && red >= 255 && blue >= 255) {
         data[i + 3] = 0;
       }
     }
@@ -180,8 +188,10 @@ function say() {
       text: encode(
         JSON.stringify({
           avatar: [
-            { type: 'action', value: 'A_LH_introduced_O', wb: 3, we: 20 },
-            { type: 'action', value: 'A_RH_bye_O', wb: 30, we: 50 }
+            { type: 'action', value: 'A_LH_introduced_O', wb: 0, we: 5 },
+            { type: 'action', value: 'A_RH_introduced_O', wb: props.message.length - 20, we: props.message.length },
+            // { type: 'action', value: 'A_RH_emphasize2_O', wb: 70, we: 90 },
+            // { type: 'action', value: 'A_RH_ok_O', wb: props.message.length - 20, we: props.message.length }
           ]
         })
       )
@@ -218,8 +228,8 @@ onUnmounted(() => {
 </script>
 <style>
 canvas {
-  width: 200px !important;
-  height: 200px !important;
+  width: 100% !important;
+  height: 100% !important;
 }
 </style>
 
@@ -227,19 +237,13 @@ canvas {
 .person_wrapper {
   display: flex;
   flex-direction: column;
-  align-items: end;
-
-  .clipped-div {
-    width: 120px;
-    height: 200px;
-    overflow: hidden;
-  }
+  align-items: center;
 
   .remote-container {
     width: 1px;
     height: 1px;
     background-color: transparent;
-    margin-bottom: 20px;
+    // margin-bottom: 20px;
   }
 
   .oper_row {

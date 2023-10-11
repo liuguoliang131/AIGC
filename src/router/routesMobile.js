@@ -1,5 +1,6 @@
 import Home from '../viewsMobile/Home/Index.vue'
 import HanHouQA from '../viewsMobile/demo/HanHouQA.vue'
+import HanHouQADemo from '../viewsMobile/demo/HanHouQA_demo.vue'
 const routes = [
   {
     path: '/',
@@ -12,7 +13,7 @@ const routes = [
   {
     path: '/hanhouQA',
     name: 'hanhouQA',
-    component: HanHouQA,
+    component: HanHouQADemo,
     meta: {
       isAuthenticated: false
     }
