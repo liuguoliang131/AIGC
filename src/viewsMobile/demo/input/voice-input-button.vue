@@ -3,6 +3,7 @@
 <!-- Description: voice-input-btn -->
 <template>
   <div
+  id="voice-input-button"
     class="voice-input-button"
     @contextmenu="menuPop"
     @mousedown="pressMode ? start($event) : toggle($event)"
@@ -22,7 +23,7 @@
       <loading v-else :color="getConfig('color')"></loading>
     </div>
     <span class="record-btn-text">{{
-      recording ? "松开进行提问" : "按住语音识别"
+      recording ? "松开发送" : "按住说话"
     }}</span>
   </div>
 </template>
@@ -238,9 +239,9 @@ export default {
   width: 180px;
   justify-content: center;
   // border: #d55119 1px solid;
-  background-color: green;
-  padding: 5px 8px;
+  background-color: rgb(30, 41, 255);
   border-radius: 5px;
+  flex: 1;
   align-items: center;
   opacity: 0.5;
   &.ready {

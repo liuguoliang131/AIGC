@@ -92,9 +92,11 @@ function confirmVideo() {
 
 const init = async () => {
   VMS.start({
-    appId: "15288978",
-    apiKey: "f1b41f43990adf262f260892644f053e",
-    apiSecret: "M2FmZDM1NDEzMzEyZWU4MDgxOWJmMjYy",
+    //测试环境
+    appId: process.env.VUE_APP_SELF_ENV === "test" ? "3c4dc848":"15288978",
+    apiKey: process.env.VUE_APP_SELF_ENV === "test" ? "b221b349d95deb3fe82a20651af287b9":"f1b41f43990adf262f260892644f053e",
+    apiSecret: process.env.VUE_APP_SELF_ENV === "test" ? "NTM2ZWExYzRhODUxOWExMzg1ZWMxMjNh":"M2FmZDM1NDEzMzEyZWU4MDgxOWJmMjYy",
+
     // width: 1280, //[1920 1280 720]
     height: 1080, // [1080 720 405]
     avatarId: '118801001',
