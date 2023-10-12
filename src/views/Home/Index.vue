@@ -255,15 +255,10 @@
         </div>
       </div>
     </el-scrollbar>
-    <div class="memberFeeWrapper">
+    <div class="memberFeeWrapper" >
       <img
-        src="https://quanres.hanhoukeji.com/hanhou-ai-pc/tobe_memeber.png?t=1"
-        style="
-           {
-            width: 200px;
-            height: 158px;
-          }
-        "
+        src="https://quanres.hanhoukeji.com/hanhou-ai-pc/tobe_memeber2.png"
+       class="memberFeeImg"
       />
     </div>
     <my-dialog
@@ -303,7 +298,6 @@ function onMouseEnter(index) {
     slideItemHover.value = index;
   });
 }
-
 function onMouseOut() {
   nextTick(() => {
     slideItemHover.value = null;
@@ -345,6 +339,10 @@ function showWeCard() {
     bottom: 400px;
     display: flex;
     flex-direction: column;
+    .memberFeeImg{
+      width: 200px;
+      height: 390px;
+    }
   }
 
   .positionRelative {

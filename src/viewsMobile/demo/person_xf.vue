@@ -1,5 +1,6 @@
 <template>
   <div class="person_wrapper">
+    <span class="errorCode">{{ errorCode }}</span>
     <canvas id="canvas" width="1080" height="1080" />
     <div :class="['remote-container']" id="remote_stream">
     </div>
@@ -11,7 +12,7 @@
         :onChange=upload /> -->
     <!-- </div> -->
   </div>
-  <my-dialog v-model:show="removeVisible" title="温馨提示" message="ios兼容性问题，请点击确认按钮恢复虚拟人" @confirm="confirm">
+  <my-dialog v-model:show="removeVisible" title="温馨提示" message="ios兼容性问题，请点击确认按钮恢复虚拟人" @confirm="confirmVideo">
   </my-dialog>
 </template>
 <script setup>
@@ -22,8 +23,9 @@ import VMS from './core/vms-2d-web-sdk-1.1.0';
 import MyDialog from "@/components/mobile/MyDialog.vue";
 import { encode, decode } from "js-base64";
 const isMute = ref(true);
+const errorCode = ref('');
 // 删除对话窗口弹窗
-const removeVisible = ref(false);
+const removeVisible = ref(true);
 
 const vmsStatus = ref(0); //虚拟人服务状态 结束：0，激活：1
 
@@ -81,11 +83,13 @@ window.addEventListener('unload', function (event) {
   stop();
 });
 var stream;
-function confirm() {
+
+function confirmVideo() {
   removeVisible.value = false;
   stream && stream.resume();
   setTimeout(() => detectVideo(), 0);
 }
+
 const init = async () => {
   VMS.start({
     appId: "15288978",
@@ -113,6 +117,7 @@ const init = async () => {
         removeVisible.value = true;
         stream = e.stream;
       }
+      errorCode.value = `${e.code}`;
       vmsStatus.value = 0;
     });
 };
@@ -238,6 +243,15 @@ canvas {
   display: flex;
   flex-direction: column;
   align-items: center;
+  pointer-events:none;
+
+  .errorCode {
+    color: gray;
+    font-size: 10px;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+  }
 
   .remote-container {
     width: 1px;

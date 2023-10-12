@@ -209,7 +209,6 @@ const initCopyClipboard = () => {
     position: absolute;
     top: 40px;
     right: 0px;
-    pointer-events:none;
   }
 
   .clipboard_text {
