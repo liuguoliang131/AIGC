@@ -1,6 +1,7 @@
 import Home from '../viewsMobile/Home/Index.vue'
-import HanHouQA from '../viewsMobile/demo/HanHouQA.vue'
+import HanHouQAOuter from '../viewsMobile/demo/HanHouQA.vue'
 import HanHouQADemo from '../viewsMobile/demo/HanHouQA_demo.vue'
+import HanHouQAOld from '../viewsMobile/demo/HanHouQA_old.vue'
 const routes = [
   {
     path: '/',
@@ -13,6 +14,14 @@ const routes = [
   {
     path: '/hanhouQA',
     name: 'hanhouQA',
+    component: HanHouQAOld,
+    meta: {
+      isAuthenticated: false
+    }
+  },
+  {
+    path: '/hanHouQANew',
+    name: 'hanHouQANew',
     component: HanHouQADemo,
     meta: {
       isAuthenticated: false
@@ -21,7 +30,7 @@ const routes = [
   {
     path: '/hsQA',
     name: 'hsQA',
-    component: HanHouQA,
+    component: HanHouQAOuter,
     meta: {
       isAuthenticated: false
     }
@@ -29,7 +38,7 @@ const routes = [
   {
     path: '/lldqQA',
     name: 'lldqQA',
-    component: HanHouQA,
+    component: HanHouQAOuter,
     meta: {
       isAuthenticated: false
     }
@@ -37,7 +46,7 @@ const routes = [
   {
     path: '/zsQA',
     name: 'zsQA',
-    component: HanHouQA,
+    component: HanHouQAOuter,
     meta: {
       isAuthenticated: false
     }
@@ -45,7 +54,7 @@ const routes = [
   {
     path: '/lmhQA',
     name: 'lmhQA',
-    component: HanHouQA,
+    component: HanHouQAOuter,
     meta: {
       isAuthenticated: false
     }

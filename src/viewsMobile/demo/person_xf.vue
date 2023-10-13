@@ -2,6 +2,7 @@
   <div class="person_wrapper">
     <span class="errorCode">{{ errorCode }}</span>
     <canvas id="canvas" width="1080" height="1080" />
+    <img src="https://quanres.hanhoukeji.com/hanhou-ai-pc/ai_person_desktop.png" class="desktop" />
     <div :class="['remote-container']" id="remote_stream">
     </div>
     <!-- <div class="oper_row">
@@ -12,7 +13,7 @@
         :onChange=upload /> -->
     <!-- </div> -->
   </div>
-  <my-dialog v-model:show="removeVisible" title="温馨提示" message="ios兼容性问题，请点击确认按钮恢复虚拟人" @confirm="confirmVideo">
+  <my-dialog v-model:show="removeVisible" title="温馨提示" message="苹果兼容性问题，请点击确认恢复虚拟人" @confirm="confirmVideo">
   </my-dialog>
 </template>
 <script setup>
@@ -25,7 +26,7 @@ import { encode, decode } from "js-base64";
 const isMute = ref(true);
 const errorCode = ref('');
 // 删除对话窗口弹窗
-const removeVisible = ref(true);
+const removeVisible = ref(false);
 
 const vmsStatus = ref(0); //虚拟人服务状态 结束：0，激活：1
 
@@ -93,9 +94,9 @@ function confirmVideo() {
 const init = async () => {
   VMS.start({
     //测试环境
-    appId: process.env.VUE_APP_SELF_ENV === "test" ? "3c4dc848":"15288978",
-    apiKey: process.env.VUE_APP_SELF_ENV === "test" ? "b221b349d95deb3fe82a20651af287b9":"f1b41f43990adf262f260892644f053e",
-    apiSecret: process.env.VUE_APP_SELF_ENV === "test" ? "NTM2ZWExYzRhODUxOWExMzg1ZWMxMjNh":"M2FmZDM1NDEzMzEyZWU4MDgxOWJmMjYy",
+    appId: process.env.VUE_APP_SELF_ENV === "test" ? "3c4dc848" : "15288978",
+    apiKey: process.env.VUE_APP_SELF_ENV === "test" ? "b221b349d95deb3fe82a20651af287b9" : "f1b41f43990adf262f260892644f053e",
+    apiSecret: process.env.VUE_APP_SELF_ENV === "test" ? "NTM2ZWExYzRhODUxOWExMzg1ZWMxMjNh" : "M2FmZDM1NDEzMzEyZWU4MDgxOWJmMjYy",
 
     // width: 1280, //[1920 1280 720]
     height: 1080, // [1080 720 405]
@@ -104,7 +105,7 @@ const init = async () => {
     resId: '1711936698963906560',//白色背景
     // isSsl: false,
     // moveH:200,
-    // moveV:0,
+    moveV:30,
     // scale: 1,
     // maskRegion: '[0,0,900,600]'
   })
@@ -195,8 +196,8 @@ function say() {
       text: encode(
         JSON.stringify({
           avatar: [
-            { type: 'action', value: 'A_LH_introduced_O', wb: 0, we: 5 },
-            { type: 'action', value: 'A_RH_introduced_O', wb: props.message.length - 20, we: props.message.length },
+            { type: 'action', value: 'A_RH_emphasize2_O', wb: 0, we: 5 },
+            { type: 'action', value: 'A_RH_introduced_O', wb: props.message.length - 5, we: props.message.length },
             // { type: 'action', value: 'A_RH_emphasize2_O', wb: 70, we: 90 },
             // { type: 'action', value: 'A_RH_ok_O', wb: props.message.length - 20, we: props.message.length }
           ]
@@ -237,6 +238,7 @@ onUnmounted(() => {
 canvas {
   width: 100% !important;
   height: 100% !important;
+  z-index: 1;
 }
 </style>
 
@@ -245,7 +247,9 @@ canvas {
   display: flex;
   flex-direction: column;
   align-items: center;
-  pointer-events:none;
+  pointer-events: none;
+  position: relative;
+
 
   .errorCode {
     color: gray;
@@ -260,6 +264,14 @@ canvas {
     height: 1px;
     background-color: transparent;
     // margin-bottom: 20px;
+  }
+
+  .desktop {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 300px;
   }
 
   .oper_row {

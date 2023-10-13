@@ -6,15 +6,17 @@
     <div class="floatPerson" v-if="columns.length > 1">
       <Person :message="result"></Person>
     </div>
-    <div class="chatHistory" ref="chatScrollView">
-      <template v-for="(item, index) in list" :key="index">
-        <div :class="['chatMsgItem']">
-          <span :class="[(item['type'] === 'sender' || item['type'] === 'senderTmp') ? 'senderName' : 'aiName']">{{
-            senderName(item)
-          }}</span>
-          <span v-html="item['content']" />
-        </div>
-      </template>
+    <div class="chatHistoryWrapper" v-if="list.length > 0">
+      <div class="chatHistory" ref="chatScrollView">
+        <template v-for="(item, index) in list" :key="index">
+          <div :class="['chatMsgItem']">
+            <span :class="[(item['type'] === 'sender' || item['type'] === 'senderTmp') ? 'senderName' : 'aiName']">{{
+              senderName(item)
+            }}</span>
+            <span v-html="item['content']" />
+          </div>
+        </template>
+      </div>
     </div>
     <div class="form">
       <div class="input_control">
@@ -121,7 +123,7 @@ watch(selectResult, (newValue, oldValue) => {
 function senderName(item) {
   return (item['type'] === 'sender' || item['type'] === 'senderTmp')
     ? ('游客: ')
-    : (interfaceMap[selectResult]['text'] + '数字人: ');
+    : (interfaceMap[selectResult.value]['text'] + '数字人: ');
 }
 function changeInput() {
   isVoiceInput.value = !isVoiceInput.value;
@@ -154,7 +156,7 @@ function answer() {
       closeToast();
       if (res.code == 200) {
         result.value = res.data;
-        list.value.push({ 'type': 'ai', 'content': content });
+        list.value.push({ 'type': 'ai', 'content': result.value });
         scrollToEndDirectly();
       } else {
         showToast(res.msg || res.message);
@@ -244,6 +246,16 @@ const initCopyClipboard = () => {
 <style scoped lang="less">
 .van-dropdown-menu {
   width: 100%;
+  /deep/.van-popup {
+    background-color: rgba(255, 255, 255, 0.9) !important;
+  }
+    /deep/.van-cell {
+    background-color:  transparent !important;
+  }
+}
+
+/deep/.van-dropdown-menu__bar {
+  background-color: transparent !important;
 }
 
 /deep/.van-dropdown-menu__item--disabled .van-dropdown-menu__title {
@@ -278,35 +290,44 @@ const initCopyClipboard = () => {
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  background-image: url("https://quanres.hanhoukeji.com/hanhou-ai-pc/ai_person_bg.jpg");
+    background-size: cover;
+    background-color: #e6e4e4;
 
-  .chatHistory {
+  .chatHistoryWrapper {
     background-color: rgba(255, 255, 255, 0.5);
+    padding: 10px 0;
     position: absolute;
     bottom: 60px;
     left: 0;
+    z-index: 2;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
     width: calc(100% - 10px);
-    padding: 0px 5px;
-    overflow-x: hidden;
-    overflow-y: scroll;
-    max-height: 180px;
-    // min-height: 180px;
 
-    .chatMsgItem {
-      color: black;
-      font-size: 12px;
-      margin-top: 2px;
-      margin-bottom: 2px;
-      width: 100%;
-      overflow-wrap: break-word;
+    .chatHistory {
+      position: relative;
 
-      .senderName {
-        color: green;
-      }
+      padding: 0px 10px;
+      overflow-x: hidden;
+      overflow-y: scroll;
+      max-height: 180px;
+      // min-height: 180px;
 
-      .aiName {
-        color: blue;
+      .chatMsgItem {
+        color: rgba(0, 0, 0, 0.8);
+        font-size: 12px;
+        margin-top: 4px;
+        width: 100%;
+        overflow-wrap: break-word;
+
+        .senderName {
+          color: green;
+        }
+
+        .aiName {
+          color: blue;
+        }
       }
     }
   }
@@ -316,7 +337,6 @@ const initCopyClipboard = () => {
     display: flex;
     align-items: center;
     justify-content: center;
-    // background-color: blue;
   }
 
   .clipboard_text {
@@ -376,6 +396,7 @@ const initCopyClipboard = () => {
           .text_input {
             flex: 1;
             background-color: #f2f1f1 !important;
+            border-radius: 10px;
             padding-left: 5px !important;
 
             /deep/textarea {
