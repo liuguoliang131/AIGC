@@ -28,8 +28,8 @@
           <div class="text_input_wrapper" v-if="!isVoiceInput">
             <van-field v-model="message" rows="1" center autosize type="textarea" maxlength="500" placeholder="请输入您的问题"
               class="text_input" />
-            <div :class="['submit', columns.length <= 1 ? 'largeBtn' : '']" @click="textAnswer"
-              v-html="columns.length <= 1 ? '提问' : '手动<br>提问'"></div>
+            <div :class="['submit']" @click="textAnswer"
+              v-html="'发送'"></div>
           </div>
           <voice-input-button v-if="isVoiceInput" appId="57fe6cc5" apiKey="0bf1bd1b6e154aea50622ef5bf4257c6"
             apiSecret="MTI4MjVjNmQxMjBkYTZiZjI3N2U5MjBi" @record="showResult" @record-start="recordStart"
@@ -86,6 +86,54 @@ const isSpeaking = ref(false);
 const result = ref("");
 const router = useRouter();
 
+// 检查浏览器是否支持 wakeLock API
+if ('wakeLock' in navigator) {
+  let wakeLock = null;
+
+  // 请求屏幕保持唤醒状态
+  const requestWakeLock = async () => {
+    try {
+      wakeLock = await navigator.wakeLock.request('screen');
+      console.log('屏幕保持唤醒状态已启用',wakeLock);
+    } catch (error) {
+      console.error('无法请求屏幕保持唤醒状态:', error);
+    }
+  };
+
+  // 释放屏幕保持唤醒状态
+  const releaseWakeLock = () => {
+    if (wakeLock !== null) {
+      wakeLock.release();
+      wakeLock = null;
+      console.log('屏幕保持唤醒状态已释放');
+    }
+  };
+
+  // 监听页面可见性变化事件
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') {
+      requestWakeLock();
+    } else {
+      releaseWakeLock();
+    }
+  });
+  requestWakeLock();
+} else {
+  console.warn('您的浏览器不支持 wakeLock API。');
+}
+
+// // 静音页面中的所有音频元素
+// const mediaElements = document.querySelectorAll('audio, video');
+
+// mediaElements.forEach(element => {
+//   element.muted = true;
+// });
+
+// // 取消静音页面中的所有音频元素
+// mediaElements.forEach(element => {
+//   element.muted = false;
+// });
+
 const name = router.currentRoute.value.name;
 if (name === 'hsQA') {
   document.title = '憨猴·AI';
@@ -137,17 +185,19 @@ function scrollToEndDirectly() {
 
 function textAnswer() {
   const content = message.value.trim();
-  list.value.push({ 'type': 'sender', 'content': content });
-  scrollToEndDirectly();
-  answer();
+  if (content && content.length > 0) {
+    list.value.push({ 'type': 'sender', 'content': content });
+    scrollToEndDirectly();
+    answer();
+  }
 }
 function answer() {
+  const content = message.value.trim();
   showLoadingToast({
     duration: 0,
     message: "处理中...",
     forbidClick: true,
   });
-  const content = message.value.trim();
   message.value = '';
   const query = encodeURIComponent(content);
   request
@@ -178,7 +228,7 @@ function showResult(text) {
   message.value = text;
   const listTmp = list.value;
   const item = listTmp[listTmp.length - 1];
-  if (item['type'] === 'senderTmp') {
+  if (item && item['type'] === 'senderTmp') {
     list.value.pop();
   }
   list.value.push({ 'type': 'senderTmp', 'content': text });
@@ -195,7 +245,7 @@ function recordNoResult() {
 function recordComplete(text) {
   const listTmp = list.value;
   const item = listTmp[listTmp.length - 1];
-  if (item['type'] === 'senderTmp') {
+  if (item && item['type'] === 'senderTmp') {
     list.value.pop();
   }
   if (text && text.length > 0) {
@@ -246,11 +296,13 @@ const initCopyClipboard = () => {
 <style scoped lang="less">
 .van-dropdown-menu {
   width: 100%;
+
   /deep/.van-popup {
     background-color: rgba(255, 255, 255, 0.9) !important;
   }
-    /deep/.van-cell {
-    background-color:  transparent !important;
+
+  /deep/.van-cell {
+    background-color: transparent !important;
   }
 }
 
@@ -291,19 +343,20 @@ const initCopyClipboard = () => {
   flex-direction: column;
   overflow: hidden;
   background-image: url("https://quanres.hanhoukeji.com/hanhou-ai-pc/ai_person_bg.jpg");
-    background-size: cover;
-    background-color: #e6e4e4;
+  background-size: cover;
+  background-color: #e6e4e4;
 
   .chatHistoryWrapper {
-    background-color: rgba(255, 255, 255, 0.5);
+    background-color: rgba(255, 255, 255, 0.35);
     padding: 10px 0;
     position: absolute;
     bottom: 60px;
     left: 0;
+    display: none;
     z-index: 2;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
-    width: calc(100% - 10px);
+    width: 100%;
 
     .chatHistory {
       position: relative;
@@ -335,7 +388,7 @@ const initCopyClipboard = () => {
   .floatPerson {
     flex: 1;
     display: flex;
-    align-items: center;
+    align-items: start;
     justify-content: center;
   }
 
@@ -354,7 +407,7 @@ const initCopyClipboard = () => {
 
     .input_control {
       display: flex;
-      border-top: .5px solid rgb(181, 178, 178);
+      // border-top: .5px solid rgb(181, 178, 178);
       padding: 5px 5px;
       flex-direction: row;
       width: 100%;
@@ -362,27 +415,27 @@ const initCopyClipboard = () => {
       align-items: center;
 
       .input_switch {
-        width: 35px;
-        height: 35px;
+        width: 26px;
+        height: 26px;
         margin-left: 5px;
         margin-right: 5px;
         display: flex;
         align-items: center;
         justify-content: center;
-        border: 1px solid black;
+        border: 1.6px solid #333;
         border-radius: 40px;
 
 
         .input_switch_icon {
-          width: 25px;
-          height: 25px;
+          width: 20px;
+          height: 20px;
         }
       }
 
       .input_wrapper {
         flex: 1;
-        margin-right: 5px;
-        height: 50px;
+        margin-right: 10px;
+        height: 38px;
         display: flex;
         align-items: center;
         justify-content: start;
@@ -391,12 +444,12 @@ const initCopyClipboard = () => {
           display: flex;
           flex-direction: row;
           flex: 1;
-          height: 50px;
+          height: 38px;
 
           .text_input {
             flex: 1;
-            background-color: #f2f1f1 !important;
-            border-radius: 10px;
+            background-color: #ffffff !important;
+            border-radius: 5px;
             padding-left: 5px !important;
 
             /deep/textarea {
@@ -408,16 +461,16 @@ const initCopyClipboard = () => {
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 50px;
-            height: 50px;
+            width: 65px;
+            height: 38px;
             flex-shrink: 0;
-            margin-left: 5px;
+            margin-left: 10px;
             border-radius: 5px;
-            background: #126cfe;
+            background: #126CFE;
             color: #fff;
             text-align: center;
             font-family: PingFang SC;
-            font-size: 14px;
+            font-size: 15px;
             font-style: normal;
             font-weight: 400;
             line-height: normal;

@@ -1,6 +1,6 @@
 <template>
   <div class="person_wrapper">
-    <span class="errorCode">{{ errorCode }}</span>
+    <!-- <span class="errorCode">{{ errorCode }}</span> -->
     <canvas id="canvas" width="1080" height="1080" />
     <img src="https://quanres.hanhoukeji.com/hanhou-ai-pc/ai_person_desktop.png" class="desktop" />
     <div :class="['remote-container']" id="remote_stream">
@@ -94,9 +94,9 @@ function confirmVideo() {
 const init = async () => {
   VMS.start({
     //测试环境
-    appId: process.env.VUE_APP_SELF_ENV === "test" ? "3c4dc848" : "15288978",
-    apiKey: process.env.VUE_APP_SELF_ENV === "test" ? "b221b349d95deb3fe82a20651af287b9" : "f1b41f43990adf262f260892644f053e",
-    apiSecret: process.env.VUE_APP_SELF_ENV === "test" ? "NTM2ZWExYzRhODUxOWExMzg1ZWMxMjNh" : "M2FmZDM1NDEzMzEyZWU4MDgxOWJmMjYy",
+    appId: process.env.VUE_APP_SELF_ENV !== "prod" ? "3c4dc848" : "15288978",
+    apiKey: process.env.VUE_APP_SELF_ENV !== "prod" ? "b221b349d95deb3fe82a20651af287b9" : "f1b41f43990adf262f260892644f053e",
+    apiSecret: process.env.VUE_APP_SELF_ENV !== "prod" ? "NTM2ZWExYzRhODUxOWExMzg1ZWMxMjNh" : "M2FmZDM1NDEzMzEyZWU4MDgxOWJmMjYy",
 
     // width: 1280, //[1920 1280 720]
     height: 1080, // [1080 720 405]
@@ -105,8 +105,8 @@ const init = async () => {
     resId: '1711936698963906560',//白色背景
     // isSsl: false,
     // moveH:200,
-    moveV:30,
-    // scale: 1,
+    moveV:15,
+    // scale: 1.2,
     // maskRegion: '[0,0,900,600]'
   })
     .then((msg) => {
@@ -162,7 +162,9 @@ function showPerson(video) {
       const red = data[i + 0];
       const green = data[i + 1];
       const blue = data[i + 2];
-      if (green >= 255 && red >= 255 && blue >= 255) {
+      if (green >= 254 && red >= 254 && blue >= 254) {
+        data[i + 3] = 0;
+      } else if (green >= 240 && red >= 240 && blue >= 240) {
         data[i + 3] = 0;
       }
     }
@@ -236,8 +238,8 @@ onUnmounted(() => {
 </script>
 <style>
 canvas {
-  width: 100% !important;
-  height: 100% !important;
+  width: 130% !important;
+  height: 130% !important;
   z-index: 1;
 }
 </style>

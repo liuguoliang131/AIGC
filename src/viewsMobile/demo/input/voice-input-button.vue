@@ -234,12 +234,12 @@ export default {
 <style lang="less" scoped>
 .voice-input-button {
   position: relative;
-  margin-left: 10px;
   display: flex;
   width: 180px;
+  height: 38px;
   justify-content: center;
   // border: #d55119 1px solid;
-  background-color: rgb(30, 41, 255);
+  background-color: #0A6DFF;
   border-radius: 5px;
   flex: 1;
   align-items: center;
@@ -248,13 +248,12 @@ export default {
     opacity: 1;
   }
   &.active {
-    background-color: #d55119;
+    background-color: #FE9112;
   }
   .record-btn {
-    width: 50px;
-    height: 50px;
+    width: 38px;
+    height: 38px;
     // background-color: #d55119;
-    border-radius: 60px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -268,8 +267,7 @@ export default {
     }
   }
   .record-btn-text {
-    width: 110px;
-    font-size: 14px;
+    font-size: 15px;
     color: white;
   }
 }
