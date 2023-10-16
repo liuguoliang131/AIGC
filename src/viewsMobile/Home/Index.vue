@@ -122,6 +122,28 @@
           />
         </div>
       </div>
+      <div class="page8">
+        <van-swipe class="my-swipe" :autoplay="8000" indicator-color="white">
+          <van-swipe-item v-for="(item, idx) in page8SwipeList" :key="idx">
+            <div class="s-item-box">
+              <div class="box-title" v-text="item.title"></div>
+              <img :src="item.img" alt="" />
+            </div>
+          </van-swipe-item>
+          <template #indicator="{ active, total }">
+            <div class="custom-indicator">
+              <div
+                v-for="(item, idx) in total"
+                :key="idx"
+                :class="[
+                  'indicator-item',
+                  active === idx ? 'indicator-item-active' : '',
+                ]"
+              ></div>
+            </div>
+          </template>
+        </van-swipe>
+      </div>
       <div class="page7">
         <div class="row1">
           AI赋能计划不仅是<br />您智慧战略的伙伴<br />更是您商业增长的助手！
@@ -190,6 +212,16 @@ const page4SwipeList = ref([
 const page5SwipeList = ref([
   "https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile-page5-swipe1.png",
   "https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile-page5-swipe2.png",
+]);
+const page8SwipeList = ref([
+  {
+    title: "月卡权益介绍",
+    img: "https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile-page8-swipe1.png",
+  },
+  {
+    title: "年卡权益介绍",
+    img: "https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile-page8-swipe2.png",
+  },
 ]);
 
 // 去工信部备案网址
@@ -624,6 +656,70 @@ onMounted(() => {
         transform: scale(0.5);
         &:active {
           opacity: 0.7;
+        }
+      }
+    }
+    .page8 {
+      height: 100%;
+      overflow: hidden;
+      background: no-repeat
+        url("https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile-page8-bg.png") 0
+        0 / cover;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      .my-swipe {
+        position: relative;
+        width: 100%;
+        padding-bottom: 20px;
+        &::-webkit-scrollbar {
+          display: none;
+        }
+      }
+      .my-swipe .van-swipe-item {
+        box-sizing: border-box;
+        width: 100%;
+        padding: 0 20px 0 34px;
+        .s-item-box {
+          position: relative;
+          .box-title {
+            width: 100%;
+            margin-bottom: 30px;
+            color: #126cfe;
+            text-align: center;
+            font-family: PingFang SC;
+            font-size: 30px;
+            font-style: normal;
+            font-weight: 600;
+            line-height: 36px; /* 120% */
+          }
+          img {
+            width: 100%;
+            height: auto;
+          }
+        }
+      }
+      .custom-indicator {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        .indicator-item {
+          width: 6px;
+          height: 6px;
+          margin: 0 6px;
+          border-radius: 3px;
+          background: #a6c7ff;
+          transition: 0.5s width;
+        }
+        .indicator-item-active {
+          width: 54px;
+          background: #126cfe;
         }
       }
     }

@@ -14,43 +14,18 @@
         @click="handHide"
       />
     </div>
-    <div :class="['vip_pop', visible ? 'vip_pop-visible' : '']">
-      <div class="cenbox">
-        <div class="r1">
-          <img
-            src="https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile-vip-mon.png"
-            alt=""
-          />
-          <img
-            src="https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile-vip-y.png"
-            alt=""
-          />
-        </div>
-        <!-- <div class="r2">
-          <img
-            src="https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile-vip-code2.png"
-            alt=""
-          />
-          <span>长按保存二维码<br />扫码添加购买会员</span>
-        </div> -->
-        <div class="r3" @click="handVisible">
-          <img
-            src="https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile-close1-icon.svg"
-            alt=""
-          />
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 
 <script setup>
 import { ref } from "vue";
-
-const visible = ref(false);
+import { useRouter } from "vue-router";
+const router = useRouter();
 const btnShow = ref(true);
 const handVisible = () => {
-  visible.value = !visible.value;
+  router.push({
+    path: "/buy_member",
+  });
 };
 const handHide = () => {
   btnShow.value = false;
@@ -66,15 +41,15 @@ const handHide = () => {
   .vip_btn {
     position: fixed;
     bottom: 140px;
-    right: 10px;
+    right: 0px;
     .entry {
       width: 80px;
       height: 80px;
     }
     .hide {
       position: absolute;
-      top: 3px;
-      right: 3px;
+      top: 5px;
+      right: 10px;
       width: 10px;
       height: 10px;
     }

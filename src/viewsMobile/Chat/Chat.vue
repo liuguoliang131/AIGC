@@ -167,6 +167,7 @@
       @success="copySuccess"
       @fail="copyFail"
     ></my-clipboard>
+    <quantity-empty v-model:visible="qeVisible"></quantity-empty>
   </div>
 </template>
 
@@ -184,6 +185,7 @@ import { useRouter } from "vue-router";
 import SlideBar from "@/components/mobile/SlideBar.vue";
 import MyDialog from "@/components/mobile/MyDialog.vue";
 import MyClipboard from "@/components/MyClipboard.vue";
+import QuantityEmpty from "@/components/mobile/QuantityEmpty.vue";
 import { ElInput } from "element-plus";
 import { showToast, closeToast } from "vant";
 import { EventSourcePolyfill } from "event-source-polyfill";
@@ -224,6 +226,8 @@ const chatScrollPage = ref(null);
 const scrollPageHeight = ref(0);
 
 const composition = ref(""); //for ios
+
+const qeVisible = ref(false); // 次数用尽弹窗
 
 const onchange = (str) => {
   composition.value = str.data;
@@ -567,7 +571,7 @@ const _getResult = async (message) => {
       userStore.saveResidueQAQuantity(0);
       // 移除列表中最后一对
       chatList.list.splice(chatList.list.length - 2, 2);
-      showToast(err.data.message);
+      qeVisible.value = true;
       return;
     }
 
@@ -579,7 +583,7 @@ const _getResult = async (message) => {
       // 移除列表中最后一对
       chatList.list.splice(chatList.list.length - 2, 2);
 
-      showToast(err.data.message);
+      qeVisible.value = true;
       return;
     }
 
@@ -661,7 +665,8 @@ const onSend = () => {
     return showToast("您的输入已超出800字，请进行修改。");
   }
   if (userStore.residueQAQuantity == 0) {
-    return showToast("您的问答次数已用尽，请联系客服购买");
+    qeVisible.value = true;
+    return;
   }
 
   sendLoading.value = true;

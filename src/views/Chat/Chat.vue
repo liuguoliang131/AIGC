@@ -951,7 +951,10 @@ const getChatResidueQuantity = async () => {
     const res = await request.get(api.chat_residueQuantity);
     console.log(res, "获取对话剩余次数");
     if (res.code !== 200) {
-      return showToast(res.msg);
+      return ElMessage({
+        type: 'error',
+        message:res.msg
+      });
     }
     userStore.saveResidueQAQuantity(res.data.residueQAQuantity);
   } catch (error) {

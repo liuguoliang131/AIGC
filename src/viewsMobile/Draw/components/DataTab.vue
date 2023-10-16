@@ -6,6 +6,7 @@ import { ElTooltip, ElImage } from "element-plus";
 import MyUpload from "@/components/MyUpload.vue";
 import { useUserStore } from "@/store/user";
 import { showToast, closeToast } from "vant";
+import QuantityEmpty from "@/components/mobile/QuantityEmpty.vue";
 
 const props = defineProps({
   detailData: {
@@ -121,6 +122,8 @@ const ratioOptions = ref([
   },
 ]);
 
+const qeVisible = ref(false); //次数用尽提示
+
 // 随便试试
 const handRange = () => {
   const arr = [
@@ -151,7 +154,7 @@ const madePicture4 = async () => {
       return;
     }
     if (userStore.residuePictureQuantity == 0) {
-      showToast("您的绘画次数已用尽，请联系客服购买。");
+      qeVisible.value = true;
       return;
     }
     emit("update:madeDisabled", true);
@@ -416,6 +419,7 @@ const madePicture4 = async () => {
       </div>
       <div v-else :class="['action-btn']" @click="madePicture4">立即生成</div>
     </div>
+    <quantity-empty v-model:visible="qeVisible"></quantity-empty>
   </div>
 </template>
 

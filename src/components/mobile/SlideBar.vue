@@ -6,14 +6,21 @@
     ]"
   >
     <div class="firstRow">
-      <span class="leftCount">
+      <div class="leftCount">
         {{
           from
             ? `剩余问答次数：${userStore.residueQAQuantity}次`
             : `剩余绘画次数：${userStore.residuePictureQuantity}次`
         }}
-      </span>
-      <img @click="handHide" src="@/assets/icon_close_page.png" class="close" />
+      </div>
+      <div class="f-right">
+        <div class="buy_vip" @click="handGoByVip">购买会员</div>
+        <img
+          @click="handHide"
+          src="@/assets/icon_close_page.png"
+          class="close"
+        />
+      </div>
     </div>
     <div class="topEntry">
       <div class="imgLeft">
@@ -263,6 +270,13 @@ const getResidueQuantity = () => {
   });
 };
 
+// 购买会员
+const handGoByVip = () => {
+  router.push({
+    path: "/buy_member",
+  });
+};
+
 onMounted(() => {
   if (!from) {
     getResidueQuantity();
@@ -282,23 +296,48 @@ onMounted(() => {
   box-sizing: border-box;
   background: #222e50;
   transition: left 0.5s;
-  padding: 14px 16px;
+  padding: 11px 16px 14px 16px;
 
   .firstRow {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    padding-bottom: 14px;
+    padding-bottom: 11px;
 
     .leftCount {
       color: white;
       font-size: 14px;
     }
+    .f-right {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      .buy_vip {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 5px 12px;
+        margin: 0 12px;
+        border-radius: 23.5px;
+        border: 1px solid #fae1c6;
+        background: #3b3633;
+        color: #fae1c6;
+        text-align: center;
+        font-family: PingFang SC;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: 20px;
+        &:active {
+          opacity: 0.7;
+        }
+      }
 
-    .close {
-      width: 22px;
-      height: 22px;
+      .close {
+        width: 22px;
+        height: 22px;
+      }
     }
   }
 

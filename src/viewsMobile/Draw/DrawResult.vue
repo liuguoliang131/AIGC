@@ -23,14 +23,22 @@
             <template v-if="detailData.pictureUrl">
               <div class="show_image">
                 <div class="showImageWrapper">
-                  <img class="show_image-a" :src="detailData.pictureUrl + '?imageView2/2/format/jpg/q/90!'" alt="" />
-                  <div class="image_loading" v-if="detailData.percentage != 100">{{ '图片绘制中 ' + detailData.percentage + '%' }}</div>
+                  <img
+                    class="show_image-a"
+                    :src="
+                      detailData.pictureUrl + '?imageView2/2/format/jpg/q/90!'
+                    "
+                    alt=""
+                  />
+                  <div
+                    class="image_loading"
+                    v-if="detailData.percentage != 100"
+                  >
+                    {{ "图片绘制中 " + detailData.percentage + "%" }}
+                  </div>
                 </div>
                 <template
-                  v-if="
-                    detailData.pictureUrl &&
-                    detailData.pictureStatus == 2
-                  "
+                  v-if="detailData.pictureUrl && detailData.pictureStatus == 2"
                 >
                   <div>
                     <div class="show_image-b">
@@ -245,6 +253,7 @@
       @confirm="handConfirmRemove"
     >
     </my-dialog>
+    <quantity-empty v-model:visible="qeVisible"></quantity-empty>
   </div>
 </template>
 
@@ -257,6 +266,7 @@ import { useUserStore } from "@/store/user";
 import { onMounted, onUnmounted, ref, watch } from "vue";
 import SlideBar from "@/components/mobile/SlideBar.vue";
 import MyDialog from "@/components/mobile/MyDialog.vue";
+import QuantityEmpty from "@/components/mobile/QuantityEmpty.vue";
 import request from "@/http/index";
 import api from "@/http/api";
 import utils from "@/common/utils";
@@ -272,6 +282,7 @@ const drawStore = useDrawStore();
 const jokes = data.getJokeList();
 const randomNumber = Math.floor(Math.random() * jokes.length);
 const jokeIndex = ref(randomNumber);
+const qeVisible = ref(false); // 次数用尽提示
 
 // 图片详情信息
 const detailData = ref({
@@ -362,7 +373,6 @@ const stopTimer = () => {
   stopJokerTimer();
   clearInterval(timer);
 };
-
 
 let jokerTimer = null;
 // 开始轮询详情
@@ -470,7 +480,8 @@ const madePicture1 = async (position, k) => {
       return;
     }
     if (userStore.residuePictureQuantity == 0) {
-      showToast("您的绘画次数已用尽，请联系客服购买。");
+      // 次数为0
+      qeVisible.value = true;
       return;
     }
 
@@ -746,28 +757,28 @@ onUnmounted(() => {
         text-align: center;
 
         .showImageWrapper {
-            position: relative;
+          position: relative;
+          width: 343px;
+          .image_loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            border-radius: 40px;
+            transform: translate(-50%, -50%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(0, 0, 0, 0.5);
+            font-size: 13px;
+            color: white;
+            width: 200px;
+            height: 40px;
+          }
+          .show_image-a {
             width: 343px;
-            .image_loading {
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                border-radius: 40px;
-                transform: translate(-50%, -50%);
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                background-color: rgba(0, 0, 0, 0.5);
-                font-size: 13px;
-                color: white;
-                width: 200px;
-                height: 40px;
-              }
-            .show_image-a {
-              width: 343px;
-              height: auto;
-              margin: auto;
-            }
+            height: auto;
+            margin: auto;
+          }
         }
 
         .show_image-b {

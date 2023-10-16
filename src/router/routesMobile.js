@@ -154,6 +154,15 @@ const routes = [
       isAuthenticated: false
     },
   },
+  {
+    path: '/buy_member',
+    name: 'BuyMember',
+    component: () => import('../viewsMobile/BuyMember/Index.vue'),
+    meta: {
+      title: '购买会员',
+      isAuthenticated: false
+    },
+  },
 ]
 
 export default routes
