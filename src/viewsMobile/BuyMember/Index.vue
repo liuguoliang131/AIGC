@@ -5,6 +5,7 @@
         class="nav-left"
         src="https://quanres.hanhoukeji.com/hanhou-ai-pc/mobile-black-navleft1.png"
         alt=""
+        @click="goback"
       />
       <span>购买会员</span>
     </div>
@@ -96,6 +97,7 @@
 <script setup>
 import Arc from "./components/Arc";
 import { Overlay as VanOverlay } from "vant";
+import utils from "@/common/utils";
 import { ref } from "vue";
 const swiperList = [
   {
@@ -199,6 +201,10 @@ const handShow = () => {
 // 关闭弹窗
 const handHide = () => {
   visible.value = false;
+};
+// 退一步
+const goback = () => {
+  utils.goBack();
 };
 </script>
 
