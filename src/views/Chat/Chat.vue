@@ -1,97 +1,59 @@
 <template>
   <div class="container">
-    <sidebar>
+    <sidebar @on-pannel-toggle="onOnPannelToggle">
       <div class="side-content">
-        <div v-if="sendLoading" class="newchat_disabled">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="14"
-            height="14"
-            viewBox="0 0 14 14"
-            fill="none"
-          >
+        <div v-if="!isExpandMode" @click="handNewChat">
+          <img src="@/assets/add_chat_shrink.svg" alt="" class="newchat_shink_icon" />
+        </div>
+        <div v-else-if="sendLoading" class="newchat_disabled">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
             <rect y="6" width="14" height="2" fill="white" />
-            <rect
-              x="6"
-              y="14"
-              width="14"
-              height="2"
-              transform="rotate(-90 6 14)"
-              fill="white"
-            />
+            <rect x="6" y="14" width="14" height="2" transform="rotate(-90 6 14)" fill="white" />
           </svg>
           <span>新建聊天</span>
         </div>
         <div v-else class="newchat" @click="handNewChat">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="14"
-            height="14"
-            viewBox="0 0 14 14"
-            fill="none"
-          >
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
             <rect y="6" width="14" height="2" fill="white" />
-            <rect
-              x="6"
-              y="14"
-              width="14"
-              height="2"
-              transform="rotate(-90 6 14)"
-              fill="white"
-            />
+            <rect x="6" y="14" width="14" height="2" transform="rotate(-90 6 14)" fill="white" />
           </svg>
           <span>新建聊天</span>
         </div>
 
-        <div class="log_list" v-loading="tagList.loading">
-          <div
-            class="scroll_view"
-            ref="tagListScroll"
-            @scroll="handTagListScroll"
-          >
+        <div :class="['log_list', isExpandMode ? '' : 'log_listShink']" v-loading="tagList.loading">
+          <div :class="['scroll_view', isExpandMode ? '' : 'scroll_viewShink']" ref="tagListScroll"
+            @scroll="handTagListScroll">
             <div v-if="tagList.isNull" class="scroll_page"></div>
-            <div v-else ref="tagListPage" class="scroll_page">
-              <div
-                v-for="(item, index) in tagList.list"
-                :key="index"
-                :class="[
-                  'log_item',
-                  item.id === activeTag ? 'log_item_active' : '',
-                ]"
-                @click="handActiveTag(item, index)"
-              >
-                <img
-                  v-if="item.id === activeTag"
-                  class="bubble_icon"
-                  src="https://quanres.hanhoukeji.com/hanhou-ai-pc/bubble_icon_active.png"
-                  alt=""
-                />
-                <img
-                  v-else
-                  class="bubble_icon"
-                  src="https://quanres.hanhoukeji.com/hanhou-ai-pc/bubble_icon_.png"
-                  alt=""
-                />
-                <span class="log_name nowrap">{{ item.title }}</span>
+            <div v-else ref="tagListPage" :class="['scroll_page', isExpandMode ? '' : 'scroll_pageShrink']">
+              <div v-for="(item, index) in tagList.list" :key="index" :class="[
+                'log_item',
+                isExpandMode ? '' : 'log_itemShrink',
+                item.id === activeTag ? 'log_item_active' : '',
+                (!isExpandMode && item.id === activeTag) ? 'log_item_activeShrink' : '',
+              ]" @click="handActiveTag(item, index)">
+                <template v-if="isExpandMode">
+                  <img v-if="item.id === activeTag" class="bubble_icon"
+                    src="https://quanres.hanhoukeji.com/hanhou-ai-pc/bubble_icon_active.png" alt="" />
+                  <img v-else class="bubble_icon" src="https://quanres.hanhoukeji.com/hanhou-ai-pc/bubble_icon_.png"
+                    alt="" />
+                  <span class="log_name nowrap">{{ item.title }}</span>
 
-                <svg
-                  v-if="item.id === activeTag"
-                  @click.self="handDeleteTag(item, index)"
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="18"
-                  height="20"
-                  viewBox="0 0 18 20"
-                  fill="none"
-                >
-                  <path
-                    d="M2.39449 5.48451C2.59157 5.48451 2.78059 5.56484 2.91995 5.70784C3.05931 5.85083 3.13761 6.04478 3.13761 6.24701V16.9784C3.13761 17.1749 3.17535 17.3696 3.24867 17.5512C3.322 17.7328 3.42947 17.8978 3.56496 18.0368C3.70044 18.1758 3.86129 18.286 4.0383 18.3612C4.21531 18.4364 4.40502 18.475 4.5966 18.475H13.4038C13.7906 18.475 14.1616 18.3173 14.4352 18.0366C14.7087 17.756 14.8624 17.3753 14.8624 16.9784V6.24701C14.8624 6.04478 14.9407 5.85083 15.08 5.70784C15.2194 5.56484 15.4084 5.48451 15.6055 5.48451C15.8026 5.48451 15.9916 5.56484 16.131 5.70784C16.2703 5.85083 16.3486 6.04478 16.3486 6.24701V16.9784C16.3486 17.7798 16.0384 18.5483 15.4861 19.115C14.9338 19.6817 14.1848 20 13.4038 20H4.59618C3.81517 20 3.06614 19.6817 2.51388 19.115C1.96162 18.5483 1.65137 17.7798 1.65137 16.9784V6.24701C1.65137 6.04478 1.72966 5.85083 1.86902 5.70784C2.00838 5.56484 2.1974 5.48451 2.39449 5.48451ZM6.24797 3.78413C6.44506 3.78413 6.63408 3.70379 6.77344 3.5608C6.9128 3.4178 6.99109 3.22385 6.99109 3.02163C6.99104 2.82505 7.02873 2.63039 7.102 2.44876C7.17528 2.26714 7.28271 2.1021 7.41815 1.96308C7.5536 1.82406 7.71441 1.71378 7.8914 1.63854C8.06839 1.56331 8.25809 1.52458 8.44967 1.52458H9.55031C9.74192 1.52452 9.93167 1.56321 10.1087 1.63842C10.2857 1.71364 10.4466 1.82391 10.5821 1.96293C10.7176 2.10195 10.8251 2.26701 10.8984 2.44866C10.9717 2.63032 11.0094 2.82502 11.0093 3.02163C11.0093 3.22385 11.0876 3.4178 11.227 3.5608C11.3663 3.70379 11.5553 3.78413 11.7524 3.78413C11.9495 3.78413 12.1385 3.70379 12.2779 3.5608C12.4172 3.4178 12.4955 3.22385 12.4955 3.02163C12.4956 2.22702 12.1906 1.46437 11.6466 0.898822C11.1027 0.333277 10.3635 0.0103601 9.58912 0H8.41128C7.63697 0.0104696 6.89783 0.333421 6.35387 0.898943C5.80991 1.46446 5.50489 2.22705 5.50485 3.02163C5.50485 3.22385 5.58315 3.4178 5.72251 3.5608C5.86187 3.70379 6.05089 3.78413 6.24797 3.78413Z"
-                    fill="#C9E1FF"
-                  />
-                  <path
-                    d="M0 3.70537C0 3.50314 0.0782929 3.3092 0.217655 3.1662C0.357017 3.02321 0.546032 2.94287 0.743119 2.94287H17.2569C17.454 2.94287 17.643 3.02321 17.7823 3.1662C17.9217 3.3092 18 3.50314 18 3.70537C18 3.9076 17.9217 4.10155 17.7823 4.24454C17.643 4.38754 17.454 4.46787 17.2569 4.46787H0.743119C0.546032 4.46787 0.357017 4.38754 0.217655 4.24454C0.0782929 4.10155 0 3.9076 0 3.70537ZM6.7983 6.47283C6.99539 6.47283 7.18441 6.55317 7.32377 6.69616C7.46313 6.83916 7.54142 7.0331 7.54142 7.23533V15.7076C7.54142 15.9098 7.46313 16.1037 7.32377 16.2467C7.18441 16.3897 6.99539 16.4701 6.7983 16.4701C6.60122 16.4701 6.4122 16.3897 6.27284 16.2467C6.13348 16.1037 6.05518 15.9098 6.05518 15.7076V7.23533C6.05518 7.0331 6.13348 6.83916 6.27284 6.69616C6.4122 6.55317 6.60122 6.47283 6.7983 6.47283ZM11.2021 6.47283C11.3992 6.47283 11.5882 6.55317 11.7276 6.69616C11.8669 6.83916 11.9452 7.0331 11.9452 7.23533V15.7076C11.9452 15.9098 11.8669 16.1037 11.7276 16.2467C11.5882 16.3897 11.3992 16.4701 11.2021 16.4701C11.005 16.4701 10.816 16.3897 10.6766 16.2467C10.5373 16.1037 10.459 15.9098 10.459 15.7076V7.23533C10.459 7.0331 10.5373 6.83916 10.6766 6.69616C10.816 6.55317 11.005 6.47283 11.2021 6.47283Z"
-                    fill="#C9E1FF"
-                  />
-                </svg>
+                  <svg v-if="item.id === activeTag" @click.self="handDeleteTag(item, index)" class="delete_icon"
+                    xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <path
+                      d="M4.12832 4.93606C4.30351 4.93606 4.47153 5.00836 4.5954 5.13705C4.71928 5.26575 4.78887 5.4403 4.78887 5.62231V15.2805C4.78887 15.4575 4.82242 15.6326 4.8876 15.7961C4.95278 15.9595 5.04831 16.108 5.16874 16.2331C5.28918 16.3582 5.43215 16.4574 5.58949 16.5251C5.74683 16.5927 5.91546 16.6275 6.08576 16.6275H13.9144C14.2582 16.6275 14.588 16.4856 14.8312 16.233C15.0743 15.9804 15.2109 15.6378 15.2109 15.2805V5.62231C15.2109 5.4403 15.2805 5.26575 15.4044 5.13705C15.5282 5.00836 15.6963 4.93606 15.8714 4.93606C16.0466 4.93606 16.2146 5.00836 16.3385 5.13705C16.4624 5.26575 16.532 5.4403 16.532 5.62231V15.2805C16.532 16.0018 16.2562 16.6935 15.7653 17.2035C15.2744 17.7135 14.6086 18 13.9144 18H6.08539C5.39115 18 4.72535 17.7135 4.23446 17.2035C3.74356 16.6935 3.46777 16.0018 3.46777 15.2805V5.62231C3.46777 5.4403 3.53737 5.26575 3.66124 5.13705C3.78512 5.00836 3.95314 4.93606 4.12832 4.93606ZM7.55365 3.40571C7.72883 3.40571 7.89685 3.33341 8.02072 3.20472C8.1446 3.07602 8.2142 2.90147 8.2142 2.71946C8.21415 2.54255 8.24765 2.36735 8.31278 2.20389C8.37792 2.04042 8.47341 1.89189 8.59381 1.76677C8.7142 1.64165 8.85715 1.5424 9.01447 1.47469C9.17179 1.40697 9.34042 1.37212 9.51071 1.37212H10.4891C10.6594 1.37207 10.828 1.40689 10.9854 1.47458C11.1428 1.54227 11.2858 1.64152 11.4062 1.76664C11.5266 1.89176 11.6222 2.04031 11.6873 2.2038C11.7525 2.36729 11.786 2.54251 11.7859 2.71946C11.7859 2.90147 11.8555 3.07602 11.9794 3.20472C12.1033 3.33341 12.2713 3.40571 12.4465 3.40571C12.6217 3.40571 12.7897 3.33341 12.9136 3.20472C13.0374 3.07602 13.107 2.90147 13.107 2.71946C13.1071 2.00432 12.836 1.31793 12.3525 0.80894C11.8689 0.299949 11.2119 0.00932405 10.5236 0H9.47658C8.78831 0.0094226 8.1313 0.300079 7.64778 0.809049C7.16426 1.31802 6.89313 2.00435 6.89309 2.71946C6.89309 2.90147 6.96269 3.07602 7.08657 3.20472C7.21044 3.33341 7.37846 3.40571 7.55365 3.40571Z"
+                      fill="#C9E1FF" />
+                    <path
+                      d="M2 3.33469C2 3.15268 2.06959 2.97813 2.19347 2.84944C2.31735 2.72074 2.48536 2.64844 2.66055 2.64844H17.3394C17.5146 2.64844 17.6827 2.72074 17.8065 2.84944C17.9304 2.97813 18 3.15268 18 3.33469C18 3.51669 17.9304 3.69125 17.8065 3.81994C17.6827 3.94864 17.5146 4.02094 17.3394 4.02094H2.66055C2.48536 4.02094 2.31735 3.94864 2.19347 3.81994C2.06959 3.69125 2 3.51669 2 3.33469ZM8.04294 5.8254C8.21812 5.8254 8.38614 5.8977 8.51002 6.0264C8.63389 6.1551 8.70349 6.32965 8.70349 6.51165V14.1367C8.70349 14.3187 8.63389 14.4932 8.51002 14.6219C8.38614 14.7506 8.21812 14.8229 8.04294 14.8229C7.86775 14.8229 7.69973 14.7506 7.57586 14.6219C7.45198 14.4932 7.38239 14.3187 7.38239 14.1367V6.51165C7.38239 6.32965 7.45198 6.1551 7.57586 6.0264C7.69973 5.8977 7.86775 5.8254 8.04294 5.8254ZM11.9574 5.8254C12.1326 5.8254 12.3006 5.8977 12.4245 6.0264C12.5484 6.1551 12.618 6.32965 12.618 6.51165V14.1367C12.618 14.3187 12.5484 14.4932 12.4245 14.6219C12.3006 14.7506 12.1326 14.8229 11.9574 14.8229C11.7822 14.8229 11.6142 14.7506 11.4904 14.6219C11.3665 14.4932 11.2969 14.3187 11.2969 14.1367V6.51165C11.2969 6.32965 11.3665 6.1551 11.4904 6.0264C11.6142 5.8977 11.7822 5.8254 11.9574 5.8254Z"
+                      fill="#C9E1FF" />
+
+                  </svg>
+                </template>
+                <template v-else>
+                  <el-tooltip effect="dark" :content="item.title" placement="right" popper-class="popper_style2">
+                    <span class="log_name nowrap log_nameShink">{{ item.title.substring(0, 1) }}</span>
+                  </el-tooltip>
+                </template>
               </div>
             </div>
           </div>
@@ -101,73 +63,55 @@
 
     <div class="container-body">
       <div class="body-top">
-        <span>您的免费问答次数：{{ userStore.residueQAQuantity }}次</span>
+        <div class="tip_line">
+          <span v-html="chatTips[chatTipsIndex]" v-if="userStore.residueQAQuantity > 4"></span>
+          <span v-else-if="userStore.residueQAQuantity > 0">您的问答次数即将用尽，<span class="tip_buyvip"
+              @click="buyMember">购买会员</span>获取更多问答次数~</span>
+          <span v-else>您的问答次数已用尽，<span class="tip_buyvip" @click="buyMember">购买会员</span>获取更多问答次数~</span>
+        </div>
+        <div class="tip_btns">
+          <div class="tip_times">
+            <img class="tip_msg_icon" src="@/assets/icon_message_left.svg" alt="" />
+            <span>{{ userStore.residueQAQuantity }}次</span>
+          </div>
+          <div class="tip_buy" @click="buyMember">
+            <span>购买会员</span>
+          </div>
+        </div>
       </div>
       <div class="body-content">
         <div class="chat_box">
-          <div
-            class="chat_scroll_view"
-            @scroll="chatScrollViewListen"
-            ref="chatScrollView"
-          >
+          <div class="chat_scroll_view" @scroll="chatScrollViewListen" ref="chatScrollView">
             <div class="list_content" ref="chatScrollPage">
               <div v-show="chatList.loading" class="loading">正在加载...</div>
               <template v-for="(item, idx) in chatList.list" :key="idx">
                 <div v-if="item.type == 1" class="msg_item question">
                   <div class="toright">
                     <div class="bubble">
-                      <div
-                        v-text="item.description"
-                        style="white-space: pre-wrap"
-                      ></div>
+                      <div v-text="item.description" style="white-space: pre-wrap"></div>
                     </div>
-                    <img
-                      class="avatar"
-                      src="https://quanres.hanhoukeji.com/hanhou-ai-pc/mine-avatar.png"
-                      alt=""
-                    />
+                    <img class="avatar" src="https://quanres.hanhoukeji.com/hanhou-ai-pc/mine-avatar.png" alt="" />
                   </div>
                 </div>
                 <div v-else-if="item.type == 2" class="msg_item answer">
                   <div class="toleft">
-                    <img
-                      class="avatar"
-                      src="https://quanres.hanhoukeji.com/hanhou-ai-pc/hhrobot-avatar.png"
-                      alt=""
-                    />
+                    <img class="avatar" src="https://quanres.hanhoukeji.com/hanhou-ai-pc/hhrobot-avatar.png" alt="" />
                     <div class="bubble">
-                      <div
-                        v-if="
-                          !item.description &&
-                          sendLoading &&
-                          chatList.list.length - 1 === idx
-                        "
-                      >
+                      <div v-if="!item.description &&
+                        sendLoading &&
+                        chatList.list.length - 1 === idx
+                        ">
                         <el-icon class="rotate_icon"><loading-icon /></el-icon>
                       </div>
-                      <div
-                        v-else
-                        v-text="item.description"
-                        style="white-space: pre-wrap"
-                      ></div>
-                      <div
-                        class="taptap"
-                        v-show="
-                          !(chatList.list.length - 1 == idx && sendLoading)
-                        "
-                      >
+                      <div v-else v-text="item.description" style="white-space: pre-wrap"></div>
+                      <div class="taptap" v-show="!(chatList.list.length - 1 == idx && sendLoading)
+                        ">
                         <div class="copy" @click="handleCopy(item.description)">
-                          <img
-                            src="https://quanres.hanhoukeji.com/hanhou-ai-pc/copy-icon.svg"
-                            alt=""
-                          />
+                          <img src="https://quanres.hanhoukeji.com/hanhou-ai-pc/copy-icon.svg" alt="" />
                           复制
                         </div>
                         <div class="del" @click="handShowRemoveMsg(item.id)">
-                          <img
-                            src="https://quanres.hanhoukeji.com/hanhou-ai-pc/delete-icon.svg"
-                            alt=""
-                          />
+                          <img src="https://quanres.hanhoukeji.com/hanhou-ai-pc/delete-icon.svg" alt="" />
                           删除
                         </div>
                       </div>
@@ -181,20 +125,10 @@
         </div>
         <div class="ask">
           <div class="ask_input">
-            <el-input
-              class="textarea"
-              v-model="question"
-              resize="none"
-              @keydown="sendByKey"
-              :autosize="{ minRows: 1, maxRows: 6 }"
-              type="textarea"
-              placeholder="请输入您需要提问的信息..."
-            />
+            <el-input class="textarea" v-model="question" resize="none" @keydown="sendByKey"
+              :autosize="{ minRows: 1, maxRows: 6 }" type="textarea" placeholder="请输入您需要提问的信息..." />
             <div class="length_count">
-              <span
-                :style="{ color: question.length > 800 ? 'red' : 'inherit' }"
-                >{{ question.length }}</span
-              >/800
+              <span :style="{ color: question.length > 800 ? 'red' : 'inherit' }">{{ question.length }}</span>/800
             </div>
           </div>
 
@@ -206,11 +140,7 @@
       </div>
     </div>
     <!-- 敏感词提醒 -->
-    <my-dialog
-      :show-close="false"
-      :close-on-click-modal="false"
-      v-model:visible="dialogVisible"
-    >
+    <my-dialog :show-close="false" :close-on-click-modal="false" v-model:visible="dialogVisible">
       <div class="dialog_dia">
         <div class="dia_title">敏感词提醒</div>
         <div class="dia_content">{{ tipMessage }}</div>
@@ -221,11 +151,7 @@
     </my-dialog>
 
     <!-- 删除对话窗口提醒 -->
-    <my-dialog
-      :show-close="false"
-      :close-on-click-modal="false"
-      v-model:visible="removeVisible"
-    >
+    <my-dialog :show-close="false" :close-on-click-modal="false" v-model:visible="removeVisible">
       <div class="dialog_dia">
         <div class="dia_title">温馨提示</div>
         <div class="dia_content">是否要删除此对话窗口？</div>
@@ -237,11 +163,7 @@
     </my-dialog>
 
     <!-- 删除对话信息提醒 -->
-    <my-dialog
-      :show-close="false"
-      :close-on-click-modal="false"
-      v-model:visible="removeMsgVisible"
-    >
+    <my-dialog :show-close="false" :close-on-click-modal="false" v-model:visible="removeMsgVisible">
       <div class="dialog_dia">
         <div class="dia_title">温馨提示</div>
         <div class="dia_content">是否要删除此对话信息？</div>
@@ -251,13 +173,17 @@
         </div>
       </div>
     </my-dialog>
+    <div class="custDialog">
+      <el-dialog :show-close="false" :close-on-click-modal="false" v-model="removeBuyVisible">
+        <div class="buyMember_dia">
+          <img class="buyMemberBg" src="https://quanres.hanhoukeji.com/hanhou-ai-pc/buy_memeber_dialog.png" alt="" />
+          <img class="buyMemberClose" src="@/assets/dialog_close.svg" alt="" @click="removeBuyVisible = false" />
+          <span class="buyMemeberTitle">购买会员获得更多问答次数</span>
+        </div>
+      </el-dialog>
+    </div>
 
-    <div
-      ref="copy_text"
-      class="clipboard_text"
-      data-clipboard-action="copy"
-      data-clipboard-text="copytext"
-    ></div>
+    <div ref="copy_text" class="clipboard_text" data-clipboard-action="copy" data-clipboard-text="copytext"></div>
   </div>
 </template>
 
@@ -273,7 +199,7 @@ import {
 } from "vue";
 import { useRouter } from "vue-router";
 import request from "@/http/index";
-import { ElMessage, ElDialog, ElInput, ElIcon } from "element-plus";
+import { ElMessage, ElDialog, ElInput, ElIcon, ElTooltip } from "element-plus";
 import { Loading as LoadingIcon } from "@element-plus/icons-vue";
 import { EventSourcePolyfill } from "event-source-polyfill";
 import api from "@/http/api";
@@ -283,9 +209,14 @@ import utils from "@/common/utils";
 import Sidebar from "@/components/Sidebar.vue";
 import MyDialog from "@/components/MyDialog.vue";
 import { useUserStore } from "@/store/user";
+import data from "@/common/data";
 import debounce from "lodash/debounce";
 
 const userStore = useUserStore(); //用户信息
+
+const chatTips = data.getChatTipList();
+const randomNumber = Math.floor(Math.random() * chatTips.length);
+const chatTipsIndex = ref(randomNumber);
 
 // 上下文
 // const instance = getCurrentInstance();
@@ -298,15 +229,17 @@ const router = useRouter();
 const userInfo = utils.getUserInfo() || {};
 
 // 弹层关闭事件
-const dialogClose = () => {};
+const dialogClose = () => { };
 
 // 敏感词提醒弹窗
 const dialogVisible = ref(false);
+const isExpandMode = ref(true);
 // 敏感词提示词
 const tipMessage = ref("");
 
 // 删除信息弹窗
 const removeMsgVisible = ref(false);
+const removeBuyVisible = ref(false);
 // 点击删除的消息id
 const delMsgId = ref(null);
 const handShowRemoveMsg = (id) => {
@@ -403,6 +336,10 @@ const getHistory = () => {
       tagList.loading = false;
     });
 };
+
+function onOnPannelToggle(expanded) {
+  isExpandMode.value = expanded;
+}
 
 // 对话列表不满一屏 加载
 watch(
@@ -529,8 +466,7 @@ const _getResult = async (message, tagId) => {
   let resultSign = await _getSign({});
 
   const source = new EventSourcePolyfill(
-    `${process.env.VUE_APP_BASE_URL}${
-      api.chat_qa
+    `${process.env.VUE_APP_BASE_URL}${api.chat_qa
     }?question=${encodeURIComponent(message)}&tagId=${tagId}`,
     {
       headers: {
@@ -562,10 +498,11 @@ const _getResult = async (message, tagId) => {
       userStore.saveResidueQAQuantity(0);
       // 移除列表中最后一对
       chatList.list.splice(chatList.list.length - 2, 2);
-      ElMessage({
-        message: err.data.message,
-        type: "info",
-      });
+      buyMember();
+      // ElMessage({
+      //   message: err.data.message,
+      //   type: "info",
+      // });
       return;
     }
 
@@ -576,10 +513,11 @@ const _getResult = async (message, tagId) => {
       userStore.saveResidueQAQuantity(0);
       // 移除列表中最后一对
       chatList.list.splice(chatList.list.length - 2, 2);
-      ElMessage({
-        message: err.data.message,
-        type: "info",
-      });
+      buyMember();
+      // ElMessage({
+      //   message: err.data.message,
+      //   type: "info",
+      // });
       return;
     }
 
@@ -661,7 +599,7 @@ const _getResult = async (message, tagId) => {
       //   type: "error",
       //   message: e.error || "异常: 对话中断",
       // });
-    } catch (error) {}
+    } catch (error) { }
   };
 };
 
@@ -810,10 +748,12 @@ const handleSend = () => {
     });
   }
   if (userStore.residueQAQuantity == 0) {
-    return ElMessage({
-      message: "您的问答次数已用尽，请联系客服购买",
-      type: "warning",
-    });
+    buyMember();
+    return;
+    // return ElMessage({
+    //   message: "您的问答次数已用尽，请联系客服购买",
+    //   type: "warning",
+    // });
   }
   actionState = "2"; //动作状态设定为添加新问题
   const question1 = reString(question.value.trim());
@@ -962,6 +902,10 @@ const getChatResidueQuantity = async () => {
   }
 };
 
+function buyMember() {
+  removeBuyVisible.value = true;;
+}
+
 // 加载完成事件
 onMounted(() => {
   console.log("mount");
@@ -970,14 +914,55 @@ onMounted(() => {
 });
 </script>
 
+<style>
+.popper_style2 {
+  background-color: black !important;
+  border: none !important;
+  font-family: PingFang SC !important;
+  line-height:39px;
+  font-size: 16px !important;
+
+  span {
+    font-family: PingFang SC !important;
+  }
+
+}
+.el-popper__arrow::before {
+    background-color: black !important;
+    border: none !important;
+  }
+</style>
 
 <style scoped lang="less">
 .container {
   display: flex;
   height: 100%;
 
+  .custDialog {
+    /deep/.el-dialog {
+      background-color: transparent;
+      width: 1065px;
+      height: 727px;
+    }
+
+    /deep/.el-dialog__header {
+      display: none;
+    }
+
+    /deep/.el-dialog__body {
+      width: 1065px;
+      height: 727px;
+      padding: 0px !important;
+
+    }
+  }
   .side-content {
     height: 100%;
+
+    .newchat_shink_icon {
+      width: 53px;
+      height: 53px;
+    }
 
     .newchat {
       display: flex;
@@ -995,10 +980,12 @@ onMounted(() => {
       background: #126cfe;
       margin: auto;
       cursor: pointer;
+
       svg {
         width: 14px;
         height: 14px;
       }
+
       span {
         margin-left: 11px;
       }
@@ -1025,29 +1012,62 @@ onMounted(() => {
       margin: auto;
       cursor: auto;
       opacity: 0.5;
+
       svg {
         width: 14px;
         height: 14px;
       }
+
       span {
         margin-left: 11px;
       }
     }
 
     // 历史列表
+    .log_listShink {
+      width: 100px !important;
+    }
+
     .log_list {
       width: 310px;
       height: calc(100% - 90px);
       margin: auto;
       padding: 22px 0;
 
+      .scroll_viewShink {
+        width: 100px !important;
+      }
+
       .scroll_view {
         width: 301px;
         height: 100%;
         overflow-y: scroll;
 
+        .scroll_pageShrink {
+          margin-left: 0 !important;
+          display: flex;
+          align-items: center;
+          flex-direction: column;
+        }
+
         .scroll_page {
           margin-left: 22px;
+
+          .log_itemShrink {
+            width: 46px !important;
+            padding: 0 !important;
+            margin: 0 0 22px 0 !important;
+            background-color: #182039;
+            border-width: 0px !important;
+
+            &:hover {
+              background-color: #1D2849;
+            }
+
+            &:active {
+              background-color: #126CFE;
+            }
+          }
 
           .log_item {
             position: relative;
@@ -1058,18 +1078,32 @@ onMounted(() => {
             width: 266px;
             height: 46px;
             padding: 0 13px;
-            border: 1px solid #dae0f5;
+            // border: 1px solid #dae0f5;
             border-radius: 5px;
-            margin: 22px 0;
+            margin: 5px 0;
             font-family: PingFang SC;
             font-size: 19px;
             font-weight: 400;
             line-height: 46px;
             cursor: pointer;
 
+            &:hover {
+              background-color: #172141;
+            }
+
+            &:active {
+              background-color: #192039;
+            }
+
             .bubble_icon {
               width: 20px;
               height: 20px;
+            }
+
+            .log_nameShink {
+              padding-right: 0px !important;
+              text-align: center !important;
+              text-indent: 0px !important;
             }
 
             .log_name {
@@ -1077,7 +1111,7 @@ onMounted(() => {
               min-width: 0;
               padding-right: 30px;
               text-indent: 10px;
-              color: #ffffff;
+              color: #C9E1FF;
               font-family: PingFang SC;
               font-size: 19px;
               font-style: normal;
@@ -1113,12 +1147,17 @@ onMounted(() => {
             margin-bottom: 0;
           }
 
+          .log_item_activeShrink {
+            background-color: #126CFE !important;
+            border-width: 0px !important;
+          }
+
           .log_item_active {
-            background-color: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(90, 161, 248, 1);
+            background-color: #192039;
+            // border: 1px solid rgba(90, 161, 248, 1);
 
             .log_name {
-              color: rgba(201, 225, 255, 1);
+              color: #C9E1FF;
             }
           }
         }
@@ -1137,13 +1176,69 @@ onMounted(() => {
       justify-content: center;
       width: 100%;
       height: 68px;
-      background-color: #e5e9f5;
-      color: #666;
+      background-color: #1F211E;
+      flex-direction: row;
       font-family: PingFang SC;
-      font-size: 20px;
-      font-style: normal;
-      font-weight: 400;
-      line-height: normal;
+
+
+
+      .tip_line {
+        margin-left: 28px;
+        color: #E9E9E8;
+        font-size: 20px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: normal;
+        flex: 1;
+
+        .tip_buyvip {
+          color: #FAE1C6;
+          font-size: 20px;
+          text-decoration: underline;
+          cursor: pointer;
+        }
+      }
+
+      .tip_btns {
+        display: flex;
+        flex-direction: row;
+        height: 42px;
+
+        .tip_times {
+          display: flex;
+          flex-direction: row;
+          font-size: 20px;
+          color: #FAE1C6;
+          margin-right: 60px;
+          align-items: center;
+          justify-content: center;
+          padding: 0 22px 0 6px;
+          height: 42px;
+          background-color: #3B3633;
+          border-radius: 23.5px;
+
+          .tip_msg_icon {
+            width: 30px;
+            height: 30px;
+            margin-right: 10px;
+          }
+        }
+
+        .tip_buy {
+          height: 42px;
+          width: 124px;
+          margin-right: 30px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          outline: 1px solid #FAE1C6;
+          background-color: #3B3633;
+          border-radius: 23.5px;
+          font-size: 20px;
+          color: #FAE1C6;
+          cursor: pointer;
+        }
+      }
     }
 
     .body-content {
@@ -1523,6 +1618,35 @@ onMounted(() => {
           opacity: 0.8;
         }
       }
+    }
+  }
+
+  .buyMember_dia {
+    width: 1065px;
+    height: 727px;
+
+    .buyMemberBg {
+      width: 1065px;
+      height: 727px;
+    }
+
+    .buyMemberClose {
+      position: absolute;
+      right: 40px;
+      top: 40px;
+      width: 24px;
+      height: 24px;
+      cursor: pointer;
+    }
+
+    .buyMemeberTitle {
+      color: #333;
+      font-size: 40px;
+      font-weight: 600;
+      position: absolute;
+      left: 50%;
+      top: 60px;
+      transform: translateX(-50%);
     }
   }
 

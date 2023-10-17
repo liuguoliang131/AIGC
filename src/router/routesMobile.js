@@ -36,6 +36,14 @@ const routes = [
     }
   },
   {
+    path: '/isrQA',
+    name: 'isrQA',
+    component: HanHouQAOuter,
+    meta: {
+      isAuthenticated: false
+    }
+  },
+  {
     path: '/lldqQA',
     name: 'lldqQA',
     component: HanHouQAOuter,

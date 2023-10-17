@@ -1,225 +1,143 @@
 <template>
   <div class="container">
     <TopTitleBar />
-    <el-scrollbar
-      style="
+    <el-scrollbar style="
          {
           font-size: 0;
         }
-      "
-      @scroll="onScroll"
-    >
+      " @scroll="onScroll">
       <div class="positionRelative">
         <video ref="video" class="coverVideo" autoplay muted loop playsinline>
-          <source
-            src="https://quanres.hanhoukeji.com/hanhou-ai-pc/ai_home1_video.mp4"
-            type="video/mp4"
-          />
+          <source src="https://quanres.hanhoukeji.com/hanhou-ai-pc/ai_home1_video.mp4" type="video/mp4" />
         </video>
-        <img
-          src="https://quanres.hanhoukeji.com/hanhou-ai-pc/ai_home1_foreground.png"
-          class="home1_fg"
-        />
+        <img src="https://quanres.hanhoukeji.com/hanhou-ai-pc/ai_home1_foreground.png" class="home1_fg" />
       </div>
       <div class="positionRelative">
-        <img
-          src="https://quanres.hanhoukeji.com/hanhou-ai-pc/ai_home2.png"
-          class="itemImage"
-        />
+        <img src="https://quanres.hanhoukeji.com/hanhou-ai-pc/ai_home2.png" class="itemImage" />
       </div>
       <div class="positionRelative">
-        <img
-          src="https://quanres.hanhoukeji.com/hanhou-ai-pc/ai_home3_bg.png"
-          class="itemImage"
-        />
+        <img src="https://quanres.hanhoukeji.com/hanhou-ai-pc/ai_home3_bg.png" class="itemImage" />
         <el-carousel class="carousel" autoplay arrow="never" height="500px">
           <el-carousel-item :key="1">
-            <img
-              src="https://quanres.hanhoukeji.com/hanhou-ai-pc/ai_home3_item1.png"
-              class="carouselItem"
-            />
+            <img src="https://quanres.hanhoukeji.com/hanhou-ai-pc/ai_home3_item1.png" class="carouselItem" />
           </el-carousel-item>
           <el-carousel-item :key="2">
-            <img
-              src="https://quanres.hanhoukeji.com/hanhou-ai-pc/ai_home3_item2.png"
-              class="carouselItem"
-            />
+            <img src="https://quanres.hanhoukeji.com/hanhou-ai-pc/ai_home3_item2.png" class="carouselItem" />
           </el-carousel-item>
           <el-carousel-item :key="3">
-            <img
-              src="https://quanres.hanhoukeji.com/hanhou-ai-pc/ai_home3_item3.png"
-              class="carouselItem"
-            />
+            <img src="https://quanres.hanhoukeji.com/hanhou-ai-pc/ai_home3_item3.png" class="carouselItem" />
           </el-carousel-item>
         </el-carousel>
       </div>
       <div class="positionRelative">
-        <img
-          src="https://quanres.hanhoukeji.com/hanhou-ai-pc/ai_home4_bg.png"
-          class="itemImage"
-        />
+        <img src="https://quanres.hanhoukeji.com/hanhou-ai-pc/ai_home4_bg.png" class="itemImage" />
         <div class="slideWrapper" @mouseleave="onMouseOut()">
           <div class="slideItem" @mouseenter="onMouseEnter(1)">
-            <img
-              src="https://quanres.hanhoukeji.com/hanhou-ai-pc/ai_home4_item1.png"
-              :class="[
-                'slideImage',
-                slideItemHover == 1 ? 'slideImageHover' : '',
-              ]"
-            />
+            <img src="https://quanres.hanhoukeji.com/hanhou-ai-pc/ai_home4_item1.png" :class="[
+              'slideImage',
+              slideItemHover == 1 ? 'slideImageHover' : '',
+            ]" />
             <div class="slideContent">
-              <span
-                :class="[
-                  'slideTitle',
-                  slideItemHover == 1 ? 'slideTitleHover' : '',
-                ]"
-                v-html="
-                  slideItemHover == 1
-                    ? '在线课程学习平台'
-                    : '在线课程<br>学习平台'
-                "
-              ></span>
-              <div
-                :class="[
-                  'slideLine',
-                  slideItemHover == 1 ? 'slideLineHover' : '',
-                ]"
-              ></div>
-              <span
-                :class="[slideItemHover == 1 ? 'slideDespHover' : 'slideDesp']"
-              >
+              <span :class="[
+                'slideTitle',
+                slideItemHover == 1 ? 'slideTitleHover' : '',
+              ]" v-html="slideItemHover == 1
+  ? '在线课程学习平台'
+  : '在线课程<br>学习平台'
+  "></span>
+              <div :class="[
+                'slideLine',
+                slideItemHover == 1 ? 'slideLineHover' : '',
+              ]"></div>
+              <span :class="[slideItemHover == 1 ? 'slideDespHover' : 'slideDesp']">
                 免费提供AI工具使用的在线课程，帮助您轻松上手使用AI工具。
               </span>
             </div>
           </div>
           <div class="slideItem" @mouseenter="onMouseEnter(2)">
-            <img
-              src="https://quanres.hanhoukeji.com/hanhou-ai-pc/ai_home4_item2.png"
-              :class="[
-                'slideImage',
-                slideItemHover == 2 ? 'slideImageHover' : '',
-              ]"
-            />
+            <img src="https://quanres.hanhoukeji.com/hanhou-ai-pc/ai_home4_item2.png" :class="[
+              'slideImage',
+              slideItemHover == 2 ? 'slideImageHover' : '',
+            ]" />
             <div class="slideContent">
-              <span
-                :class="[
-                  'slideTitle',
-                  slideItemHover == 2 ? 'slideTitleHover' : '',
-                ]"
-                v-html="
-                  slideItemHover == 2
-                    ? '定期在线直播培训'
-                    : '定期在线<br>直播培训'
-                "
-              ></span>
-              <div
-                :class="[
-                  'slideLine',
-                  slideItemHover == 2 ? 'slideLineHover' : '',
-                ]"
-              ></div>
-              <span
-                :class="[slideItemHover == 2 ? 'slideDespHover' : 'slideDesp']"
-              >
+              <span :class="[
+                'slideTitle',
+                slideItemHover == 2 ? 'slideTitleHover' : '',
+              ]" v-html="slideItemHover == 2
+  ? '定期在线直播培训'
+  : '定期在线<br>直播培训'
+  "></span>
+              <div :class="[
+                'slideLine',
+                slideItemHover == 2 ? 'slideLineHover' : '',
+              ]"></div>
+              <span :class="[slideItemHover == 2 ? 'slideDespHover' : 'slideDesp']">
                 定期免费提供在线直播培训，反馈培训效果，让企业拥有高质量的AI人才，提升企业效益。
               </span>
             </div>
           </div>
           <div class="slideItem" @mouseenter="onMouseEnter(3)">
-            <img
-              src="https://quanres.hanhoukeji.com/hanhou-ai-pc/ai_home4_item3.png"
-              :class="[
-                'slideImage',
-                slideItemHover == 3 ? 'slideImageHover' : '',
-              ]"
-            />
+            <img src="https://quanres.hanhoukeji.com/hanhou-ai-pc/ai_home4_item3.png" :class="[
+              'slideImage',
+              slideItemHover == 3 ? 'slideImageHover' : '',
+            ]" />
             <div class="slideContent">
-              <span
-                :class="[
-                  'slideTitle',
-                  slideItemHover == 3 ? 'slideTitleHover' : '',
-                ]"
-                v-html="
-                  slideItemHover == 3
-                    ? '企业定制培训调研'
-                    : '企业定制<br>培训调研'
-                "
-              ></span>
-              <div
-                :class="[
-                  'slideLine',
-                  slideItemHover == 3 ? 'slideLineHover' : '',
-                ]"
-              ></div>
-              <span
-                :class="[slideItemHover == 3 ? 'slideDespHover' : 'slideDesp']"
-              >
+              <span :class="[
+                'slideTitle',
+                slideItemHover == 3 ? 'slideTitleHover' : '',
+              ]" v-html="slideItemHover == 3
+  ? '企业定制培训调研'
+  : '企业定制<br>培训调研'
+  "></span>
+              <div :class="[
+                'slideLine',
+                slideItemHover == 3 ? 'slideLineHover' : '',
+              ]"></div>
+              <span :class="[slideItemHover == 3 ? 'slideDespHover' : 'slideDesp']">
                 免费为您提供AI培训调研服务，满足您企业的特定需求。
               </span>
             </div>
           </div>
           <div class="slideItem" @mouseenter="onMouseEnter(4)">
-            <img
-              src="https://quanres.hanhoukeji.com/hanhou-ai-pc/ai_home4_item4.png"
-              :class="[
-                'slideImage',
-                slideItemHover == 4 ? 'slideImageHover' : '',
-              ]"
-            />
+            <img src="https://quanres.hanhoukeji.com/hanhou-ai-pc/ai_home4_item4.png" :class="[
+              'slideImage',
+              slideItemHover == 4 ? 'slideImageHover' : '',
+            ]" />
             <div class="slideContent">
-              <span
-                :class="[
-                  'slideTitle',
-                  slideItemHover == 4 ? 'slideTitleHover' : '',
-                ]"
-                v-html="
-                  slideItemHover == 4
-                    ? '企业定制培训服务'
-                    : '企业定制<br>培训服务'
-                "
-              ></span>
-              <div
-                :class="[
-                  'slideLine',
-                  slideItemHover == 4 ? 'slideLineHover' : '',
-                ]"
-              ></div>
-              <span
-                :class="[slideItemHover == 4 ? 'slideDespHover' : 'slideDesp']"
-              >
+              <span :class="[
+                'slideTitle',
+                slideItemHover == 4 ? 'slideTitleHover' : '',
+              ]" v-html="slideItemHover == 4
+  ? '企业定制培训服务'
+  : '企业定制<br>培训服务'
+  "></span>
+              <div :class="[
+                'slideLine',
+                slideItemHover == 4 ? 'slideLineHover' : '',
+              ]"></div>
+              <span :class="[slideItemHover == 4 ? 'slideDespHover' : 'slideDesp']">
                 低折扣价为您提供企业定制AI培训服务，深入挖掘AI在您业务中的应用潜力。
               </span>
             </div>
           </div>
           <div class="slideItem" @mouseenter="onMouseEnter(5)">
-            <img
-              src="https://quanres.hanhoukeji.com/hanhou-ai-pc/ai_home4_item5.png"
-              :class="[
-                'slideImage',
-                slideItemHover == 5 ? 'slideImageHover' : '',
-              ]"
-            />
+            <img src="https://quanres.hanhoukeji.com/hanhou-ai-pc/ai_home4_item5.png" :class="[
+              'slideImage',
+              slideItemHover == 5 ? 'slideImageHover' : '',
+            ]" />
             <div class="slideContent">
-              <span
-                :class="[
-                  'slideTitle',
-                  slideItemHover == 5 ? 'slideTitleHover' : '',
-                ]"
-                v-html="
-                  slideItemHover == 5
-                    ? '企业定制培训测验'
-                    : '企业定制<br>培训测验'
-                "
-              ></span>
-              <div
-                :class="[
-                  'slideLine',
-                  slideItemHover == 5 ? 'slideLineHover' : '',
-                ]"
-              ></div>
-              <span
-                :class="[slideItemHover == 5 ? 'slideDespHover' : 'slideDesp']"
-              >
+              <span :class="[
+                'slideTitle',
+                slideItemHover == 5 ? 'slideTitleHover' : '',
+              ]" v-html="slideItemHover == 5
+  ? '企业定制培训测验'
+  : '企业定制<br>培训测验'
+  "></span>
+              <div :class="[
+                'slideLine',
+                slideItemHover == 5 ? 'slideLineHover' : '',
+              ]"></div>
+              <span :class="[slideItemHover == 5 ? 'slideDespHover' : 'slideDesp']">
                 通过免费的测验和反馈，确保您的企业能够从定制AI培训中获得最大价值。
               </span>
             </div>
@@ -227,27 +145,19 @@
         </div>
       </div>
       <div class="positionRelative">
-        <img
-          src="https://quanres.hanhoukeji.com/hanhou-ai-pc/ai_home5.png"
-          class="itemImage"
-        />
+        <img src="https://quanres.hanhoukeji.com/hanhou-ai-pc/ai_home5.png" class="itemImage" />
       </div>
       <div class="positionRelative">
-        <img
-          src="https://quanres.hanhoukeji.com/hanhou-ai-pc/ai_home6.png"
-          class="itemImage"
-        />
+        <img src="https://quanres.hanhoukeji.com/hanhou-ai-pc/ai_home6.png" class="itemImage" />
+      </div>
+      <div class="positionRelative" id="targetPage">
+        <img src="https://quanres.hanhoukeji.com/hanhou-ai-pc/member_feepage.png" class="itemImage" />
       </div>
       <div class="positionRelative">
-        <img
-          src="https://quanres.hanhoukeji.com/hanhou-ai-pc/ai_home7.png"
-          class="itemImage"
-        />
+        <img src="https://quanres.hanhoukeji.com/hanhou-ai-pc/ai_home7.png" class="itemImage" />
         <div class="footer">
           <div class="footer-record">
-            <a @click="handGoICP"
-              >京ICP备19041918号-1京公网安备11010502039881号</a
-            >
+            <a @click="handGoICP">京ICP备19041918号-1京公网安备11010502039881号</a>
           </div>
           <div class="footer-record">
             <a @click="handGoICP">网络经营许可证京网文[2020]4683-870号</a>
@@ -255,23 +165,13 @@
         </div>
       </div>
     </el-scrollbar>
-    <div class="memberFeeWrapper" >
-      <img
-        src="https://quanres.hanhoukeji.com/hanhou-ai-pc/tobe_memeber2.png"
-       class="memberFeeImg"
-      />
+    <div class="memberFeeWrapper" @click="goMemberAnthor">
+      <img src="https://quanres.hanhoukeji.com/hanhou-ai-pc/tobe_memeber2.png" class="memberFeeImg" />
     </div>
-    <my-dialog
-      :show-close="false"
-      :close-on-click-modal="true"
-      v-model:visible="dialogVisible"
-      @close="dialogVisible = false"
-    >
+    <my-dialog :show-close="false" :close-on-click-modal="true" v-model:visible="dialogVisible"
+      @close="dialogVisible = false">
       <div class="dialog_dia">
-        <img
-          src="https://quanres.hanhoukeji.com/hanhou-ai-pc/ai_home3.png"
-          class="wecard"
-        />
+        <img src="https://quanres.hanhoukeji.com/hanhou-ai-pc/ai_home3.png" class="wecard" />
       </div>
     </my-dialog>
   </div>
@@ -319,6 +219,10 @@ function handGoICP() {
 function showWeCard() {
   dialogVisible.value = true;
 }
+function goMemberAnthor() {
+  let target = document.getElementById('targetPage');
+  target.scrollIntoView({ behavior: 'smooth' });
+}
 </script>
 
 <style scoped lang="less">
@@ -336,10 +240,11 @@ function showWeCard() {
   .memberFeeWrapper {
     position: absolute;
     right: 39px;
-    bottom: 400px;
+    bottom: 170px;
     display: flex;
     flex-direction: column;
-    .memberFeeImg{
+
+    .memberFeeImg {
       width: 200px;
       height: 390px;
     }
@@ -409,6 +314,7 @@ function showWeCard() {
       .slideItem {
         position: relative;
         opacity: 0.7;
+
         &:hover {
           opacity: 1;
         }

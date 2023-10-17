@@ -86,6 +86,10 @@ if (name === 'hsQA') {
   document.title = '龙铭鹤·AI'
   columns.push({ text: "龙铭鹤", value: "/qa/lmh" });
   selectResult.value = "/qa/lmh";
+} else if (name === 'isrQA') {
+  document.title = 'ISR-AI'
+  columns.push({ text: "ISR-AI", value: "/qa/isr" });
+  selectResult.value = "/qa/isr";
 } else {
   document.title = '憨猴·AI'
   columns.push({ text: "憨猴", value: "/qa/hanhou" });
@@ -102,7 +106,7 @@ function answer() {
     message: "处理中...",
     forbidClick: true,
   });
-  const query = encodeURIComponent(message.value);
+  const query = encodeURIComponent(message.value.replace(/[\r\n]+/g, ""));
   request
     .get(`/user/hanhouqa?question=${selectResult.value}/${query}`)
     .then((res) => {

@@ -9,8 +9,8 @@
       <div @click="say" class="reSpeaker">重读</div> -->
 
     <!--更新背景-->
-    <!-- <input className="excle-file" type="file" title="" name="fileUploaderBg" accept=".jpg,.png" id="fileUploaderBg"
-        :onChange=upload /> -->
+    <!-- <input class="personbg" type="file" title="" name="fileUploaderBg" accept=".jpg,.png" id="fileUploaderBg"
+      :onChange=upload /> -->
     <!-- </div> -->
   </div>
   <my-dialog v-model:show="removeVisible" title="温馨提示" message="苹果兼容性问题，请点击确认恢复虚拟人" @confirm="confirmVideo">
@@ -56,9 +56,9 @@ function upload(e) {
     let base64Str = result.split(";base64,")[1];
     VMS.uploadResourceData(
       {
-        appId: "15288978",
-        apiKey: "f1b41f43990adf262f260892644f053e",
-        apiSecret: "M2FmZDM1NDEzMzEyZWU4MDgxOWJmMjYy",
+        appId: "89465d6a",
+        apiKey: "f478ea4b445aadf5f4f2308195036e15",
+        apiSecret: "ZWNjMWE4MDJmMDY0N2Q3YThmYWU1MDJh",
         resourceBase64Str: base64Str,
       },
     )
@@ -94,18 +94,18 @@ function confirmVideo() {
 const init = async () => {
   VMS.start({
     //测试环境
-    appId: process.env.VUE_APP_SELF_ENV !== "prod" ? "3c4dc848" : "15288978",
-    apiKey: process.env.VUE_APP_SELF_ENV !== "prod" ? "b221b349d95deb3fe82a20651af287b9" : "f1b41f43990adf262f260892644f053e",
-    apiSecret: process.env.VUE_APP_SELF_ENV !== "prod" ? "NTM2ZWExYzRhODUxOWExMzg1ZWMxMjNh" : "M2FmZDM1NDEzMzEyZWU4MDgxOWJmMjYy",
+    appId: process.env.VUE_APP_SELF_ENV !== "prod" ? "3c4dc848" : "89465d6a",
+    apiKey: process.env.VUE_APP_SELF_ENV !== "prod" ? "b221b349d95deb3fe82a20651af287b9" : "f478ea4b445aadf5f4f2308195036e15",
+    apiSecret: process.env.VUE_APP_SELF_ENV !== "prod" ? "NTM2ZWExYzRhODUxOWExMzg1ZWMxMjNh" : "ZWNjMWE4MDJmMDY0N2Q3YThmYWU1MDJh",
 
     // width: 1280, //[1920 1280 720]
     height: 1080, // [1080 720 405]
     avatarId: '118801001',
     streamDomId: "remote_stream",
-    resId: '1711936698963906560',//白色背景
+    resId: '1714073215225835520',//白色背景
     // isSsl: false,
     // moveH:200,
-    moveV:15,
+    moveV: 15,
     // scale: 1.2,
     // maskRegion: '[0,0,900,600]'
   })
@@ -251,6 +251,13 @@ canvas {
   align-items: center;
   pointer-events: none;
   position: relative;
+
+  .personbg {
+    font-size: 20px;
+    width: 200px;
+    height: 100px;
+    background-color: red;
+  }
 
 
   .errorCode {
